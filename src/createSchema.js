@@ -1,7 +1,8 @@
 import {
   MESSAGES,
 } from './constants.js';
-import * as builtIn from './plugins.js';
+
+const noError = () => undefined;
 
 function createCompiler(Schema, plugins) {
   const compiler = {
@@ -15,25 +16,18 @@ function createCompiler(Schema, plugins) {
         }
         return compiled;
       };
-      return next(0)({ schemaDef });
+      return next(0)({ schemaDef, validate: noError });
     },
   };
   return compiler;
 }
 
-function createSchema() {
+function createSchema(defaultPlugins) {
   let messages = {
     ...MESSAGES,
   };
 
-  let plugins = [
-    builtIn.pluginLazy,
-    builtIn.pluginSchema,
-    builtIn.pluginAtomic,
-    builtIn.pluginArray,
-    builtIn.pluginOneOf,
-    builtIn.pluginObject,
-  ];
+  let plugins = [...defaultPlugins];
 
   const compilers = [];
   function getCompiler(Schema) {

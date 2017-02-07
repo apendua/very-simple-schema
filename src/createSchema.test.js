@@ -20,12 +20,13 @@ import {
   ERROR_EXPECTED_OBJECT,
   ERROR_EXPECTED_CONSTRUCTOR,
 } from './constants.js';
+import presetDefault from './plugins/preset-default.js';
 
 const should = chai.should();
 
 describe('Test createSchema', function () {
   beforeEach(function () {
-    this.Schema = createSchema();
+    this.Schema = createSchema(presetDefault);
   });
 
   describe('Given a literal schema', function () {
