@@ -6,6 +6,7 @@ import {
 import {
   createValidateEquals,
   createValidateInstanceOf,
+  createValidateIsAllowed,
   validateIsString,
   validateIsNumber,
   validateIsBoolean,
@@ -19,7 +20,7 @@ import {
   combine,
 } from './validators.js';
 
-export const pluginType = {
+export const pluginAtomic = {
   transform(compiler, compiled, options, next) {
     const { schemaDef } = compiled;
     let validate;
@@ -42,11 +43,15 @@ export const pluginType = {
     if (!validate) {
       return next(compiled);
     }
+    const {
+      allowedValues,
+    } = options;
     return next({
       ...compiled,
       validate: combine([
         compiled.validate,
         validate,
+        allowedValues && createValidateIsAllowed(allowedValues),
       ]),
     });
   },
@@ -89,14 +94,12 @@ export const pluginArray = {
       if (schemaDef.length !== 1) {
         throw new Error('SchemaDef must be an array of length 1');
       }
-      const memeberValidator = compiler.compile(schemaDef[0]);
+      const memeberValidator = compiler.compile(schemaDef[0], options);
       return {
         ...compiled,
         validate: combine([
-          combine([
-            compiled.validate,
-            validateIsArray,
-          ]),
+          compiled.validate,
+          validateIsArray,
           (value) => {
             const errors = value.map(member => memeberValidator.validate(member));
             return errors.some(err => !!err) ? { errors } : undefined;
@@ -142,10 +145,10 @@ export const pluginObject = {
       Object.keys(schemaDef).forEach((key) => {
         const {
           type,
-          lazy = false,
           optional,
+          ...otherOptions
         } = schemaDef[key];
-        memberValidators[key] = compiler.compile(type, { lazy });
+        memberValidators[key] = compiler.compile(type, otherOptions);
         memberValidators[key].optional = !!optional;
       });
       return {

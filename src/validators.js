@@ -1,6 +1,7 @@
 import {
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
+  ERROR_NOT_ALLOWED,
   ERROR_NO_DECIMAL,
   ERROR_EXPECTED_STRING,
   ERROR_EXPECTED_NUMBER,
@@ -15,6 +16,8 @@ export const createValidateEquals = expected => value =>
   (value === expected ? undefined : { value, expected, error: ERROR_NOT_EQUAL });
 export const createValidateInstanceOf = constructor => value =>
   (value instanceof constructor ? undefined : { value, expected: constructor.name, error: ERROR_EXPECTED_CONSTRUCTOR });
+export const createValidateIsAllowed = allowedValues => value =>
+  (allowedValues.indexOf(value) >= 0 ? undefined : { value, expected: allowedValues, error: ERROR_NOT_ALLOWED });
 
 export const isArray = value => Object.prototype.toString.call(value) === '[object Array]';
 export const isDate = value => Object.prototype.toString.call(value) === '[object Date]';

@@ -9,6 +9,7 @@ import {
   MODE_ONE_OF,
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
+  ERROR_NOT_ALLOWED,
   ERROR_NO_MATCH,
   ERROR_NO_DECIMAL,
   ERROR_EXPECTED_STRING,
@@ -114,6 +115,7 @@ describe('Test createSchema', function () {
   describe('Given an array schema', function () {
     beforeEach(function () {
       this.schema1 = new this.Schema([Number]);
+      this.schema2 = new this.Schema([String], { allowedValues: ['a', 'b', 'c'] });
     });
     it('should return error if not an array', function () {
       this.schema1.validate('this is not an array').should.deep.equal({
@@ -121,7 +123,7 @@ describe('Test createSchema', function () {
         value: 'this is not an array',
       });
     });
-    it('should validate array of numbers', function () {
+    it('should accept array of numbers', function () {
       should.not.exist(this.schema1.validate([1, 2, 3]));
     });
     it('should reject array of strings', function () {
@@ -150,6 +152,46 @@ describe('Test createSchema', function () {
     it('should reject if neither string nor number', function () {
       this.schema1.validate(true).should.deep.equal({
         error: ERROR_NO_MATCH,
+      });
+    });
+  });
+
+  describe('Given a schema with allowedValues', function () {
+    describe('and the schema is atomic', function () {
+      beforeEach(function () {
+        this.schema1 = new this.Schema(Number, { allowedValues: [1, 2] });
+      });
+      it('should reject value that is not allowed', function () {
+        this.schema1.validate(3).should.deep.equal({
+          error: ERROR_NOT_ALLOWED,
+          value: 3,
+          expected: [1, 2],
+        });
+      });
+      it('should accept value that is allowed', function () {
+        should.not.exist(this.schema1.validate(1));
+      });
+    });
+
+    describe('and the schema is an array', function () {
+      beforeEach(function () {
+        this.schema1 = new this.Schema([String], { allowedValues: ['a', 'b', 'c'] });
+      });
+      it('should reject value that is not allowed', function () {
+        this.schema1.validate(['a', 'b', 'x']).should.deep.equal({
+          errors: [
+            undefined,
+            undefined,
+            {
+              error: ERROR_NOT_ALLOWED,
+              value: 'x',
+              expected: ['a', 'b', 'c'],
+            },
+          ],
+        });
+      });
+      it('should accept value that is allowed', function () {
+        should.not.exist(this.schema1.validate(['a', 'b', 'c']));
       });
     });
   });

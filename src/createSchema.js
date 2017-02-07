@@ -29,7 +29,7 @@ function createSchema() {
   let plugins = [
     builtIn.pluginLazy,
     builtIn.pluginSchema,
-    builtIn.pluginType,
+    builtIn.pluginAtomic,
     builtIn.pluginArray,
     builtIn.pluginOneOf,
     builtIn.pluginObject,
@@ -45,21 +45,17 @@ function createSchema() {
   }
 
   class Schema {
-    constructor(schemaDef, {
-      lazy = false,
-    } = {}) {
+    constructor(schemaDef, options) {
       Object.assign(this, {
         schemaDef,
-        lazy,
+        options,
       });
       this.compiler = getCompiler(this.constructor);
     }
 
     get compiled() {
       Object.defineProperty(this, 'compiled', {
-        value: this.compiler.compile(this.schemaDef, {
-          lazy: this.lazy,
-        }),
+        value: this.compiler.compile(this.schemaDef, this.options),
       });
       return this.compiled;
     }
