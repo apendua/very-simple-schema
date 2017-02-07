@@ -306,6 +306,20 @@ describe('Test createSchema', function () {
     });
   });
 
+  describe('Given a schema with lazy fields', function () {
+    // beforeEach(function () {
+    //   this.schema1 = new this.Schema({
+    //     parent: { type: () => this.schema2, lazy: true, optional: true },
+    //   });
+    //   this.schema2 = new this.Schema({
+    //     child: { type: () => this.schema1, lazy: true },
+    //   });
+    // });
+    // it('should reject object with missing fields', function () {
+    //   this.schema1.getErrors({});
+    // });
+  });
+
   describe('Given different error types', function () {
     it('should describe a string type error', function () {
       this.Schema.describe({
