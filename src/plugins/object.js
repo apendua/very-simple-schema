@@ -34,10 +34,8 @@ const pluginObject = {
       return {
         ...compiled,
         validate: combine([
-          combine([
-            compiled.validate,
-            validateIsObject,
-          ]),
+          compiled.validate,
+          validateIsObject,
           (value) => {
             const errors = {};
             Object.keys(memberValidators).forEach((key) => {
