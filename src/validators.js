@@ -21,7 +21,7 @@ export const createValidateIsAllowed = allowedValues => value =>
 
 export const isArray = value => Object.prototype.toString.call(value) === '[object Array]';
 export const isDate = value => Object.prototype.toString.call(value) === '[object Date]';
-export const isObject = value => value && typeof value === 'object';
+export const isObject = value => Object.prototype.toString.call(value) === '[object Object]';
 
 export const validateIsString = value =>
   (typeof value === 'string' ? undefined : { value, error: ERROR_EXPECTED_STRING });

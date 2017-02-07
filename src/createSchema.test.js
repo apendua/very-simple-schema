@@ -207,7 +207,7 @@ describe('Test createSchema', function () {
     });
   });
 
-  describe('Given a flat object schema', function () {
+  describe('Given an object schema', function () {
     beforeEach(function () {
       this.schema1 = new this.Schema({
         a: { type: String },
@@ -270,7 +270,43 @@ describe('Test createSchema', function () {
     });
   });
 
-  describe('Describe errors', function () {
+  describe('Given a nested object schema', function () {
+    beforeEach(function () {
+      this.schema1 = new this.Schema({
+        a: {
+          x: Number,
+          y: Number,
+        },
+        b: {
+          type: new this.Schema({
+            x: Number,
+            y: Number,
+          }),
+        },
+        c: {
+          type: {
+            x: Number,
+            y: Number,
+          },
+        },
+      });
+    });
+    it('should reject object with missing properties', function () {
+      this.schema1.getErrors({
+        a: { x: 1 },
+        b: { x: 1 },
+        c: { x: 1 },
+      }).should.deep.equal({
+        errors: {
+          a: { errors: { y: { error: ERROR_REQUIRED } } },
+          b: { errors: { y: { error: ERROR_REQUIRED } } },
+          c: { errors: { y: { error: ERROR_REQUIRED } } },
+        },
+      });
+    });
+  });
+
+  describe('Given different error types', function () {
     it('should describe a string type error', function () {
       this.Schema.describe({
         error: ERROR_EXPECTED_STRING,

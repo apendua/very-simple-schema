@@ -16,12 +16,15 @@ const pluginObject = {
       const memberValidators = {};
       Object.keys(schemaDef).forEach((key) => {
         const memberSchemaDef = schemaDef[key];
-        if (memberSchemaDef && typeof memberSchemaDef === 'object' && !Array.isArray(schemaDef)) {
+        if (memberSchemaDef &&
+            typeof memberSchemaDef === 'object' &&
+            !Array.isArray(memberSchemaDef) &&
+            has.call(memberSchemaDef, 'type')) {
           const {
             type,
             optional,
             ...otherOptions
-          } = schemaDef[key];
+          } = memberSchemaDef;
           memberValidators[key] = compiler.compile(type, otherOptions);
           memberValidators[key].optional = !!optional;
         } else {
