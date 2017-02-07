@@ -15,11 +15,12 @@ export const ERROR_EXPECTED_DATE = 'expectedDate';
 export const ERROR_EXPECTED_CONSTRUCTOR = 'expectedContructor';
 export const ERROR_KEY_NOT_IN_SCHEMA = 'keyNotInSchema';
 export const ERROR_NO_MATCH = 'noMatch';
+export const ERROR_NOT_ALLOWED = 'notAllowed';
 
 export const MESSAGES = {
   [ERROR_REQUIRED]:             ({ label }) => `${label} is required`,
   [ERROR_BAD_DATE]:             ({ label }) => `${label} is not a valid date`,
-  [ERROR_NOT_EQUAL]:            ({ label, value }) => `Expected ${label} to equal ${value}`,
+  [ERROR_NOT_EQUAL]:            ({ label, expected }) => `Expected ${label} to equal ${expected}`,
   [ERROR_NO_DECIMAL]:           ({ label }) => `${label} must be an integer`,
   [ERROR_EXPECTED_STRING]:      ({ label }) => `${label} must be a string`,
   [ERROR_EXPECTED_NUMBER]:      ({ label }) => `${label} must be a number`,
@@ -29,4 +30,5 @@ export const MESSAGES = {
   [ERROR_EXPECTED_CONSTRUCTOR]: ({ label, type }) => `${label} must be a ${type}`,
   [ERROR_KEY_NOT_IN_SCHEMA]:    ({ key }) => `${key} not allowed by the schema`,
   [ERROR_NO_MATCH]:             ({ label }) => `value at ${label} is none of the expected types`,
+  [ERROR_NOT_ALLOWED]:          ({ label, expected }) => `value at ${label} should be one of ${expected}`,
 };
