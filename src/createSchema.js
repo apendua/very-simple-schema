@@ -54,8 +54,12 @@ function createSchema(defaultPlugins) {
       return this.compiled;
     }
 
+    getErrors(value) {
+      return this.compiled.validate(value);
+    }
+
     validate(value) {
-      const errors = this.compiled.validate(value);
+      const errors = this.getErrors(value);
       return errors && this.constructor.describe(errors);
     }
 
@@ -63,8 +67,32 @@ function createSchema(defaultPlugins) {
       return value => this.compiled.validate(value);
     }
 
-    static describe(errors) {
-      return errors;
+    static describe(descriptor, {
+      label = 'Value',
+    } = {}) {
+      if (descriptor && typeof descriptor === 'object') {
+        if (descriptor.error) {
+          const messageTemplate = messages[descriptor.error];
+          if (!messageTemplate) {
+            return descriptor.error;
+          }
+          return messageTemplate({
+            ...descriptor,
+            label,
+          });
+        } else if (descriptor.errors) {
+          if (Array.isArray(descriptor.errors)) {
+            return descriptor.errors.map((item, index) => this.describe(item, { label: `${label}.${index}` }));
+          } else if (typeof descriptor.errors === 'object') {
+            const described = {};
+            Object.keys(descriptor.errors).forEach((key) => {
+              described[key] = this.describe(descriptor.errors[key], { label: `${label}.${key}` });
+            });
+            return described;
+          }
+        }
+      }
+      return undefined;
     }
 
     static messages(errorsMap) {
