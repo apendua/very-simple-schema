@@ -9,6 +9,7 @@ import {
   MODE_ONE_OF,
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
+  ERROR_NO_MATCH,
   ERROR_NO_DECIMAL,
   ERROR_EXPECTED_STRING,
   ERROR_EXPECTED_NUMBER,
@@ -112,7 +113,7 @@ describe('Test createSchema', function () {
 
   describe('Given an array schema', function () {
     beforeEach(function () {
-      this.schema1 = new this.Schema([Number], { mode: MODE_ARRAY });
+      this.schema1 = new this.Schema([Number]);
     });
     it('should return error if not an array', function () {
       this.schema1.validate('this is not an array').should.deep.equal({
@@ -120,8 +121,36 @@ describe('Test createSchema', function () {
         value: 'this is not an array',
       });
     });
-    it('should validate empty object', function () {
+    it('should validate array of numbers', function () {
       should.not.exist(this.schema1.validate([1, 2, 3]));
+    });
+    it('should reject array of strings', function () {
+      this.schema1.validate(['a', 'b']).should.deep.equal({
+        errors: [{
+          error: ERROR_EXPECTED_NUMBER,
+          value: 'a',
+        }, {
+          error: ERROR_EXPECTED_NUMBER,
+          value: 'b',
+        }],
+      });
+    });
+  });
+
+  describe('Given a "oneOf" schema', function () {
+    beforeEach(function () {
+      this.schema1 = new this.Schema([Number, String]);
+    });
+    it('should accept a number', function () {
+      should.not.exist(this.schema1.validate(1));
+    });
+    it('should accept a string', function () {
+      should.not.exist(this.schema1.validate('a'));
+    });
+    it('should reject if neither string nor number', function () {
+      this.schema1.validate(true).should.deep.equal({
+        error: ERROR_NO_MATCH,
+      });
     });
   });
 

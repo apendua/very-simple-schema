@@ -1,7 +1,4 @@
 import {
-  MODE_ARRAY,
-  MODE_ONE_OF,
-  MODE_MERGE,
   ERROR_REQUIRED,
   ERROR_NO_MATCH,
 } from './constants.js';
@@ -88,8 +85,7 @@ export const pluginSchema = {
 export const pluginArray = {
   transform(compiler, compiled, options, next) {
     const { schemaDef } = compiled;
-    const { mode } = options;
-    if (mode === MODE_ARRAY && isArray(schemaDef)) {
+    if (isArray(schemaDef) && schemaDef.length === 1) {
       if (schemaDef.length !== 1) {
         throw new Error('SchemaDef must be an array of length 1');
       }
@@ -112,29 +108,10 @@ export const pluginArray = {
   },
 };
 
-export const pluginMerge = {
-  transform(compiler, compiled, options, next) {
-    const { schemaDef } = compiled;
-    const { mode } = options;
-    if (mode === MODE_MERGE && isArray(schemaDef)) {
-      const memberValidators = schemaDef.map(x => compiler.compile(x));
-      return {
-        ...compiled,
-        validate: combine([
-          compiled.validate,
-          ...memberValidators.map(x => x.validate),
-        ]),
-      };
-    }
-    return next(compiled);
-  },
-};
-
 export const pluginOneOf = {
   transform(compiler, compiled, options, next) {
     const { schemaDef } = compiled;
-    const { mode } = options;
-    if (mode === MODE_ONE_OF && isArray(schemaDef)) {
+    if (isArray(schemaDef) && schemaDef.length > 1) {
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
         ...compiled,

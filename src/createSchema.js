@@ -1,7 +1,4 @@
 import {
-  MODE_MERGE,
-  MODE_ONE_OF,
-  MODE_ARRAY,
   MESSAGES,
 } from './constants.js';
 import * as builtIn from './plugins.js';
@@ -34,7 +31,6 @@ function createSchema() {
     builtIn.pluginSchema,
     builtIn.pluginType,
     builtIn.pluginArray,
-    builtIn.pluginMerge,
     builtIn.pluginOneOf,
     builtIn.pluginObject,
   ];
@@ -50,12 +46,10 @@ function createSchema() {
 
   class Schema {
     constructor(schemaDef, {
-      mode = MODE_MERGE,
       lazy = false,
     } = {}) {
       Object.assign(this, {
         schemaDef,
-        mode,
         lazy,
       });
       this.compiler = getCompiler(this.constructor);
@@ -64,7 +58,6 @@ function createSchema() {
     get compiled() {
       Object.defineProperty(this, 'compiled', {
         value: this.compiler.compile(this.schemaDef, {
-          mode: this.mode,
           lazy: this.lazy,
         }),
       });
@@ -99,11 +92,17 @@ function createSchema() {
     }
 
     static oneOf(array) {
-      return new this(array, { mode: MODE_ONE_OF });
+      if (!Array.isArray(array)) {
+        throw new Error('Expected an array.');
+      }
+      if (array.length < 2) {
+        throw new Error('Array should contain at least two elements');
+      }
+      return new this(array);
     }
 
     static arrayOf(schemaDef) {
-      return new this([schemaDef], { mode: MODE_ARRAY });
+      return new this([schemaDef]);
     }
   }
 
