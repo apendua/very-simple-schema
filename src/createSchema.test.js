@@ -8,6 +8,7 @@ import {
   MODE_MERGE,
   MODE_ONE_OF,
   ERROR_BAD_DATE,
+  ERROR_REQUIRED,
   ERROR_NOT_EQUAL,
   ERROR_NOT_ALLOWED,
   ERROR_NO_MATCH,
@@ -193,6 +194,69 @@ describe('Test createSchema', function () {
       });
       it('should accept value that is allowed', function () {
         should.not.exist(this.schema1.validate(['a', 'b', 'c']));
+      });
+    });
+  });
+
+  describe('Given a flat object schema', function () {
+    beforeEach(function () {
+      this.schema1 = new this.Schema({
+        a: { type: String },
+        b: { type: String, optional: true },
+        x: { type: Number },
+      });
+      this.schema2 = new this.Schema({
+        a: String,
+        b: String,
+        x: Number,
+      });
+    });
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema1.validate({
+        a: '',
+        b: '',
+        x: 0,
+      }));
+    });
+    it('should reject if required fields are missing', function () {
+      this.schema1.validate({}).should.deep.equal({
+        errors: {
+          a: { error: ERROR_REQUIRED },
+          x: { error: ERROR_REQUIRED },
+        },
+      });
+    });
+    it('should reject if required fields are missing (shorthand)', function () {
+      this.schema2.validate({}).should.deep.equal({
+        errors: {
+          a: { error: ERROR_REQUIRED },
+          b: { error: ERROR_REQUIRED },
+          x: { error: ERROR_REQUIRED },
+        },
+      });
+    });
+    it('should reject if a fields is of invalid type', function () {
+      this.schema1.validate({
+        a: 1,
+        x: true,
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_EXPECTED_STRING, value: 1 },
+          x: { error: ERROR_EXPECTED_NUMBER, value: true },
+        },
+      });
+    });
+    it('should reject if a fields is of invalid type (shorthand)', function () {
+      this.schema2.validate({
+        a: 1,
+        b: 2,
+        x: true,
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_EXPECTED_STRING, value: 1 },
+          b: { error: ERROR_EXPECTED_STRING, value: 2 },
+          x: { error: ERROR_EXPECTED_NUMBER, value: true },
+        },
       });
     });
   });
