@@ -3,6 +3,7 @@ import {
 } from '../constants.js';
 
 import {
+  isArray,
   isObject,
   validateIsObject,
   combine,
@@ -17,7 +18,7 @@ const pluginObject = {
         const memberSchemaDef = schemaDef[key];
         if (memberSchemaDef &&
             typeof memberSchemaDef === 'object' &&
-            !Array.isArray(memberSchemaDef) &&
+            !isArray(memberSchemaDef) &&
             has.call(memberSchemaDef, 'type')) {
           const {
             type,

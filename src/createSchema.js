@@ -1,4 +1,7 @@
 import {
+  isArray,
+} from './validators.js';
+import {
   MESSAGES,
 } from './constants.js';
 
@@ -85,7 +88,7 @@ function createSchema(defaultPlugins) {
             label,
           });
         } else if (descriptor.errors) {
-          if (Array.isArray(descriptor.errors)) {
+          if (isArray(descriptor.errors)) {
             return descriptor.errors.map((item, index) => this.describe(item, { label: `${label}.${index}` }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};
@@ -114,7 +117,7 @@ function createSchema(defaultPlugins) {
     }
 
     static oneOf(array) {
-      if (!Array.isArray(array)) {
+      if (!isArray(array)) {
         throw new Error('Expected an array.');
       }
       if (array.length < 2) {

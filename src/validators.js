@@ -1,7 +1,6 @@
 import {
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
-  ERROR_NOT_ALLOWED,
   ERROR_NO_DECIMAL,
   ERROR_EXPECTED_STRING,
   ERROR_EXPECTED_NUMBER,
@@ -9,15 +8,13 @@ import {
   ERROR_EXPECTED_DATE,
   ERROR_EXPECTED_ARRAY,
   ERROR_EXPECTED_OBJECT,
-  ERROR_EXPECTED_CONSTRUCTOR,
+  ERROR_EXPECTED_INSTANCE_OF,
 } from './constants.js';
 
 export const createValidateEquals = expected => value =>
   (value === expected ? undefined : { value, expected, error: ERROR_NOT_EQUAL });
 export const createValidateInstanceOf = constructor => value =>
-  (value instanceof constructor ? undefined : { value, expected: constructor.name, error: ERROR_EXPECTED_CONSTRUCTOR });
-export const createValidateIsAllowed = allowedValues => value =>
-  (allowedValues.indexOf(value) >= 0 ? undefined : { value, expected: allowedValues, error: ERROR_NOT_ALLOWED });
+  (value instanceof constructor ? undefined : { value, expected: constructor.name, error: ERROR_EXPECTED_INSTANCE_OF });
 
 export const isArray = value => Object.prototype.toString.call(value) === '[object Array]';
 export const isDate = value => Object.prototype.toString.call(value) === '[object Date]';
@@ -41,12 +38,5 @@ export const validateIsArray = value =>
 export const validateIsDate = value =>
   (isDate(value) ? undefined : { value, error: ERROR_EXPECTED_DATE });
 
-export const combine = validators => (value) => {
-  for (const validate of validators) {
-    const error = validate && validate(value);
-    if (error) {
-      return error;
-    }
-  }
-  return undefined;
-};
+export const combine = validators =>
+  validators.reduce((previous, current) => value => previous(value) || current(value), () => {});

@@ -19,7 +19,7 @@ import {
   ERROR_EXPECTED_DATE,
   ERROR_EXPECTED_ARRAY,
   ERROR_EXPECTED_OBJECT,
-  ERROR_EXPECTED_CONSTRUCTOR,
+  ERROR_EXPECTED_INSTANCE_OF,
 } from './constants.js';
 import presetDefault from './plugins/preset-default.js';
 

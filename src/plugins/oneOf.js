@@ -4,7 +4,6 @@ import {
 
 import {
   isArray,
-  combine,
 } from '../validators.js';
 
 const pluginOneOf = {
@@ -13,17 +12,15 @@ const pluginOneOf = {
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
         compiled: true,
-        validate: combine([
-          (value) => {
-            for (const { validate } of memberValidators) {
-              const error = validate(value);
-              if (!error) {
-                return undefined;
-              }
+        validate: (value) => {
+          for (const { validate } of memberValidators) {
+            const error = validate(value);
+            if (!error) {
+              return undefined;
             }
-            return { error: ERROR_NO_MATCH };
-          },
-        ]),
+          }
+          return { error: ERROR_NO_MATCH };
+        },
       };
     }
     return {};
