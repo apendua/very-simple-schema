@@ -5,9 +5,10 @@ import {
   MESSAGES,
 } from './constants.js';
 
-function createCompiler(Schema, plugins) {
+function createCompiler(Schema, plugins, options) {
   const compiler = {
-    compile: (schemaDef, options = {}) => {
+    options,
+    compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
         return schemaDef.compiled;
       }
@@ -15,7 +16,7 @@ function createCompiler(Schema, plugins) {
         if (previous.compiled) {
           return previous;
         }
-        const current = plugin.compile(compiler, schemaDef, options);
+        const current = plugin.compile(compiler, schemaDef, schemaOptions);
         if (!current || typeof current.validate !== 'function') {
           return previous;
         }
@@ -29,34 +30,35 @@ function createCompiler(Schema, plugins) {
   return compiler;
 }
 
-function createSchema(defaultPlugins) {
+function createSchema(defaultPlugins, compilerOptions) {
+  const options = { ...compilerOptions };
+
+  let plugins = [...defaultPlugins];
   let messages = {
     ...MESSAGES,
   };
-
-  let plugins = [...defaultPlugins];
 
   const compilers = [];
   function getCompiler(Schema) {
     const index = plugins.length;
     if (!compilers[index]) {
-      compilers[index] = createCompiler(Schema, plugins);
+      compilers[index] = createCompiler(Schema, plugins, options);
     }
     return compilers[index];
   }
 
   class Schema {
-    constructor(schemaDef, options) {
+    constructor(schemaDef, schemaOptions) {
       Object.assign(this, {
         schemaDef,
-        options,
+        schemaOptions,
       });
       this.compiler = getCompiler(this.constructor);
     }
 
     get compiled() {
       Object.defineProperty(this, 'compiled', {
-        value: this.compiler.compile(this.schemaDef, this.options),
+        value: this.compiler.compile(this.schemaDef, this.schemaOptions),
       });
       return this.compiled;
     }

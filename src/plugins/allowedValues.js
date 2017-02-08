@@ -9,10 +9,10 @@ const createValidateIsAllowed = allowedValues => value =>
   (allowedValues.indexOf(value) >= 0 ? undefined : { value, expected: allowedValues, error: ERROR_NOT_ALLOWED });
 
 const pluginAllowedValues = {
-  compile(compiler, schemaDef, options) {
+  compile(compiler, schemaDef, schemaOptions) {
     const {
       allowedValues,
-    } = options;
+    } = schemaOptions;
     if (allowedValues && !isArray(schemaDef)) {
       return {
         validate: createValidateIsAllowed(allowedValues),

@@ -1,6 +1,6 @@
 const pluginLazy = {
-  compile(compiler, schemaDef, options) {
-    const { lazy = false } = options;
+  compile(compiler, schemaDef, schemaOptions) {
+    const { lazy = false } = schemaOptions;
     if (lazy) {
       if (typeof schemaDef !== 'function') {
         throw new Error('If lazy flag is set, schemaDef must be a function');
