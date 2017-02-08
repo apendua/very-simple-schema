@@ -2,21 +2,25 @@ import {
   MESSAGES,
 } from './constants.js';
 
-const noError = () => undefined;
-
 function createCompiler(Schema, plugins) {
   const compiler = {
-    Schema,
-    plugins,
     compile: (schemaDef, options = {}) => {
-      const next = index => (compiled) => {
-        const plugin = plugins[index];
-        if (plugin) {
-          return plugin.transform(compiler, compiled, options, next(index + 1));
+      if (schemaDef instanceof Schema) {
+        return schemaDef.compiled;
+      }
+      return plugins.reduce((previous, plugin) => {
+        if (previous.compiled) {
+          return previous;
         }
-        return compiled;
-      };
-      return next(0)({ schemaDef, validate: noError });
+        const current = plugin.compile(compiler, schemaDef, options);
+        if (!current || typeof current.validate !== 'function') {
+          return previous;
+        }
+        return {
+          ...current,
+          validate: value => previous.validate(value) || current.validate(value),
+        };
+      }, { validate: () => {} });
     },
   };
   return compiler;

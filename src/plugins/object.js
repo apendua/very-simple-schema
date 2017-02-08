@@ -10,8 +10,7 @@ import {
 
 const has = Object.prototype.hasOwnProperty;
 const pluginObject = {
-  transform(compiler, compiled, options, next) {
-    const { schemaDef } = compiled;
+  compile(compiler, schemaDef) {
     if (isObject(schemaDef)) {
       const memberValidators = {};
       Object.keys(schemaDef).forEach((key) => {
@@ -32,9 +31,8 @@ const pluginObject = {
         }
       });
       return {
-        ...compiled,
+        compiled: true,
         validate: combine([
-          compiled.validate,
           validateIsObject,
           (value) => {
             const errors = {};
@@ -56,7 +54,7 @@ const pluginObject = {
         ]),
       };
     }
-    return next(compiled);
+    return {};
   },
 };
 

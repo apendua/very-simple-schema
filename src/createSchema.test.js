@@ -307,17 +307,32 @@ describe('Test createSchema', function () {
   });
 
   describe('Given a schema with lazy fields', function () {
-    // beforeEach(function () {
-    //   this.schema1 = new this.Schema({
-    //     parent: { type: () => this.schema2, lazy: true, optional: true },
-    //   });
-    //   this.schema2 = new this.Schema({
-    //     child: { type: () => this.schema1, lazy: true },
-    //   });
-    // });
-    // it('should reject object with missing fields', function () {
-    //   this.schema1.getErrors({});
-    // });
+    beforeEach(function () {
+      this.schema1 = new this.Schema({
+        children: {
+          type: [() => this.schema1],
+          lazy: true,
+        },
+      });
+    });
+
+    it('should accept a nested object', function () {
+      should.not.exist(this.schema1.getErrors({
+        children: [{
+          children: [{
+            children: [],
+          }],
+        }],
+      }));
+    });
+
+    it('should reject object with missing fields', function () {
+      this.schema1.getErrors({}).should.deep.equal({
+        errors: {
+          children: { error: ERROR_REQUIRED },
+        },
+      });
+    });
   });
 
   describe('Given different error types', function () {
@@ -386,39 +401,39 @@ describe('Test createSchema', function () {
         a: { b: { c: 'Value.a.b.c must be a string' } },
       });
     });
-  });
 
-  it('should describe errors in a complex object', function () {
-    new this.Schema({
-      name: {
-        type: new this.Schema({
-          first: String,
-          last: String,
-        }),
-      },
-      books: {
-        type: [new this.Schema({
-          title: String,
-        })],
-      },
-    }).validate({
-      name: {
-        first: 'Tomasz',
-      },
-      books: [
-        { title: 'The Lord of the Rings', author: 'Tolkien' },
-        { },
-      ],
-    }).should.deep.equal({
-      books: [
-        undefined,
-        {
-          title: 'Value.books.1.title is required',
+    it('should describe errors in a complex object', function () {
+      new this.Schema({
+        name: {
+          type: new this.Schema({
+            first: String,
+            last: String,
+          }),
         },
-      ],
-      name: {
-        last: 'Value.name.last is required',
-      },
+        books: {
+          type: [new this.Schema({
+            title: String,
+          })],
+        },
+      }).validate({
+        name: {
+          first: 'Tomasz',
+        },
+        books: [
+          { title: 'The Lord of the Rings', author: 'Tolkien' },
+          { },
+        ],
+      }).should.deep.equal({
+        books: [
+          undefined,
+          {
+            title: 'Value.books.1.title is required',
+          },
+        ],
+        name: {
+          last: 'Value.name.last is required',
+        },
+      });
     });
   });
 });

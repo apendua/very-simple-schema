@@ -1,7 +1,6 @@
 import {
   createValidateEquals,
   createValidateInstanceOf,
-  createValidateIsAllowed,
   validateIsString,
   validateIsNumber,
   validateIsBoolean,
@@ -11,8 +10,7 @@ import {
 } from '../validators.js';
 
 const pluginAtomic = {
-  transform(compiler, compiled, options, next) {
-    const { schemaDef } = compiled;
+  compile(compiler, schemaDef) {
     let validate;
     if (schemaDef === Number) {
       validate = validateIsNumber;
@@ -30,20 +28,9 @@ const pluginAtomic = {
     } else if (typeof schemaDef !== 'object' || schemaDef === null) {
       validate = createValidateEquals(schemaDef);
     }
-    if (!validate) {
-      return next(compiled);
-    }
-    const {
-      allowedValues,
-    } = options;
-    return next({
-      ...compiled,
-      validate: combine([
-        compiled.validate,
-        validate,
-        allowedValues && createValidateIsAllowed(allowedValues),
-      ]),
-    });
+    return {
+      validate,
+    };
   },
 };
 

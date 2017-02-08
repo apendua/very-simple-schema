@@ -8,14 +8,12 @@ import {
 } from '../validators.js';
 
 const pluginOneOf = {
-  transform(compiler, compiled, options, next) {
-    const { schemaDef } = compiled;
+  compile(compiler, schemaDef) {
     if (isArray(schemaDef) && schemaDef.length > 1) {
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
-        ...compiled,
+        compiled: true,
         validate: combine([
-          compiled.validate,
           (value) => {
             for (const { validate } of memberValidators) {
               const error = validate(value);
@@ -28,7 +26,7 @@ const pluginOneOf = {
         ]),
       };
     }
-    return next(compiled);
+    return {};
   },
 };
 

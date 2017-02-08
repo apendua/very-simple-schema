@@ -5,17 +5,15 @@ import {
 } from '../validators.js';
 
 const pluginArray = {
-  transform(compiler, compiled, options, next) {
-    const { schemaDef } = compiled;
+  compile(compiler, schemaDef, options) {
     if (isArray(schemaDef) && schemaDef.length === 1) {
       if (schemaDef.length !== 1) {
         throw new Error('SchemaDef must be an array of length 1');
       }
       const memeberValidator = compiler.compile(schemaDef[0], options);
       return {
-        ...compiled,
+        compiled: true,
         validate: combine([
-          compiled.validate,
           validateIsArray,
           (value) => {
             const errors = value.map(member => memeberValidator.validate(member));
@@ -24,7 +22,7 @@ const pluginArray = {
         ]),
       };
     }
-    return next(compiled);
+    return null;
   },
 };
 
