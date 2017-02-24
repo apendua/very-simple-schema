@@ -21,6 +21,8 @@ import {
   ERROR_EXPECTED_ARRAY,
   ERROR_EXPECTED_OBJECT,
   ERROR_EXPECTED_INSTANCE_OF,
+  ERROR_MIN_COUNT,
+  ERROR_MAX_COUNT,
 } from './constants.js';
 import presetDefault from './plugins/presetDefault.js';
 
@@ -128,6 +130,8 @@ describe('Test createSchema', function () {
     beforeEach(function () {
       this.schema1 = new this.Schema([Number]);
       this.schema2 = new this.Schema([String], { allowedValues: ['a', 'b', 'c'] });
+      this.schema3 = new this.Schema([Number], { minCount: 1 });
+      this.schema4 = new this.Schema([Number], { maxCount: 2 });
     });
     it('should return error if not an array', function () {
       this.schema1.getErrors('this is not an array').should.deep.equal({
@@ -147,6 +151,24 @@ describe('Test createSchema', function () {
           error: ERROR_EXPECTED_NUMBER,
           value: 'b',
         }],
+      });
+    });
+    it('should accept array with minimal number of elements', function () {
+      should.not.exist(this.schema3.getErrors([1]));
+    });
+    it('should reject array with to little elements', function () {
+      this.schema3.getErrors([]).should.deep.equal({
+        error: ERROR_MIN_COUNT,
+        expected: 1,
+      });
+    });
+    it('should accept array with maximal number of elements', function () {
+      should.not.exist(this.schema3.getErrors([1, 2]));
+    });
+    it('should reject array with to many elements', function () {
+      this.schema4.getErrors([1, 2, 3]).should.deep.equal({
+        error: ERROR_MAX_COUNT,
+        expected: 2,
       });
     });
   });

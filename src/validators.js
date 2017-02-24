@@ -9,12 +9,17 @@ import {
   ERROR_EXPECTED_ARRAY,
   ERROR_EXPECTED_OBJECT,
   ERROR_EXPECTED_INSTANCE_OF,
+  ERROR_MIN_COUNT,
+  ERROR_MAX_COUNT,
 } from './constants.js';
 
 export const createValidateEquals = expected => value =>
   (value === expected ? undefined : { value, expected, error: ERROR_NOT_EQUAL });
 export const createValidateInstanceOf = constructor => value =>
   (value instanceof constructor ? undefined : { value, expected: constructor.name, error: ERROR_EXPECTED_INSTANCE_OF });
+
+export const createValidateMinCount = expected => value => (value.length >= expected ? undefined : { error: ERROR_MIN_COUNT, expected });
+export const createValidateMaxCount = expected => value => (value.length <= expected ? undefined : { error: ERROR_MAX_COUNT, expected });
 
 export const isArray = value => Object.prototype.toString.call(value) === '[object Array]';
 export const isDate = value => Object.prototype.toString.call(value) === '[object Date]';
@@ -39,4 +44,4 @@ export const validateIsDate = value =>
   (isDate(value) ? undefined : { value, error: ERROR_EXPECTED_DATE });
 
 export const combine = validators =>
-  validators.reduce((previous, current) => value => previous(value) || current(value), () => {});
+  validators.reduce((previous, current) => (current ? (value => previous(value) || current(value)) : previous), () => {});
