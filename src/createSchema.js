@@ -48,7 +48,7 @@ function createSchema(defaultPlugins, compilerOptions) {
   }
 
   class Schema {
-    constructor(schemaDef, schemaOptions) {
+    constructor(schemaDef, schemaOptions = {}) {
       Object.assign(this, {
         schemaDef,
         schemaOptions,
@@ -67,13 +67,17 @@ function createSchema(defaultPlugins, compilerOptions) {
       return this.compiled.validate(value);
     }
 
-    validate(value) {
-      const errors = this.getErrors(value);
-      return errors && this.constructor.describe(errors);
+    validate(value, {
+      label = 'Value',
+    } = {}) {
+      const error = this.getErrors(value);
+      return error && this.constructor.describe(error, {
+        label,
+      });
     }
 
-    validator() {
-      return value => this.compiled.validate(value);
+    validator(validatorOptions) {
+      return value => this.validate(value, validatorOptions);
     }
 
     static describe(descriptor, {
