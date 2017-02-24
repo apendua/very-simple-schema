@@ -16,12 +16,13 @@ import {
   ERROR_EXPECTED_STRING,
   ERROR_EXPECTED_NUMBER,
   ERROR_EXPECTED_BOOLEAN,
+  ERROR_BAD_FORMAT,
   ERROR_EXPECTED_DATE,
   ERROR_EXPECTED_ARRAY,
   ERROR_EXPECTED_OBJECT,
   ERROR_EXPECTED_INSTANCE_OF,
 } from './constants.js';
-import presetDefault from './plugins/preset-default.js';
+import presetDefault from './plugins/presetDefault.js';
 
 const should = chai.should();
 
@@ -203,6 +204,44 @@ describe('Test createSchema', function () {
       });
       it('should accept value that is allowed', function () {
         should.not.exist(this.schema1.getErrors(['a', 'b', 'c']));
+      });
+    });
+  });
+
+  describe('Given a schema with regular expression', function () {
+    describe('and the schema is atomic', function () {
+      beforeEach(function () {
+        this.schema1 = new this.Schema(String, { regEx: /a+b+/ });
+      });
+      it('should reject value that is not allowed', function () {
+        this.schema1.getErrors('axx').should.deep.equal({
+          error: ERROR_BAD_FORMAT,
+          expected: 'match /a+b+/',
+        });
+      });
+      it('should accept value that is allowed', function () {
+        should.not.exist(this.schema1.getErrors('aabb'));
+      });
+    });
+
+    describe('and the schema is an array', function () {
+      beforeEach(function () {
+        this.schema1 = new this.Schema([String], { regEx: /\d+/ });
+      });
+      it('should reject value that is not allowed', function () {
+        this.schema1.getErrors(['1', '12', 'xxx']).should.deep.equal({
+          errors: [
+            undefined,
+            undefined,
+            {
+              error: ERROR_BAD_FORMAT,
+              expected: 'match /\\d+/',
+            },
+          ],
+        });
+      });
+      it('should accept value that is allowed', function () {
+        should.not.exist(this.schema1.getErrors(['1', '12', '123']));
       });
     });
   });

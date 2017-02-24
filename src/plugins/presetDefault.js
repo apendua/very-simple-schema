@@ -4,6 +4,7 @@ import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
 import pluginOneOf from './oneOf.js';
 import pluginObject from './object.js';
+import pluginRegExp from './regExp.js';
 
 export default [
   pluginObject,
@@ -12,4 +13,5 @@ export default [
   pluginLazy,
   pluginAtomic,
   pluginAllowedValues,
+  pluginRegExp,
 ];

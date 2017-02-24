@@ -4,6 +4,7 @@ export const MODE_MERGE = 'merge';
 
 export const ERROR_REQUIRED = 'required';
 export const ERROR_BAD_DATE = 'badDate';
+export const ERROR_BAD_FORMAT = 'badFormat';
 export const ERROR_NOT_EQUAL = 'notEqual';
 export const ERROR_NO_DECIMAL = 'noDecimal';
 export const ERROR_EXPECTED_STRING = 'expectedString';
@@ -20,6 +21,7 @@ export const ERROR_NOT_ALLOWED = 'notAllowed';
 export const MESSAGES = {
   [ERROR_REQUIRED]:             ({ label }) => `${label} is required`,
   [ERROR_BAD_DATE]:             ({ label }) => `${label} is not a valid date`,
+  [ERROR_BAD_FORMAT]:           ({ label, expected }) => `Expected ${label} to be ${expected}`,
   [ERROR_NOT_EQUAL]:            ({ label, expected }) => `Expected ${label} to equal ${expected}`,
   [ERROR_NO_DECIMAL]:           ({ label }) => `${label} must be an integer`,
   [ERROR_EXPECTED_STRING]:      ({ label }) => `${label} must be a string`,
