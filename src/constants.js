@@ -19,6 +19,8 @@ export const ERROR_NO_MATCH = 'noMatch';
 export const ERROR_NOT_ALLOWED = 'notAllowed';
 export const ERROR_MAX_COUNT = 'expectedMaxCount';
 export const ERROR_MIN_COUNT = 'expectedMinCount';
+export const ERROR_MAX = 'expectedMax';
+export const ERROR_MIN = 'expectedMin';
 
 export const MESSAGES = {
   [ERROR_REQUIRED]:             ({ label }) => `${label} is required`,
@@ -37,4 +39,6 @@ export const MESSAGES = {
   [ERROR_NOT_ALLOWED]:          ({ label, expected }) => `value at ${label} should be one of ${expected}`,
   [ERROR_MAX_COUNT]:            ({ label, expected }) => `expected ${label} to have at most ${expected} elements`,
   [ERROR_MIN_COUNT]:            ({ label, expected }) => `expected ${label} to have at least ${expected} elements`,
+  [ERROR_MAX]:                  ({ label, expected }) => `expected ${label} to be at most ${expected}`,
+  [ERROR_MIN]:                  ({ label, expected }) => `expected ${label} to at least ${expected}`,
 };

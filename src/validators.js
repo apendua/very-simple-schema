@@ -11,6 +11,8 @@ import {
   ERROR_EXPECTED_INSTANCE_OF,
   ERROR_MIN_COUNT,
   ERROR_MAX_COUNT,
+  ERROR_MIN,
+  ERROR_MAX,
 } from './constants.js';
 
 export const createValidateEquals = expected => value =>
@@ -20,6 +22,9 @@ export const createValidateInstanceOf = constructor => value =>
 
 export const createValidateMinCount = expected => value => (value.length >= expected ? undefined : { error: ERROR_MIN_COUNT, expected });
 export const createValidateMaxCount = expected => value => (value.length <= expected ? undefined : { error: ERROR_MAX_COUNT, expected });
+
+export const createValidateMin = expected => value => (value >= expected ? undefined : { error: ERROR_MIN, expected });
+export const createValidateMax = expected => value => (value <= expected ? undefined : { error: ERROR_MAX, expected });
 
 export const isArray = value => Object.prototype.toString.call(value) === '[object Array]';
 export const isDate = value => Object.prototype.toString.call(value) === '[object Date]';

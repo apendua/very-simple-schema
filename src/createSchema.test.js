@@ -23,6 +23,8 @@ import {
   ERROR_EXPECTED_INSTANCE_OF,
   ERROR_MIN_COUNT,
   ERROR_MAX_COUNT,
+  ERROR_MIN,
+  ERROR_MAX,
 } from './constants.js';
 import presetDefault from './plugins/presetDefault.js';
 
@@ -96,6 +98,8 @@ describe('Test createSchema', function () {
       this.schema1 = new this.Schema(Number);
       this.schema2 = new this.Schema(String);
       this.schema3 = new this.Schema(Boolean);
+      this.schema4 = new this.Schema(Number, { min: 0, max: 10 });
+      this.schema5 = new this.Schema(String, { min: 'e', max: 'k' });
     });
     it('should validate a number', function () {
       should.not.exist(this.schema1.getErrors(1));
@@ -122,6 +126,36 @@ describe('Test createSchema', function () {
       this.schema3.getErrors('not a boolean').should.deep.equal({
         error: ERROR_EXPECTED_BOOLEAN,
         value: 'not a boolean',
+      });
+    });
+    it('should accept a number value within range', function () {
+      should.not.exist(this.schema4.getErrors(5));
+    });
+    it('should reject a number above max', function () {
+      this.schema4.getErrors(11).should.deep.equal({
+        error: ERROR_MAX,
+        expected: 10,
+      });
+    });
+    it('should reject a number below min', function () {
+      this.schema4.getErrors(-1).should.deep.equal({
+        error: ERROR_MIN,
+        expected: 0,
+      });
+    });
+    it('should accept a string value within range', function () {
+      should.not.exist(this.schema5.getErrors('j'));
+    });
+    it('should reject a string above max', function () {
+      this.schema5.getErrors('z').should.deep.equal({
+        error: ERROR_MAX,
+        expected: 'k',
+      });
+    });
+    it('should reject a string below min', function () {
+      this.schema5.getErrors('a').should.deep.equal({
+        error: ERROR_MIN,
+        expected: 'e',
       });
     });
   });

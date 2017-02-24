@@ -7,10 +7,12 @@ import {
   validateIsValidDate,
   validateIsDate,
   combine,
+  createValidateMin,
+  createValidateMax,
 } from '../validators.js';
 
 const pluginAtomic = {
-  compile(compiler, schemaDef) {
+  compile(compiler, schemaDef, schemaOptions) {
     let validate;
     if (schemaDef === Number) {
       validate = validateIsNumber;
@@ -28,8 +30,13 @@ const pluginAtomic = {
     } else if (typeof schemaDef !== 'object' || schemaDef === null) {
       validate = createValidateEquals(schemaDef);
     }
+    const { min, max } = schemaOptions;
     return {
-      validate,
+      validate: combine([
+        validate,
+        min !== undefined && createValidateMin(min),
+        max !== undefined && createValidateMax(max),
+      ]),
     };
   },
 };
