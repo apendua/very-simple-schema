@@ -12,7 +12,7 @@
       "LabeledStatement",
       "WithStatement"
     ],
-    "max-len": ["error", 120],
+    "max-len": ["error", 140],
     "func-names": "off",
     "no-console": "off"
   },
