@@ -110,6 +110,12 @@ describe('Test createSchema', function () {
         value: 'not a number',
       });
     });
+    it('should reject non integer by default', function () {
+      this.schema1.getErrors(0.1).should.deep.equal({
+        error: ERROR_NO_DECIMAL,
+        value: 0.1,
+      });
+    });
     it('should validate a string', function () {
       should.not.exist(this.schema2.getErrors('this is a string'));
     });

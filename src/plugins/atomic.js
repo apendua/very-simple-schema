@@ -3,6 +3,7 @@ import {
   createValidateInstanceOf,
   validateIsString,
   validateIsNumber,
+  validateIsInteger,
   validateIsBoolean,
   validateIsValidDate,
   validateIsDate,
@@ -15,7 +16,10 @@ const pluginAtomic = {
   compile(compiler, schemaDef, schemaOptions) {
     let validate;
     if (schemaDef === Number) {
-      validate = validateIsNumber;
+      validate = combine([
+        validateIsNumber,
+        validateIsInteger,
+      ]);
     } else if (schemaDef === String) {
       validate = validateIsString;
     } else if (schemaDef === Boolean) {
