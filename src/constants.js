@@ -37,8 +37,8 @@ export const MESSAGES = {
   [ERROR_KEY_NOT_IN_SCHEMA]:    ({ key }) => `${key} not allowed by the schema`,
   [ERROR_NO_MATCH]:             ({ label }) => `value at ${label} is none of the expected types`,
   [ERROR_NOT_ALLOWED]:          ({ label, expected }) => `value at ${label} should be one of ${expected}`,
-  [ERROR_MAX_COUNT]:            ({ label, expected }) => `expected ${label} to have at most ${expected} elements`,
-  [ERROR_MIN_COUNT]:            ({ label, expected }) => `expected ${label} to have at least ${expected} elements`,
-  [ERROR_MAX]:                  ({ label, expected }) => `expected ${label} to be at most ${expected}`,
-  [ERROR_MIN]:                  ({ label, expected }) => `expected ${label} to at least ${expected}`,
+  [ERROR_MAX_COUNT]:            ({ label, expected }) => `Expected ${label} to have at most ${expected} elements`,
+  [ERROR_MIN_COUNT]:            ({ label, expected }) => `Expected ${label} to have at least ${expected} elements`,
+  [ERROR_MAX]:                  ({ label, expected }) => `Expected ${label} to be at most ${expected} in size`,
+  [ERROR_MIN]:                  ({ label, expected }) => `Expected ${label} to be at least ${expected} in size`,
 };
