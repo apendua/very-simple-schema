@@ -22,8 +22,12 @@ const pluginRegExp = {
     }
     return null;
   },
-  extend(Schema) {
+  mixin(Schema) {
     Schema.RegEx = {
+      Id: {
+        re: /^[23456789ABCDEFGHJKLMNPQRSTWXYZabcdefghijkmnopqrstuvwxyz]{17}$/,
+        to: 'be a valid identifier',
+      },
       Email: {
         re: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
         to: 'be a valid email',

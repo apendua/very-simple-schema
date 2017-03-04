@@ -87,6 +87,8 @@ function createSchema(plugins, compilerOptions) {
   Schema.compiler = createCompiler(Schema, plugins, compilerOptions);
   Schema.messages = { ...MESSAGES };
 
+  plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
+
   return Schema;
 }
 
