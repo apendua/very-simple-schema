@@ -16,8 +16,10 @@ const compiler = {
 describe('Test regExp plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
-    this.createValidate = (schemaDef, schemaOptions) => pluginRegExp.compile(compiler, schemaDef, schemaOptions).validate;
     pluginRegExp.mixin(this.Schema);
+    this.createValidate =
+      (schemaDef, schemaOptions) =>
+      pluginRegExp.compile(compiler, schemaDef, schemaOptions).validate;
   });
 
   describe('given I use built-in RegEx.Email', function () {

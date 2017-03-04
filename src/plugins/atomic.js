@@ -14,33 +14,33 @@ import {
 
 const pluginAtomic = {
   compile(compiler, schemaDef, schemaOptions) {
-    let validate;
-    if (schemaDef === Number) {
-      validate = combine([
-        validateIsNumber,
-        validateIsInteger,
-      ]);
-    } else if (schemaDef === String) {
-      validate = validateIsString;
-    } else if (schemaDef === Boolean) {
-      validate = validateIsBoolean;
-    } else if (schemaDef === Date) {
-      validate = combine([
-        validateIsDate,
-        validateIsValidDate,
-      ]);
-    } else if (typeof schemaDef === 'function') {
-      validate = createValidateInstanceOf(schemaDef);
-    } else if (typeof schemaDef !== 'object' || schemaDef === null) {
-      validate = createValidateEquals(schemaDef);
-    }
     const { min, max } = schemaOptions;
+    const validators = [];
+
+    if (schemaDef === Number) {
+      validators.push(validateIsNumber);
+      validators.push(validateIsInteger);
+      validators.push(min !== undefined && createValidateMin(min));
+      validators.push(max !== undefined && createValidateMax(max));
+    } else if (schemaDef === String) {
+      validators.push(validateIsString);
+      validators.push(min !== undefined && createValidateMin(min));
+      validators.push(max !== undefined && createValidateMax(max));
+    } else if (schemaDef === Boolean) {
+      validators.push(validateIsBoolean);
+    } else if (schemaDef === Date) {
+      validators.push(validateIsDate);
+      validators.push(validateIsValidDate);
+      validators.push(min !== undefined && createValidateMin(min));
+      validators.push(max !== undefined && createValidateMax(max));
+    } else if (typeof schemaDef === 'function') {
+      validators.push(createValidateInstanceOf(schemaDef));
+    } else if (typeof schemaDef !== 'object' || schemaDef === null) {
+      validators.push(createValidateEquals(schemaDef));
+    }
+
     return {
-      validate: combine([
-        validate,
-        min !== undefined && createValidateMin(min),
-        max !== undefined && createValidateMax(max),
-      ]),
+      validate: combine(validators),
     };
   },
 };
