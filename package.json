@@ -6,12 +6,12 @@
   "scripts": {
     "build": "babel src --out-dir lib",
     "clean": "rimraf lib coverage",
-    "coverage": "babel-node $(npm bin)/isparta cover _mocha -- src/**/*.test.js",
+    "coverage": "babel-node $(npm bin)/isparta cover _mocha -- 'src/**/*.test.js'",
     "coverage-report": "http-server ./coverage/lcov-report",
     "lint": "eslint src",
     "prepublish": "npm run clean && npm run build",
-    "test": "mocha --compilers js:babel-core/register src/**/*.test.js",
-    "test-watch": "mocha --watch --compilers js:babel-core/register src/**/*.test.js"
+    "test": "mocha --compilers js:babel-core/register 'src/**/*.test.js'",
+    "test-watch": "mocha --watch --compilers js:babel-core/register 'src/**/*.test.js'"
   },
   "repository": {
     "type": "git",
