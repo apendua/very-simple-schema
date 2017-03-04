@@ -4,61 +4,22 @@ import {
 import {
   MESSAGES,
 } from './constants.js';
+import {
+  createCompiler,
+} from './createCompiler.js';
 
-function createCompiler(Schema, plugins, options) {
-  const compiler = {
-    options,
-    compile: (schemaDef, schemaOptions = {}) => {
-      if (schemaDef instanceof Schema) {
-        return schemaDef.compiled;
-      }
-      return plugins.reduce((previous, plugin) => {
-        if (previous.compiled) {
-          return previous;
-        }
-        const current = plugin.compile(compiler, schemaDef, schemaOptions);
-        if (!current || typeof current.validate !== 'function') {
-          return previous;
-        }
-        return {
-          ...current,
-          validate: value => previous.validate(value) || current.validate(value),
-        };
-      }, { validate: () => {} });
-    },
-  };
-  return compiler;
-}
-
-function createSchema(defaultPlugins, compilerOptions) {
-  const options = { ...compilerOptions };
-
-  let plugins = [...defaultPlugins];
-  let messages = {
-    ...MESSAGES,
-  };
-
-  const compilers = [];
-  function getCompiler(Schema) {
-    const index = plugins.length;
-    if (!compilers[index]) {
-      compilers[index] = createCompiler(Schema, plugins, options);
-    }
-    return compilers[index];
-  }
-
+function createSchema(plugins, compilerOptions) {
   class Schema {
     constructor(schemaDef, schemaOptions = {}) {
       Object.assign(this, {
         schemaDef,
         schemaOptions,
       });
-      this.compiler = getCompiler(this.constructor);
     }
 
     get compiled() {
       Object.defineProperty(this, 'compiled', {
-        value: this.compiler.compile(this.schemaDef, this.schemaOptions),
+        value: this.constructor.compiler.compile(this.schemaDef, this.schemaOptions),
       });
       return this.compiled;
     }
@@ -85,7 +46,7 @@ function createSchema(defaultPlugins, compilerOptions) {
     } = {}) {
       if (descriptor && typeof descriptor === 'object') {
         if (descriptor.error) {
-          const messageTemplate = messages[descriptor.error];
+          const messageTemplate = this.messages[descriptor.error];
           if (!messageTemplate) {
             return descriptor.error;
           }
@@ -108,20 +69,6 @@ function createSchema(defaultPlugins, compilerOptions) {
       return undefined;
     }
 
-    static messages(errorsMap) {
-      messages = {
-        ...messages,
-        errorsMap,
-      };
-    }
-
-    static use(plugin) {
-      plugins = [
-        ...plugins,
-        plugin,
-      ];
-    }
-
     static oneOf(array) {
       if (!isArray(array)) {
         throw new Error('Expected an array.');
@@ -136,6 +83,9 @@ function createSchema(defaultPlugins, compilerOptions) {
       return new this([schemaDef]);
     }
   }
+
+  Schema.compiler = createCompiler(Schema, plugins, compilerOptions);
+  Schema.messages = { ...MESSAGES };
 
   return Schema;
 }
