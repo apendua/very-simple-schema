@@ -57,7 +57,7 @@ describe('Test createSchema', function () {
     it('should return error if number is not equal', function () {
       this.schema1.getErrors(2).should.deep.equal({
         error: ERROR_NOT_EQUAL,
-        value: 2,
+        actual: 2,
         expected: 1,
       });
     });
@@ -67,7 +67,7 @@ describe('Test createSchema', function () {
     it('should return error if strings are not equal', function () {
       this.schema2.getErrors('b').should.deep.equal({
         error: ERROR_NOT_EQUAL,
-        value: 'b',
+        actual: 'b',
         expected: 'a',
       });
     });
@@ -77,7 +77,7 @@ describe('Test createSchema', function () {
     it('should return error if booleans are not equal', function () {
       this.schema3.getErrors(false).should.deep.equal({
         error: ERROR_NOT_EQUAL,
-        value: false,
+        actual: false,
         expected: true,
       });
     });
@@ -87,7 +87,7 @@ describe('Test createSchema', function () {
     it('should return error if values is not null', function () {
       this.schema4.getErrors('whatever').should.deep.equal({
         error: ERROR_NOT_EQUAL,
-        value: 'whatever',
+        actual: 'whatever',
         expected: null,
       });
     });
@@ -107,13 +107,13 @@ describe('Test createSchema', function () {
     it('should return error if not a number', function () {
       this.schema1.getErrors('not a number').should.deep.equal({
         error: ERROR_EXPECTED_NUMBER,
-        value: 'not a number',
+        actual: 'not a number',
       });
     });
     it('should reject non integer by default', function () {
       this.schema1.getErrors(0.1).should.deep.equal({
         error: ERROR_NO_DECIMAL,
-        value: 0.1,
+        actual: 0.1,
       });
     });
     it('should validate a string', function () {
@@ -122,7 +122,7 @@ describe('Test createSchema', function () {
     it('should return error if not a string', function () {
       this.schema2.getErrors(true).should.deep.equal({
         error: ERROR_EXPECTED_STRING,
-        value: true,
+        actual: true,
       });
     });
     it('should validate a boolean', function () {
@@ -131,7 +131,7 @@ describe('Test createSchema', function () {
     it('should return error if not a boolean', function () {
       this.schema3.getErrors('not a boolean').should.deep.equal({
         error: ERROR_EXPECTED_BOOLEAN,
-        value: 'not a boolean',
+        actual: 'not a boolean',
       });
     });
     it('should accept a number value within range', function () {
@@ -176,7 +176,7 @@ describe('Test createSchema', function () {
     it('should return error if not an array', function () {
       this.schema1.getErrors('this is not an array').should.deep.equal({
         error: ERROR_EXPECTED_ARRAY,
-        value: 'this is not an array',
+        actual: 'this is not an array',
       });
     });
     it('should accept array of numbers', function () {
@@ -186,10 +186,10 @@ describe('Test createSchema', function () {
       this.schema1.getErrors(['a', 'b']).should.deep.equal({
         errors: [{
           error: ERROR_EXPECTED_NUMBER,
-          value: 'a',
+          actual: 'a',
         }, {
           error: ERROR_EXPECTED_NUMBER,
-          value: 'b',
+          actual: 'b',
         }],
       });
     });
@@ -238,8 +238,8 @@ describe('Test createSchema', function () {
       it('should reject value that is not allowed', function () {
         this.schema1.getErrors(3).should.deep.equal({
           error: ERROR_NOT_ALLOWED,
-          value: 3,
           expected: [1, 2],
+          actual: 3,
         });
       });
       it('should accept value that is allowed', function () {
@@ -258,7 +258,7 @@ describe('Test createSchema', function () {
             undefined,
             {
               error: ERROR_NOT_ALLOWED,
-              value: 'x',
+              actual: 'x',
               expected: ['a', 'b', 'c'],
             },
           ],
@@ -351,8 +351,8 @@ describe('Test createSchema', function () {
         x: true,
       }).should.deep.equal({
         errors: {
-          a: { error: ERROR_EXPECTED_STRING, value: 1 },
-          x: { error: ERROR_EXPECTED_NUMBER, value: true },
+          a: { error: ERROR_EXPECTED_STRING, actual: 1 },
+          x: { error: ERROR_EXPECTED_NUMBER, actual: true },
         },
       });
     });
@@ -363,9 +363,9 @@ describe('Test createSchema', function () {
         x: true,
       }).should.deep.equal({
         errors: {
-          a: { error: ERROR_EXPECTED_STRING, value: 1 },
-          b: { error: ERROR_EXPECTED_STRING, value: 2 },
-          x: { error: ERROR_EXPECTED_NUMBER, value: true },
+          a: { error: ERROR_EXPECTED_STRING, actual: 1 },
+          b: { error: ERROR_EXPECTED_STRING, actual: 2 },
+          x: { error: ERROR_EXPECTED_NUMBER, actual: true },
         },
       });
     });
