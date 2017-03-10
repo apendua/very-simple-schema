@@ -37,8 +37,14 @@ function createSchema(plugins, compilerOptions) {
       });
     }
 
-    validator(validatorOptions) {
-      return value => this.validate(value, validatorOptions);
+    validator(validateOptions, transform) {
+      return (value) => {
+        const error = this.validate(value, validateOptions);
+        if (typeof transform === 'function') {
+          return transform(value, error);
+        }
+        return error;
+      };
     }
 
     static describe(descriptor, {
