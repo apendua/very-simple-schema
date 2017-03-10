@@ -7,6 +7,7 @@ const pluginLazy = {
       }
       let validate;
       return {
+        isLazy: true,
         compiled: true,
         validate: (value) => {
           if (!validate) {

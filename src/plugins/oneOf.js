@@ -11,6 +11,7 @@ const pluginOneOf = {
     if (isArray(schemaDef) && schemaDef.length > 1) {
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
+        isOneOf: true,
         compiled: true,
         validate: (value) => {
           for (const { validate } of memberValidators) {

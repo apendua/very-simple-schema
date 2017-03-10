@@ -13,7 +13,7 @@ const has = Object.prototype.hasOwnProperty;
 const pluginObject = {
   compile(compiler, schemaDef) {
     if (isObject(schemaDef)) {
-      const memberValidators = {};
+      const properties = {};
       Object.keys(schemaDef).forEach((key) => {
         const memberSchemaDef = schemaDef[key];
         if (memberSchemaDef &&
@@ -25,20 +25,22 @@ const pluginObject = {
             optional,
             ...otherOptions
           } = memberSchemaDef;
-          memberValidators[key] = compiler.compile(type, otherOptions);
-          memberValidators[key].optional = !!optional;
+          properties[key] = compiler.compile(type, otherOptions);
+          properties[key].optional = !!optional;
         } else {
-          memberValidators[key] = compiler.compile(memberSchemaDef);
+          properties[key] = compiler.compile(memberSchemaDef);
         }
       });
       return {
+        properties,
         compiled: true,
+        isObject: true,
         validate: combine([
           validateIsObject,
           (value) => {
             const errors = {};
-            Object.keys(memberValidators).forEach((key) => {
-              const validator = memberValidators[key];
+            Object.keys(properties).forEach((key) => {
+              const validator = properties[key];
               if (!has.call(value, key)) {
                 if (!validator.optional) {
                   errors[key] = { error: ERROR_REQUIRED };
