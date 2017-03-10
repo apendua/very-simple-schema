@@ -6,6 +6,8 @@ import pluginAtomic from './atomic.js';
 import {
   ERROR_MIN,
   ERROR_MAX,
+  ERROR_MIN_COUNT,
+  ERROR_MAX_COUNT,
   ERROR_NO_DECIMAL,
   ERROR_EXPECTED_STRING,
   ERROR_EXPECTED_NUMBER,
@@ -32,7 +34,7 @@ describe('Test atomic plugin', function () {
       this.validate2 = this.createValidate(String);
       this.validate3 = this.createValidate(Boolean);
       this.validate4 = this.createValidate(Number, { min: 0, max: 10 });
-      this.validate5 = this.createValidate(String, { min: 'e', max: 'k' });
+      this.validate5 = this.createValidate(String, { min: 2, max: 4 });
     });
     it('should validate a number', function () {
       should.not.exist(this.validate1(1));
@@ -83,18 +85,18 @@ describe('Test atomic plugin', function () {
       });
     });
     it('should accept a string value within range', function () {
-      should.not.exist(this.validate5('j'));
+      should.not.exist(this.validate5('12'));
     });
     it('should reject a string above max', function () {
-      this.validate5('z').should.deep.equal({
-        error: ERROR_MAX,
-        expected: 'k',
+      this.validate5('12345').should.deep.equal({
+        error: ERROR_MAX_COUNT,
+        expected: 4,
       });
     });
     it('should reject a string below min', function () {
-      this.validate5('a').should.deep.equal({
-        error: ERROR_MIN,
-        expected: 'e',
+      this.validate5('1').should.deep.equal({
+        error: ERROR_MIN_COUNT,
+        expected: 2,
       });
     });
   });

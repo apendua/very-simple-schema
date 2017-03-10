@@ -10,6 +10,8 @@ import {
   combine,
   createValidateMin,
   createValidateMax,
+  createValidateMinCount,
+  createValidateMaxCount,
 } from '../validators.js';
 
 const pluginAtomic = {
@@ -24,8 +26,8 @@ const pluginAtomic = {
       validators.push(max !== undefined && createValidateMax(max));
     } else if (schemaDef === String) {
       validators.push(validateIsString);
-      validators.push(min !== undefined && createValidateMin(min));
-      validators.push(max !== undefined && createValidateMax(max));
+      validators.push(min !== undefined && createValidateMinCount(min));
+      validators.push(max !== undefined && createValidateMaxCount(max));
     } else if (schemaDef === Boolean) {
       validators.push(validateIsBoolean);
     } else if (schemaDef === Date) {
