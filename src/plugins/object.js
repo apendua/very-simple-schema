@@ -8,7 +8,7 @@ import {
 } from '../validators.js';
 
 const pluginObject = {
-  compile(compiler, schemaDef) {
+  compile(compiler, schemaDef, { additionalProperties }) {
     if (isObject(schemaDef)) {
       const properties = {};
       Object.keys(schemaDef).forEach((key) => {
@@ -34,7 +34,7 @@ const pluginObject = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties),
+          createValidateProperties(properties, additionalProperties),
         ]),
       };
     }

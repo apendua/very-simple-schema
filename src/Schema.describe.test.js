@@ -102,7 +102,9 @@ describe('Test Schema.describe', function () {
         ],
       }).should.deep.equal({
         books: [
-          undefined,
+          {
+            author: 'Value.books.0.author is not allowed',
+          },
           {
             title: 'Value.books.1.title is required',
           },

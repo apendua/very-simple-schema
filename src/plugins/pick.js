@@ -6,7 +6,7 @@ import {
 } from '../validators.js';
 
 const pluginPick = {
-  compile(compiler, schemaDef, { pick, ...otherOptions }) {
+  compile(compiler, schemaDef, { pick, additionalProperties, ...otherOptions }) {
     if (pick) {
       if (!isArray(pick)) {
         throw new Error('Pick needs to be an array.');
@@ -25,7 +25,7 @@ const pluginPick = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties),
+          createValidateProperties(properties, additionalProperties),
         ]),
       };
     }

@@ -1,6 +1,7 @@
 /* eslint max-len: "off" */
 import {
   ERROR_REQUIRED,
+  ERROR_KEY_NOT_ALLOWED,
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
   ERROR_NO_DECIMAL,
@@ -48,7 +49,7 @@ export const validateIsArray = actual => (isArray(actual) ? undefined : { actual
 export const validateIsDate = actual => (isDate(actual) ? undefined : { actual, error: ERROR_EXPECTED_DATE });
 
 export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
-export const createValidateProperties = properties => (value) => {
+export const createValidateProperties = (properties, additionalProperties) => (value) => {
   const errors = {};
   Object.keys(properties).forEach((key) => {
     const property = properties[key];
@@ -63,5 +64,12 @@ export const createValidateProperties = properties => (value) => {
       }
     }
   });
+  if (!additionalProperties) {
+    Object.keys(value).forEach((key) => {
+      if (!has(properties, key)) {
+        errors[key] = { error: ERROR_KEY_NOT_ALLOWED };
+      }
+    });
+  }
   return Object.keys(errors).length > 0 ? { errors } : undefined;
 };

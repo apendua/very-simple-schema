@@ -6,7 +6,7 @@ import {
 } from '../validators.js';
 
 const pluginMerge = {
-  compile(compiler, schemaDef, { merge }) {
+  compile(compiler, schemaDef, { merge, additionalProperties }) {
     if (merge && isArray(schemaDef)) {
       const properties = {};
       schemaDef.forEach((memberSchemaDef) => {
@@ -22,7 +22,7 @@ const pluginMerge = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties),
+          createValidateProperties(properties, additionalProperties),
         ]),
       };
     }

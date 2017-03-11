@@ -8,6 +8,7 @@ import {
   ERROR_BAD_FORMAT,
   ERROR_EXPECTED_NUMBER,
   ERROR_EXPECTED_STRING,
+  ERROR_KEY_NOT_ALLOWED,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -194,6 +195,7 @@ describe('Test createSchema', function () {
       }).should.deep.equal({
         errors: {
           b: { error: ERROR_EXPECTED_STRING, actual: 1 },
+          c: { error: ERROR_KEY_NOT_ALLOWED },
         },
       });
     });
