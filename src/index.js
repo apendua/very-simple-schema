@@ -1,8 +1,9 @@
 import createSchema from './createSchema.js';
 import presetDefault from './plugins/presetDefault.js';
+import Schema from './Schema';
 
-const Schema = createSchema([
-  ...presetDefault,
-]);
-
-export default Schema;
+export {
+  Schema,
+  createSchema,
+  presetDefault,
+};
