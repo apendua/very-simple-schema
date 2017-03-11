@@ -6,6 +6,7 @@ import pluginAtomic from './atomic.js';
 import {
   ERROR_MIN,
   ERROR_MAX,
+  ERROR_NOT_EQUAL,
   ERROR_MIN_COUNT,
   ERROR_MAX_COUNT,
   ERROR_NO_DECIMAL,
@@ -26,6 +27,55 @@ describe('Test atomic plugin', function () {
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
       pluginAtomic.compile(compiler, schemaDef, schemaOptions).validate;
+  });
+
+  describe('Given a literal schema', function () {
+    beforeEach(function () {
+      this.validate1 = this.createValidate(1);
+      this.validate2 = this.createValidate('a');
+      this.validate3 = this.createValidate(true);
+      this.validate4 = this.createValidate(null);
+    });
+    it('should validate a number', function () {
+      should.not.exist(this.validate1(1));
+    });
+    it('should return error if number is not equal', function () {
+      this.validate1(2).should.deep.equal({
+        error: ERROR_NOT_EQUAL,
+        actual: 2,
+        expected: 1,
+      });
+    });
+    it('should validate a string', function () {
+      should.not.exist(this.validate2('a'));
+    });
+    it('should return error if strings are not equal', function () {
+      this.validate2('b').should.deep.equal({
+        error: ERROR_NOT_EQUAL,
+        actual: 'b',
+        expected: 'a',
+      });
+    });
+    it('should validate a boolean', function () {
+      should.not.exist(this.validate3(true));
+    });
+    it('should return error if booleans are not equal', function () {
+      this.validate3(false).should.deep.equal({
+        error: ERROR_NOT_EQUAL,
+        actual: false,
+        expected: true,
+      });
+    });
+    it('should validate a null', function () {
+      should.not.exist(this.validate4(null));
+    });
+    it('should return error if values is not null', function () {
+      this.validate4('whatever').should.deep.equal({
+        error: ERROR_NOT_EQUAL,
+        actual: 'whatever',
+        expected: null,
+      });
+    });
   });
 
   describe('Given an atomic schema', function () {

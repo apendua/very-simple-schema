@@ -5,7 +5,6 @@ import chai from 'chai';
 import createSchema from './createSchema.js';
 import {
   ERROR_REQUIRED,
-  ERROR_NOT_EQUAL,
   ERROR_NOT_ALLOWED,
   ERROR_NO_MATCH,
   ERROR_EXPECTED_STRING,
@@ -30,55 +29,6 @@ describe('Test createSchema', function () {
     });
     it('should validate empty object', function () {
       should.not.exist(this.schema.getErrors({}));
-    });
-  });
-
-  describe('Given a literal schema', function () {
-    beforeEach(function () {
-      this.schema1 = new this.Schema(1);
-      this.schema2 = new this.Schema('a');
-      this.schema3 = new this.Schema(true);
-      this.schema4 = new this.Schema(null);
-    });
-    it('should validate a number', function () {
-      should.not.exist(this.schema1.getErrors(1));
-    });
-    it('should return error if number is not equal', function () {
-      this.schema1.getErrors(2).should.deep.equal({
-        error: ERROR_NOT_EQUAL,
-        actual: 2,
-        expected: 1,
-      });
-    });
-    it('should validate a string', function () {
-      should.not.exist(this.schema2.getErrors('a'));
-    });
-    it('should return error if strings are not equal', function () {
-      this.schema2.getErrors('b').should.deep.equal({
-        error: ERROR_NOT_EQUAL,
-        actual: 'b',
-        expected: 'a',
-      });
-    });
-    it('should validate a boolean', function () {
-      should.not.exist(this.schema3.getErrors(true));
-    });
-    it('should return error if booleans are not equal', function () {
-      this.schema3.getErrors(false).should.deep.equal({
-        error: ERROR_NOT_EQUAL,
-        actual: false,
-        expected: true,
-      });
-    });
-    it('should validate a null', function () {
-      should.not.exist(this.schema4.getErrors(null));
-    });
-    it('should return error if values is not null', function () {
-      this.schema4.getErrors('whatever').should.deep.equal({
-        error: ERROR_NOT_EQUAL,
-        actual: 'whatever',
-        expected: null,
-      });
     });
   });
 
