@@ -1,5 +1,6 @@
 /* eslint max-len: "off" */
 import {
+  ERROR_REQUIRED,
   ERROR_BAD_DATE,
   ERROR_NOT_EQUAL,
   ERROR_NO_DECIMAL,
@@ -16,6 +17,9 @@ import {
   ERROR_MIN,
   ERROR_MAX,
 } from './constants.js';
+
+const objectPrototypeHas = Object.prototype.hasOwnProperty;
+export const has = (object, property) => objectPrototypeHas.call(object, property);
 
 export const createValidateEquals = expected => actual => (actual === expected ? undefined : { actual, expected, error: ERROR_NOT_EQUAL });
 export const createValidateInstanceOf = constructor => actual => (actual instanceof constructor ? undefined : { actual, expected: constructor.name, error: ERROR_EXPECTED_INSTANCE_OF });
@@ -44,3 +48,20 @@ export const validateIsArray = actual => (isArray(actual) ? undefined : { actual
 export const validateIsDate = actual => (isDate(actual) ? undefined : { actual, error: ERROR_EXPECTED_DATE });
 
 export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
+export const createValidateProperties = properties => (value) => {
+  const errors = {};
+  Object.keys(properties).forEach((key) => {
+    const property = properties[key];
+    if (!has(value, key)) {
+      if (!property.optional) {
+        errors[key] = { error: ERROR_REQUIRED };
+      }
+    } else {
+      const error = property.validate(value[key]);
+      if (error) {
+        errors[key] = error;
+      }
+    }
+  });
+  return Object.keys(errors).length > 0 ? { errors } : undefined;
+};

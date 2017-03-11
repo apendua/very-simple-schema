@@ -6,6 +6,7 @@ import {
   ERROR_REQUIRED,
   ERROR_NOT_ALLOWED,
   ERROR_BAD_FORMAT,
+  ERROR_EXPECTED_NUMBER,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -128,6 +129,41 @@ describe('Test createSchema', function () {
       this.schema1.getErrors({}).should.deep.equal({
         errors: {
           children: { error: ERROR_REQUIRED },
+        },
+      });
+    });
+  });
+
+  describe('Given a merge schema', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema([
+        {
+          a: { type: Number },
+          b: { type: String },
+        },
+        {
+          b: { type: Number },
+          c: { type: String },
+        },
+      ], { merge: true });
+    });
+
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema1.getErrors({
+        a: 1,
+        b: 1,
+        c: 'x',
+      }));
+    });
+
+    it('should reject an object with invalid property type', function () {
+      this.schema1.getErrors({
+        a: 1,
+        b: 'x',
+        c: 'x',
+      }).should.deep.equal({
+        errors: {
+          b: { error: ERROR_EXPECTED_NUMBER, actual: 'x' },
         },
       });
     });
