@@ -22,6 +22,27 @@ describe('Test regExp plugin', function () {
       pluginRegExp.compile(compiler, schemaDef, schemaOptions).validate;
   });
 
+  describe('given I use a custom regExp', function () {
+    beforeEach(function () {
+      this.validate = this.createValidate(String, { regEx: /^a+/ });
+    });
+    it('should not accept an empty string', function () {
+      this.validate('').should.deep.equal({
+        error: ERROR_BAD_FORMAT,
+        expected: 'match /^a+/',
+      });
+    });
+    it('should not accept a non-matching string', function () {
+      this.validate('b').should.deep.equal({
+        error: ERROR_BAD_FORMAT,
+        expected: 'match /^a+/',
+      });
+    });
+    it('should accept a matching string', function () {
+      should.not.exist(this.validate('aaa'));
+    });
+  });
+
   describe('given I use built-in RegEx.Email', function () {
     beforeEach(function () {
       this.validate = this.createValidate(String, { regEx: this.Schema.RegEx.Email });
