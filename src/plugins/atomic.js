@@ -16,7 +16,7 @@ import {
 
 const pluginAtomic = {
   compile(compiler, schemaDef, schemaOptions) {
-    const { min, max } = schemaOptions;
+    const { min, max, decimal } = schemaOptions;
     const validators = [];
     const schema = {
       isAtomic: true,
@@ -24,7 +24,7 @@ const pluginAtomic = {
 
     if (schemaDef === Number) {
       validators.push(validateIsNumber);
-      validators.push(validateIsInteger);
+      validators.push(decimal ? undefined : validateIsInteger);
       validators.push(min !== undefined && createValidateMin(min));
       validators.push(max !== undefined && createValidateMax(max));
       schema.isNumber = true;
