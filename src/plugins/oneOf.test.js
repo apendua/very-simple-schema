@@ -4,26 +4,35 @@
 import chai from 'chai';
 import {
   ERROR_NO_MATCH,
+  ERROR_EXPECTED_STRING,
+  ERROR_EXPECTED_NUMBER,
 } from '../constants.js';
-import pluginArray from './presetDefault.js';
+import pluginOneOf from './oneOf.js';
 
 const should = chai.should();
 const compiler = {
   options: {},
-  compile: () => ({ validate: () => {} }),
+  compile: (schemaDef) => {
+    if (schemaDef === String) {
+      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_EXPECTED_STRING, actual: value }) };
+    } else if (schemaDef === Number) {
+      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_EXPECTED_NUMBER, actual: value }) };
+    }
+    return { validate: () => ({}) };
+  },
 };
 
-describe.skip('Test oneOf plugin', function () {
+describe('Test oneOf plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginArray.compile(compiler, schemaDef, schemaOptions).validate;
+      pluginOneOf.compile(compiler, schemaDef, schemaOptions).validate;
   });
 
   describe('Given a "oneOf" schema', function () {
     beforeEach(function () {
-      this.validate1 = new this.Schema([Number, String]);
+      this.validate1 = this.createValidate([Number, String]);
     });
     it('should accept a number', function () {
       should.not.exist(this.validate1(1));

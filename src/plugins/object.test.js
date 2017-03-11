@@ -99,16 +99,6 @@ describe('Test object plugin', function () {
           y: String,
         },
         b: {
-          // type: new this.Schema({
-          //   x: String,
-          //   y: String,
-          // }),
-          type: {
-            x: String,
-            y: String,
-          },
-        },
-        c: {
           type: {
             x: String,
             y: String,
@@ -120,12 +110,10 @@ describe('Test object plugin', function () {
       this.validate1({
         a: { x: 'a' },
         b: { x: 'a' },
-        c: { x: 'a' },
       }).should.deep.equal({
         errors: {
           a: { errors: { y: { error: ERROR_REQUIRED } } },
           b: { errors: { y: { error: ERROR_REQUIRED } } },
-          c: { errors: { y: { error: ERROR_REQUIRED } } },
         },
       });
     });
