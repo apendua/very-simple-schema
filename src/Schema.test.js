@@ -7,6 +7,7 @@ import {
   ERROR_NOT_ALLOWED,
   ERROR_BAD_FORMAT,
   ERROR_EXPECTED_NUMBER,
+  ERROR_EXPECTED_STRING,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -164,6 +165,35 @@ describe('Test createSchema', function () {
       }).should.deep.equal({
         errors: {
           b: { error: ERROR_EXPECTED_NUMBER, actual: 'x' },
+        },
+      });
+    });
+  });
+
+  describe('Given a schema with "pick"', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema({
+        a: { type: Number },
+        b: { type: String },
+        c: { type: Number },
+      }, { pick: ['a', 'b'] });
+    });
+
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema1.getErrors({
+        a: 1,
+        b: 'x',
+      }));
+    });
+
+    it('should reject an object with invalid property type', function () {
+      this.schema1.getErrors({
+        a: 1,
+        b: 1,
+        c: 'x',
+      }).should.deep.equal({
+        errors: {
+          b: { error: ERROR_EXPECTED_STRING, actual: 1 },
         },
       });
     });
