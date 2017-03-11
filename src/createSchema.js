@@ -82,7 +82,7 @@ function createSchema(plugins, compilerOptions) {
       if (array.length < 2) {
         throw new Error('Array should contain at least two elements');
       }
-      return new this(array);
+      return new this(array, { isOneOf: true });
     }
 
     static arrayOf(schemaDef) {

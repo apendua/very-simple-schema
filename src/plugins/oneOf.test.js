@@ -32,7 +32,7 @@ describe('Test oneOf plugin', function () {
 
   describe('Given a "oneOf" schema', function () {
     beforeEach(function () {
-      this.validate1 = this.createValidate([Number, String]);
+      this.validate1 = this.createValidate([Number, String], { oneOf: true });
     });
     it('should accept a number', function () {
       should.not.exist(this.validate1(1));

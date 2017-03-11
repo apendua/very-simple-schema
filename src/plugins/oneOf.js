@@ -7,8 +7,8 @@ import {
 } from '../validators.js';
 
 const pluginOneOf = {
-  compile(compiler, schemaDef) {
-    if (isArray(schemaDef) && schemaDef.length > 1) {
+  compile(compiler, schemaDef, { oneOf }) {
+    if (oneOf && isArray(schemaDef) && schemaDef.length > 1) {
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
         isOneOf: true,
