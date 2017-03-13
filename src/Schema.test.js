@@ -3,11 +3,11 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_REQUIRED,
-  ERROR_NOT_ALLOWED,
-  ERROR_BAD_FORMAT,
-  ERROR_EXPECTED_NUMBER,
-  ERROR_EXPECTED_STRING,
+  ERROR_MISSING_FIELD,
+  ERROR_VALUE_NOT_ALLOWED,
+  ERROR_DOES_NOT_MATCH,
+  ERROR_NOT_NUMBER,
+  ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
 } from './constants.js';
 import Schema from './Schema.js';
@@ -35,7 +35,7 @@ describe('Test createSchema', function () {
             undefined,
             undefined,
             {
-              error: ERROR_NOT_ALLOWED,
+              error: ERROR_VALUE_NOT_ALLOWED,
               actual: 'x',
               expected: ['a', 'b', 'c'],
             },
@@ -59,7 +59,7 @@ describe('Test createSchema', function () {
             undefined,
             undefined,
             {
-              error: ERROR_BAD_FORMAT,
+              error: ERROR_DOES_NOT_MATCH,
               expected: 'match /\\d+/',
             },
           ],
@@ -99,9 +99,9 @@ describe('Test createSchema', function () {
         c: { x: 1 },
       }).should.deep.equal({
         errors: {
-          a: { errors: { y: { error: ERROR_REQUIRED } } },
-          b: { errors: { y: { error: ERROR_REQUIRED } } },
-          c: { errors: { y: { error: ERROR_REQUIRED } } },
+          a: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+          b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+          c: { errors: { y: { error: ERROR_MISSING_FIELD } } },
         },
       });
     });
@@ -130,7 +130,7 @@ describe('Test createSchema', function () {
     it('should reject object with missing fields', function () {
       this.schema1.getErrors({}).should.deep.equal({
         errors: {
-          children: { error: ERROR_REQUIRED },
+          children: { error: ERROR_MISSING_FIELD },
         },
       });
     });
@@ -165,7 +165,7 @@ describe('Test createSchema', function () {
         c: 'x',
       }).should.deep.equal({
         errors: {
-          b: { error: ERROR_EXPECTED_NUMBER, actual: 'x' },
+          b: { error: ERROR_NOT_NUMBER, actual: 'x' },
         },
       });
     });
@@ -194,7 +194,7 @@ describe('Test createSchema', function () {
         c: 'x',
       }).should.deep.equal({
         errors: {
-          b: { error: ERROR_EXPECTED_STRING, actual: 1 },
+          b: { error: ERROR_NOT_STRING, actual: 1 },
           c: { error: ERROR_KEY_NOT_ALLOWED },
         },
       });

@@ -1,5 +1,5 @@
 import {
-  ERROR_NO_MATCH,
+  ERROR_NO_ALTERNATIVE,
 } from '../constants.js';
 
 import {
@@ -23,7 +23,7 @@ const pluginOneOf = {
               return undefined;
             }
           }
-          return { error: ERROR_NO_MATCH };
+          return { error: ERROR_NO_ALTERNATIVE };
         },
       };
     }

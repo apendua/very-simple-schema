@@ -4,18 +4,18 @@
 import chai from 'chai';
 import pluginAtomic from './atomic.js';
 import {
-  ERROR_MIN,
-  ERROR_MAX,
+  ERROR_TOO_SMALL,
+  ERROR_TOO_LARGE,
   ERROR_NOT_EQUAL,
-  ERROR_MIN_COUNT,
-  ERROR_MAX_COUNT,
-  ERROR_NO_DECIMAL,
-  ERROR_EXPECTED_STRING,
-  ERROR_EXPECTED_NUMBER,
-  ERROR_EXPECTED_BOOLEAN,
-  ERROR_EXPECTED_DATE,
-  ERROR_BAD_DATE,
-  ERROR_EXPECTED_INSTANCE_OF,
+  ERROR_TOO_SHORT,
+  ERROR_TOO_LONG,
+  ERROR_NOT_INTEGER,
+  ERROR_NOT_STRING,
+  ERROR_NOT_NUMBER,
+  ERROR_NOT_BOOLEAN,
+  ERROR_NOT_DATE,
+  ERROR_INVALID_DATE,
+  ERROR_NOT_INSTANCE_OF,
 } from '../constants.js';
 
 const should = chai.should();
@@ -147,7 +147,7 @@ describe('Test atomic plugin', function () {
       });
       it('should reject non integer by default', function () {
         this.schema1.validate(0.1).should.deep.equal({
-          error: ERROR_NO_DECIMAL,
+          error: ERROR_NOT_INTEGER,
           actual: 0.1,
         });
       });
@@ -156,7 +156,7 @@ describe('Test atomic plugin', function () {
       });
       it('should return error if not a number', function () {
         this.schema1.validate('not a number').should.deep.equal({
-          error: ERROR_EXPECTED_NUMBER,
+          error: ERROR_NOT_NUMBER,
           actual: 'not a number',
         });
       });
@@ -177,7 +177,7 @@ describe('Test atomic plugin', function () {
       });
       it('should return error if not a string', function () {
         this.schema2.validate(true).should.deep.equal({
-          error: ERROR_EXPECTED_STRING,
+          error: ERROR_NOT_STRING,
           actual: true,
         });
       });
@@ -198,7 +198,7 @@ describe('Test atomic plugin', function () {
       });
       it('should return error if not a boolean', function () {
         this.schema3.validate('not a boolean').should.deep.equal({
-          error: ERROR_EXPECTED_BOOLEAN,
+          error: ERROR_NOT_BOOLEAN,
           actual: 'not a boolean',
         });
       });
@@ -213,13 +213,13 @@ describe('Test atomic plugin', function () {
       });
       it('should reject a number above max', function () {
         this.schema4.validate(11).should.deep.equal({
-          error: ERROR_MAX,
+          error: ERROR_TOO_LARGE,
           expected: 10,
         });
       });
       it('should reject a number below min', function () {
         this.schema4.validate(-1).should.deep.equal({
-          error: ERROR_MIN,
+          error: ERROR_TOO_SMALL,
           expected: 0,
         });
       });
@@ -234,13 +234,13 @@ describe('Test atomic plugin', function () {
       });
       it('should reject a string above max', function () {
         this.schema5.validate('12345').should.deep.equal({
-          error: ERROR_MAX_COUNT,
+          error: ERROR_TOO_LONG,
           expected: 4,
         });
       });
       it('should reject a string below min', function () {
         this.schema5.validate('1').should.deep.equal({
-          error: ERROR_MIN_COUNT,
+          error: ERROR_TOO_SHORT,
           expected: 2,
         });
       });
@@ -256,13 +256,13 @@ describe('Test atomic plugin', function () {
       });
       it('should not accept a differt type of data', function () {
         this.schema6.validate(1).should.deep.equal({
-          error: ERROR_EXPECTED_DATE,
+          error: ERROR_NOT_DATE,
           actual: 1,
         });
       });
       it('should reject an invalid date', function () {
         this.schema6.validate(new Date('2017-30-30')).should.deep.equal({
-          error: ERROR_BAD_DATE,
+          error: ERROR_INVALID_DATE,
           actual: new Date('2017-30-30'),
         });
       });
@@ -271,13 +271,13 @@ describe('Test atomic plugin', function () {
       });
       it('should reject a date above max', function () {
         this.schema6x.validate(new Date('2018-01-01')).should.deep.equal({
-          error: ERROR_MAX,
+          error: ERROR_TOO_LARGE,
           expected: new Date('2017-12-31'),
         });
       });
       it('should reject a date below min', function () {
         this.schema6x.validate(new Date('2016-12-31')).should.deep.equal({
-          error: ERROR_MIN,
+          error: ERROR_TOO_SMALL,
           expected: new Date('2017-01-01'),
         });
       });
@@ -292,7 +292,7 @@ describe('Test atomic plugin', function () {
       });
       it('should not accept a differt type of data', function () {
         this.schema7.validate({}).should.deep.equal({
-          error: ERROR_EXPECTED_INSTANCE_OF,
+          error: ERROR_NOT_INSTANCE_OF,
           actual: {},
           expected: Model.name,
         });

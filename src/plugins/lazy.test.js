@@ -3,8 +3,8 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_EXPECTED_STRING,
-  ERROR_EXPECTED_NUMBER,
+  ERROR_NOT_STRING,
+  ERROR_NOT_NUMBER,
 } from '../constants.js';
 import lazyPlugin from './lazy.js';
 
@@ -13,9 +13,9 @@ const compiler = {
   options: {},
   compile: (schemaDef) => {
     if (schemaDef === String) {
-      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_EXPECTED_STRING, actual: value }) };
+      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }) };
     } else if (schemaDef === Number) {
-      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_EXPECTED_NUMBER, actual: value }) };
+      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }) };
     }
     return { validate: () => ({}) };
   },
@@ -40,7 +40,7 @@ describe('Test lazy plugin', function () {
 
     it('should reject if value is not a number', function () {
       this.validate1(true).should.deep.equal({
-        error: ERROR_EXPECTED_NUMBER,
+        error: ERROR_NOT_NUMBER,
         actual: true,
       });
     });

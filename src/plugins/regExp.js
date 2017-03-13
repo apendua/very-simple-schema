@@ -1,6 +1,6 @@
 /* eslint max-len: "off", no-useless-escape: "off", no-param-reassign: "off" */
 import {
-  ERROR_BAD_FORMAT,
+  ERROR_DOES_NOT_MATCH,
 } from '../constants.js';
 
 const pluginRegExp = {
@@ -17,7 +17,7 @@ const pluginRegExp = {
         throw Error('Invalid regEx settings');
       }
       return {
-        validate: value => (regEx.test(value) ? undefined : { error: ERROR_BAD_FORMAT, expected }),
+        validate: value => (regEx.test(value) ? undefined : { error: ERROR_DOES_NOT_MATCH, expected }),
       };
     }
     return null;

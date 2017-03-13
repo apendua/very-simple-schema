@@ -3,17 +3,17 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_EXPECTED_NUMBER,
-  ERROR_EXPECTED_ARRAY,
-  ERROR_MIN_COUNT,
-  ERROR_MAX_COUNT,
+  ERROR_NOT_NUMBER,
+  ERROR_NOT_ARRAY,
+  ERROR_TOO_FEW,
+  ERROR_TOO_MANY,
 } from '../constants.js';
 import pluginArray from './array.js';
 
 const should = chai.should();
 const compiler = {
   options: {},
-  compile: () => ({ validate: value => (typeof value !== 'number' ? { error: ERROR_EXPECTED_NUMBER, actual: value } : undefined) }),
+  compile: () => ({ validate: value => (typeof value !== 'number' ? { error: ERROR_NOT_NUMBER, actual: value } : undefined) }),
 };
 
 describe('Test array plugin', function () {
@@ -32,7 +32,7 @@ describe('Test array plugin', function () {
     });
     it('should return error if not an array', function () {
       this.validate1('this is not an array').should.deep.equal({
-        error: ERROR_EXPECTED_ARRAY,
+        error: ERROR_NOT_ARRAY,
         actual: 'this is not an array',
       });
     });
@@ -42,10 +42,10 @@ describe('Test array plugin', function () {
     it('should reject array of strings', function () {
       this.validate1(['a', 'b']).should.deep.equal({
         errors: [{
-          error: ERROR_EXPECTED_NUMBER,
+          error: ERROR_NOT_NUMBER,
           actual: 'a',
         }, {
-          error: ERROR_EXPECTED_NUMBER,
+          error: ERROR_NOT_NUMBER,
           actual: 'b',
         }],
       });
@@ -55,7 +55,7 @@ describe('Test array plugin', function () {
     });
     it('should reject array with to little elements', function () {
       this.validate2([]).should.deep.equal({
-        error: ERROR_MIN_COUNT,
+        error: ERROR_TOO_FEW,
         expected: 1,
       });
     });
@@ -64,7 +64,7 @@ describe('Test array plugin', function () {
     });
     it('should reject array with to many elements', function () {
       this.validate3([1, 2, 3]).should.deep.equal({
-        error: ERROR_MAX_COUNT,
+        error: ERROR_TOO_MANY,
         expected: 2,
       });
     });

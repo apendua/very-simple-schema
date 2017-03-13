@@ -3,7 +3,7 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_NOT_ALLOWED,
+  ERROR_VALUE_NOT_ALLOWED,
 } from '../constants.js';
 import pluginAllowedValues from './allowedValues.js';
 
@@ -28,7 +28,7 @@ describe('Test allowedValues plugin', function () {
       });
       it('should reject value that is not allowed', function () {
         this.validate1(3).should.deep.equal({
-          error: ERROR_NOT_ALLOWED,
+          error: ERROR_VALUE_NOT_ALLOWED,
           expected: [1, 2],
           actual: 3,
         });

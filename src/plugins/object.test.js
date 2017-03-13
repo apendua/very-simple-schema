@@ -3,8 +3,8 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_REQUIRED,
-  ERROR_EXPECTED_STRING,
+  ERROR_MISSING_FIELD,
+  ERROR_NOT_STRING,
 } from '../constants.js';
 import pluginObject from './object.js';
 
@@ -18,7 +18,7 @@ describe('Test object plugin', function () {
       compile: (schemaDef, schemaOptions) => ({
         validate: (
           schemaDef === String
-            ? value => (typeof value === 'string' ? undefined : { error: ERROR_EXPECTED_STRING, actual: value })
+            ? value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value })
             : this.createValidate(schemaDef, schemaOptions)
         ),
       }),
@@ -51,17 +51,17 @@ describe('Test object plugin', function () {
     it('should reject if required fields are missing', function () {
       this.validate1({}).should.deep.equal({
         errors: {
-          a: { error: ERROR_REQUIRED },
-          x: { error: ERROR_REQUIRED },
+          a: { error: ERROR_MISSING_FIELD },
+          x: { error: ERROR_MISSING_FIELD },
         },
       });
     });
     it('should reject if required fields are missing (shorthand)', function () {
       this.validate2({}).should.deep.equal({
         errors: {
-          a: { error: ERROR_REQUIRED },
-          b: { error: ERROR_REQUIRED },
-          x: { error: ERROR_REQUIRED },
+          a: { error: ERROR_MISSING_FIELD },
+          b: { error: ERROR_MISSING_FIELD },
+          x: { error: ERROR_MISSING_FIELD },
         },
       });
     });
@@ -71,8 +71,8 @@ describe('Test object plugin', function () {
         x: true,
       }).should.deep.equal({
         errors: {
-          a: { error: ERROR_EXPECTED_STRING, actual: 1 },
-          x: { error: ERROR_EXPECTED_STRING, actual: true },
+          a: { error: ERROR_NOT_STRING, actual: 1 },
+          x: { error: ERROR_NOT_STRING, actual: true },
         },
       });
     });
@@ -83,9 +83,9 @@ describe('Test object plugin', function () {
         x: true,
       }).should.deep.equal({
         errors: {
-          a: { error: ERROR_EXPECTED_STRING, actual: 1 },
-          b: { error: ERROR_EXPECTED_STRING, actual: 2 },
-          x: { error: ERROR_EXPECTED_STRING, actual: true },
+          a: { error: ERROR_NOT_STRING, actual: 1 },
+          b: { error: ERROR_NOT_STRING, actual: 2 },
+          x: { error: ERROR_NOT_STRING, actual: true },
         },
       });
     });
@@ -112,8 +112,8 @@ describe('Test object plugin', function () {
         b: { x: 'a' },
       }).should.deep.equal({
         errors: {
-          a: { errors: { y: { error: ERROR_REQUIRED } } },
-          b: { errors: { y: { error: ERROR_REQUIRED } } },
+          a: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+          b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
         },
       });
     });

@@ -10,8 +10,8 @@ import {
   combine,
   createValidateMin,
   createValidateMax,
-  createValidateMinCount,
-  createValidateMaxCount,
+  createValidateMinLength,
+  createValidateMaxLength,
 } from '../validators.js';
 
 const pluginAtomic = {
@@ -34,8 +34,8 @@ const pluginAtomic = {
       schema.isNumber = true;
     } else if (schemaDef === String) {
       validators.push(validateIsString);
-      validators.push(min !== undefined && createValidateMinCount(min));
-      validators.push(max !== undefined && createValidateMaxCount(max));
+      validators.push(min !== undefined && createValidateMinLength(min));
+      validators.push(max !== undefined && createValidateMaxLength(max));
       schema.isString = true;
     } else if (schemaDef === Boolean) {
       validators.push(validateIsBoolean);

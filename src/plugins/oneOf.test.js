@@ -3,9 +3,9 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_NO_MATCH,
-  ERROR_EXPECTED_STRING,
-  ERROR_EXPECTED_NUMBER,
+  ERROR_NO_ALTERNATIVE,
+  ERROR_NOT_STRING,
+  ERROR_NOT_NUMBER,
 } from '../constants.js';
 import pluginOneOf from './oneOf.js';
 
@@ -14,9 +14,9 @@ const compiler = {
   options: {},
   compile: (schemaDef) => {
     if (schemaDef === String) {
-      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_EXPECTED_STRING, actual: value }) };
+      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }) };
     } else if (schemaDef === Number) {
-      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_EXPECTED_NUMBER, actual: value }) };
+      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }) };
     }
     return { validate: () => ({}) };
   },
@@ -42,7 +42,7 @@ describe('Test oneOf plugin', function () {
     });
     it('should reject if neither string nor number', function () {
       this.validate1(true).should.deep.equal({
-        error: ERROR_NO_MATCH,
+        error: ERROR_NO_ALTERNATIVE,
       });
     });
   });

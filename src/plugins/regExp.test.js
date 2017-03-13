@@ -4,7 +4,7 @@
 import chai from 'chai';
 import pluginRegExp from './regExp.js';
 import {
-  ERROR_BAD_FORMAT,
+  ERROR_DOES_NOT_MATCH,
 } from '../constants.js';
 
 const should = chai.should();
@@ -28,13 +28,13 @@ describe('Test regExp plugin', function () {
     });
     it('should not accept an empty string', function () {
       this.validate('').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: 'match /^a+/',
       });
     });
     it('should not accept a non-matching string', function () {
       this.validate('b').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: 'match /^a+/',
       });
     });
@@ -49,13 +49,13 @@ describe('Test regExp plugin', function () {
     });
     it('should not accept an empty string', function () {
       this.validate('').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: this.Schema.RegEx.Email.to,
       });
     });
     it('should not accept an invalid email', function () {
       this.validate('a@').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: this.Schema.RegEx.Email.to,
       });
     });
@@ -70,19 +70,19 @@ describe('Test regExp plugin', function () {
     });
     it('should not accept an empty string', function () {
       this.validate('').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: this.Schema.RegEx.Id.to,
       });
     });
     it('should not accept a string that is too short', function () {
       this.validate('abcdefghijkmnopq').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: this.Schema.RegEx.Id.to,
       });
     });
     it('should not accept a string that contains invalid characters', function () {
       this.validate('0bcdefghijkmnopqr').should.deep.equal({
-        error: ERROR_BAD_FORMAT,
+        error: ERROR_DOES_NOT_MATCH,
         expected: this.Schema.RegEx.Id.to,
       });
     });
