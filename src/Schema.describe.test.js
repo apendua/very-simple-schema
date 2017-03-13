@@ -13,32 +13,36 @@ chai.should();
 
 describe('Test Schema.describe', function () {
   describe('Given different error types', function () {
+    beforeEach(function () {
+      this.schema = new Schema({});
+    });
+
     it('should describe a string type error', function () {
-      Schema.describe({
+      this.schema.describe({
         error: ERROR_NOT_STRING,
       }).should.equal('Value should be a string');
     });
 
     it('should describe a number type error', function () {
-      Schema.describe({
+      this.schema.describe({
         error: ERROR_NOT_NUMBER,
       }).should.equal('Value should be a number');
     });
 
     it('should describe an array error', function () {
-      Schema.describe({
+      this.schema.describe({
         error: ERROR_NOT_ARRAY,
       }).should.equal('Value should be an array');
     });
 
     it('should describe an object error', function () {
-      Schema.describe({
+      this.schema.describe({
         error: ERROR_NOT_ARRAY,
       }).should.equal('Value should be an array');
     });
 
     it('should describe an object field error', function () {
-      Schema.describe({
+      this.schema.describe({
         errors: {
           a: { error: ERROR_NOT_STRING },
         },
@@ -48,7 +52,7 @@ describe('Test Schema.describe', function () {
     });
 
     it('should describe errors in an array', function () {
-      Schema.describe({
+      this.schema.describe({
         errors: [
           undefined,
           undefined,
@@ -62,7 +66,7 @@ describe('Test Schema.describe', function () {
     });
 
     it('should describe an deep nested field error', function () {
-      Schema.describe({
+      this.schema.describe({
         errors: {
           a: {
             errors: {
@@ -89,7 +93,7 @@ describe('Test Schema.describe', function () {
         },
         books: {
           type: [new Schema({
-            title: String,
+            title: { type: String, label: 'Book title' },
           })],
         },
       }).validate({
@@ -100,13 +104,15 @@ describe('Test Schema.describe', function () {
           { title: 'The Lord of the Rings', author: 'Tolkien' },
           { },
         ],
+      }, {
+        noException: true,
       }).should.deep.equal({
         books: [
           {
             author: 'books.0.author is not allowed',
           },
           {
-            title: 'books.1.title is required',
+            title: 'Book title is required',
           },
         ],
         name: {

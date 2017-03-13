@@ -7,12 +7,14 @@ import {
 import {
   createCompiler,
 } from './createCompiler.js';
+import createError from './createError.js';
 
 function createSchema(options = {}) {
   const {
     defaultLabel = 'Value',
-    defaultLabelCreator = keys => keys.join('.'),
-    defaultErrorCreator = error => new Error(error),
+    defaultCustomErrors,
+    defaultErrorCreator = createError,
+    defaultLabelCreator = (keys, custom) => custom || keys.join('.'),
   } = options;
 
   if (!options.plugins) {
@@ -34,50 +36,71 @@ function createSchema(options = {}) {
       return this.compiled;
     }
 
-    getErrors(value) {
-      return this.compiled.validate(value);
+    getErrors(value, customErrors) {
+      let errors = this.compiled.validate(value);
+      if (customErrors) {
+        errors = {
+          ...errors,
+          ...customErrors(value, errors),
+        };
+      }
+      if (errors && Object.keys(errors).length > 0) {
+        return errors;
+      }
+      return undefined;
     }
 
     validate(value, {
-      label = defaultLabel,
+      noException = false,
+      customErrors = defaultCustomErrors,
+      errorCreator = defaultErrorCreator,
+      labelCreator = defaultLabelCreator,
     } = {}) {
-      const error = this.getErrors(value);
-      return error && this.constructor.describe(error, {
-        label,
-      });
-    }
-
-    validator(validateOptions, transform) {
-      return (value) => {
-        const error = this.validate(value, validateOptions);
-        if (typeof transform === 'function') {
-          return transform(value, error);
+      const errors = this.getErrors(value, customErrors);
+      if (errors) {
+        const details = this.describe(errors, { labelCreator });
+        if (!noException) {
+          throw errorCreator(details);
         }
-        return error;
-      };
+        return details;
+      }
+      return undefined;
     }
 
-    static describe(descriptor, {
+    validator(validateOptions) {
+      return value => this.validate(value, validateOptions);
+    }
+
+    describe(descriptor, {
       keys = [],
+      context = this.compiled,
       labelCreator = defaultLabelCreator,
     } = {}) {
       if (descriptor && typeof descriptor === 'object') {
         if (descriptor.error) {
-          const messageTemplate = this.messages[descriptor.error];
+          const messageTemplate = this.constructor.messages[descriptor.error];
           if (!messageTemplate) {
             return descriptor.error;
           }
           return messageTemplate({
             ...descriptor,
-            label: labelCreator(keys) || defaultLabel,
+            label: labelCreator(keys, context && context.label) || defaultLabel,
           });
         } else if (descriptor.errors) {
           if (isArray(descriptor.errors)) {
-            return descriptor.errors.map((item, index) => this.describe(item, { keys: [...keys, index], labelCreator }));
+            return descriptor.errors.map((item, index) => this.describe(item, {
+              labelCreator,
+              keys: [...keys, index],
+              context: context && context.getSubSchema && context.getSubSchema(index),
+            }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};
             Object.keys(descriptor.errors).forEach((key) => {
-              described[key] = this.describe(descriptor.errors[key], { keys: [...keys, key], labelCreator });
+              described[key] = this.describe(descriptor.errors[key], {
+                labelCreator,
+                keys: [...keys, key],
+                context: context && context.getSubSchema && context.getSubSchema(key),
+              });
             });
             return described;
           }

@@ -9,10 +9,10 @@ import {
 const pluginArray = {
   compile(compiler, schemaDef, schemaOptions) {
     if (isArray(schemaDef) && schemaDef.length === 1) {
-      const items = compiler.compile(schemaDef[0], schemaOptions);
+      const element = compiler.compile(schemaDef[0], schemaOptions);
       const { minCount, maxCount } = schemaOptions;
       return {
-        items,
+        element,
         isArray: true,
         compiled: true,
         validate: combine([
@@ -20,10 +20,11 @@ const pluginArray = {
           minCount !== undefined && createValidateMinCount(minCount),
           maxCount !== undefined && createValidateMaxCount(maxCount),
           (value) => {
-            const errors = value.map(member => items.validate(member));
+            const errors = value.map(x => element.validate(x));
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
+        getSubSchema: () => element,
       };
     }
     return null;

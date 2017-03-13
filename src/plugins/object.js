@@ -38,6 +38,7 @@ const pluginObject = {
           validateIsObject,
           createValidateProperties(properties, additionalProperties),
         ]),
+        getSubSchema: key => properties[key],
       };
     }
     return {};
