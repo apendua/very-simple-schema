@@ -56,6 +56,7 @@ describe('Test array plugin', function () {
     it('should reject array with to little elements', function () {
       this.validate2([]).should.deep.equal({
         error: ERROR_TOO_FEW,
+        actual: [],
         expected: 1,
       });
     });
@@ -65,6 +66,7 @@ describe('Test array plugin', function () {
     it('should reject array with to many elements', function () {
       this.validate3([1, 2, 3]).should.deep.equal({
         error: ERROR_TOO_MANY,
+        actual: [1, 2, 3],
         expected: 2,
       });
     });

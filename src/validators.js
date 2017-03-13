@@ -26,34 +26,34 @@ const toString = Object.prototype.toString;
 
 export const has = (object, property) => hasOwnProperty.call(object, property);
 
-export const createValidateEquals = expected => actual => (actual === expected ? undefined : { actual, expected, error: ERROR_NOT_EQUAL });
-export const createValidateInstanceOf = constructor => actual => (actual instanceof constructor ? undefined : { actual, expected: constructor.name, error: ERROR_NOT_INSTANCE_OF });
+export const createValidateEquals = expected => actual => (actual === expected ? undefined : { error: ERROR_NOT_EQUAL, actual, expected });
+export const createValidateInstanceOf = expected => actual => (actual instanceof expected ? undefined : { error: ERROR_NOT_INSTANCE_OF, actual, expected });
 
-export const createValidateMinLength = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_SHORT, expected });
-export const createValidateMaxLength = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_LONG, expected });
+export const createValidateMinLength = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_SHORT, actual, expected });
+export const createValidateMaxLength = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_LONG, actual, expected });
 
-export const createValidateMinCount = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_FEW, expected });
-export const createValidateMaxCount = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_MANY, expected });
+export const createValidateMinCount = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_FEW, actual, expected });
+export const createValidateMaxCount = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_MANY, actual, expected });
 
-export const createValidateMin = expected => actual => (actual >= expected ? undefined : { error: ERROR_TOO_SMALL, expected });
-export const createValidateMax = expected => actual => (actual <= expected ? undefined : { error: ERROR_TOO_LARGE, expected });
+export const createValidateMin = expected => actual => (actual >= expected ? undefined : { error: ERROR_TOO_SMALL, actual, expected });
+export const createValidateMax = expected => actual => (actual <= expected ? undefined : { error: ERROR_TOO_LARGE, actual, expected });
 
-export const createValidateIsAllowed = allowedValues => actual =>
-  (allowedValues.indexOf(actual) >= 0 ? undefined : { actual, expected: allowedValues, error: ERROR_VALUE_NOT_ALLOWED });
+export const createValidateIsAllowed = expected => actual =>
+  (expected.indexOf(actual) >= 0 ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
 
 export const isArray = actual => toString.call(actual) === '[object Array]';
 export const isDate = actual => toString.call(actual) === '[object Date]';
 export const isObject = actual => toString.call(actual) === '[object Object]';
 
-export const validateIsString = actual => (typeof actual === 'string' ? undefined : { actual, error: ERROR_NOT_STRING });
-export const validateIsNumber = actual => (typeof actual === 'number' ? undefined : { actual, error: ERROR_NOT_NUMBER });
-export const validateIsBoolean = actual => (typeof actual === 'boolean' ? undefined : { actual, error: ERROR_NOT_BOOLEAN });
+export const validateIsString = actual => (typeof actual === 'string' ? undefined : { error: ERROR_NOT_STRING, actual });
+export const validateIsNumber = actual => (typeof actual === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual });
+export const validateIsBoolean = actual => (typeof actual === 'boolean' ? undefined : { error: ERROR_NOT_BOOLEAN, actual });
 
-export const validateIsValidDate = actual => (!isNaN(actual.getTime()) ? undefined : { actual, error: ERROR_INVALID_DATE });
-export const validateIsInteger = actual => (actual % 1 === 0 ? undefined : { actual, error: ERROR_NOT_INTEGER });
-export const validateIsObject = actual => (actual && typeof actual === 'object' ? undefined : { actual, error: ERROR_NOT_OBJECT });
-export const validateIsArray = actual => (isArray(actual) ? undefined : { actual, error: ERROR_NOT_ARRAY });
-export const validateIsDate = actual => (isDate(actual) ? undefined : { actual, error: ERROR_NOT_DATE });
+export const validateIsValidDate = actual => (!isNaN(actual.getTime()) ? undefined : { error: ERROR_INVALID_DATE, actual });
+export const validateIsInteger = actual => (actual % 1 === 0 ? undefined : { error: ERROR_NOT_INTEGER, actual });
+export const validateIsObject = actual => (actual && typeof actual === 'object' ? undefined : { error: ERROR_NOT_OBJECT, actual });
+export const validateIsArray = actual => (isArray(actual) ? undefined : { error: ERROR_NOT_ARRAY, actual });
+export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
 
 export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
 export const createValidateProperties = (properties, additionalProperties) => (value) => {
