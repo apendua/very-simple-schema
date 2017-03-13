@@ -11,30 +11,30 @@ import Schema from './Schema.js';
 
 chai.should();
 
-describe.skip('Test Schema.describe', function () {
+describe('Test Schema.describe', function () {
   describe('Given different error types', function () {
     it('should describe a string type error', function () {
       Schema.describe({
         error: ERROR_NOT_STRING,
-      }).should.equal('Value must be a string');
+      }).should.equal('Value should be a string');
     });
 
     it('should describe a number type error', function () {
       Schema.describe({
         error: ERROR_NOT_NUMBER,
-      }).should.equal('Value must be a number');
+      }).should.equal('Value should be a number');
     });
 
     it('should describe an array error', function () {
       Schema.describe({
         error: ERROR_NOT_ARRAY,
-      }).should.equal('Value must be an array');
+      }).should.equal('Value should be an array');
     });
 
     it('should describe an object error', function () {
       Schema.describe({
         error: ERROR_NOT_ARRAY,
-      }).should.equal('Value must be an array');
+      }).should.equal('Value should be an array');
     });
 
     it('should describe an object field error', function () {
@@ -43,7 +43,7 @@ describe.skip('Test Schema.describe', function () {
           a: { error: ERROR_NOT_STRING },
         },
       }).should.deep.equal({
-        a: 'Value.a must be a string',
+        a: 'Value.a should be a string',
       });
     });
 
@@ -57,7 +57,7 @@ describe.skip('Test Schema.describe', function () {
       }).should.deep.equal([
         undefined,
         undefined,
-        'Value.2 must be a string',
+        'Value.2 should be a string',
       ]);
     });
 
@@ -75,7 +75,7 @@ describe.skip('Test Schema.describe', function () {
           },
         },
       }).should.deep.equal({
-        a: { b: { c: 'Value.a.b.c must be a string' } },
+        a: { b: { c: 'Value.a.b.c should be a string' } },
       });
     });
 
