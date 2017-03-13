@@ -21,8 +21,10 @@ import {
   ERROR_TOO_LARGE,
 } from './constants.js';
 
-const objectPrototypeHas = Object.prototype.hasOwnProperty;
-export const has = (object, property) => objectPrototypeHas.call(object, property);
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const toString = Object.prototype.toString;
+
+export const has = (object, property) => hasOwnProperty.call(object, property);
 
 export const createValidateEquals = expected => actual => (actual === expected ? undefined : { actual, expected, error: ERROR_NOT_EQUAL });
 export const createValidateInstanceOf = constructor => actual => (actual instanceof constructor ? undefined : { actual, expected: constructor.name, error: ERROR_NOT_INSTANCE_OF });
@@ -39,9 +41,9 @@ export const createValidateMax = expected => actual => (actual <= expected ? und
 export const createValidateIsAllowed = allowedValues => actual =>
   (allowedValues.indexOf(actual) >= 0 ? undefined : { actual, expected: allowedValues, error: ERROR_VALUE_NOT_ALLOWED });
 
-export const isArray = actual => Object.prototype.toString.call(actual) === '[object Array]';
-export const isDate = actual => Object.prototype.toString.call(actual) === '[object Date]';
-export const isObject = actual => Object.prototype.toString.call(actual) === '[object Object]';
+export const isArray = actual => toString.call(actual) === '[object Array]';
+export const isDate = actual => toString.call(actual) === '[object Date]';
+export const isObject = actual => toString.call(actual) === '[object Object]';
 
 export const validateIsString = actual => (typeof actual === 'string' ? undefined : { actual, error: ERROR_NOT_STRING });
 export const validateIsNumber = actual => (typeof actual === 'number' ? undefined : { actual, error: ERROR_NOT_NUMBER });
