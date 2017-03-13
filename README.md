@@ -18,3 +18,34 @@ Despite the limited functionality it may still be an interesting alternative for
 ```
 npm install --save very-simple-schema
 ```
+
+## Basic usage
+
+```javascript
+import { Schema } from 'very-simple-schema';
+
+const Book = new Schema({
+  // must be present and non-empty
+  author:   { type: String, nonEmpty: true },
+  // can be missing, but if present then must be non-empty
+  title:    { type: String, optional: true, nonEmpty: true },
+  // can be missing
+  abstract: { type: String, optional: true },
+});
+```
+
+## Gotchas
+
+Unlkie in `SimpleSchema`, empty strings are accepted even if a property is required. The reason `SimpleSchema` treats them
+differently is that `clean` method is being called on an object before it's validated. To emulate the original behavior
+you can create a custom `Schema` class with different default behavior:
+```javascript
+import { createSchema, presetDefault } from 'very-simple-schema';
+
+const Schema = createSchema({
+  plugins: [
+    ...presetDefault,
+  ],
+  emptyStringsAreMissingValues: true,
+});
+```
