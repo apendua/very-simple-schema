@@ -8,7 +8,17 @@ import {
   createCompiler,
 } from './createCompiler.js';
 
-function createSchema(plugins, compilerOptions) {
+function createSchema(options = {}) {
+  const {
+    defaultLabel = 'Value',
+    defaultLabelCreator = keys => keys.join('.'),
+    defaultErrorCreator = error => new Error(error),
+  } = options;
+
+  if (!options.plugins) {
+    throw new Error('At lest you need to prvide an array of plugins');
+  }
+
   class Schema {
     constructor(schemaDef, schemaOptions = {}) {
       Object.assign(this, {
@@ -29,7 +39,7 @@ function createSchema(plugins, compilerOptions) {
     }
 
     validate(value, {
-      label = 'Value',
+      label = defaultLabel,
     } = {}) {
       const error = this.getErrors(value);
       return error && this.constructor.describe(error, {
@@ -48,7 +58,8 @@ function createSchema(plugins, compilerOptions) {
     }
 
     static describe(descriptor, {
-      label = 'Value',
+      keys = [],
+      labelCreator = defaultLabelCreator,
     } = {}) {
       if (descriptor && typeof descriptor === 'object') {
         if (descriptor.error) {
@@ -58,15 +69,15 @@ function createSchema(plugins, compilerOptions) {
           }
           return messageTemplate({
             ...descriptor,
-            label,
+            label: labelCreator(keys) || defaultLabel,
           });
         } else if (descriptor.errors) {
           if (isArray(descriptor.errors)) {
-            return descriptor.errors.map((item, index) => this.describe(item, { label: `${label}.${index}` }));
+            return descriptor.errors.map((item, index) => this.describe(item, { keys: [...keys, index], labelCreator }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};
             Object.keys(descriptor.errors).forEach((key) => {
-              described[key] = this.describe(descriptor.errors[key], { label: `${label}.${key}` });
+              described[key] = this.describe(descriptor.errors[key], { keys: [...keys, key], labelCreator });
             });
             return described;
           }
@@ -76,7 +87,7 @@ function createSchema(plugins, compilerOptions) {
     }
 
     static oneOf(array) {
-      return new this(array, { isOneOf: true });
+      return new this(array, { oneOf: true });
     }
 
     static merge(array) {
@@ -88,10 +99,10 @@ function createSchema(plugins, compilerOptions) {
     }
   }
 
-  Schema.compiler = createCompiler(Schema, plugins, compilerOptions);
+  Schema.compiler = createCompiler(Schema, options);
   Schema.messages = { ...MESSAGES };
 
-  plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
+  options.plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
 
   return Schema;
 }

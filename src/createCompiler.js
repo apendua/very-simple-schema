@@ -1,12 +1,12 @@
 
-export function createCompiler(Schema, plugins, options) {
+export function createCompiler(Schema, options) {
   const compiler = {
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
         return schemaDef.compiled;
       }
-      return plugins.reduce((previous, plugin) => {
+      return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
           return previous;
         }
@@ -23,7 +23,10 @@ export function createCompiler(Schema, plugins, options) {
           ...current,
           validate: value => previous.validate(value) || current.validate(value),
         };
-      }, { validate: () => {} });
+      }, {
+        ...schemaOptions.label && { label: schemaOptions.label },
+        validate: () => {},
+      });
     },
   };
   return compiler;

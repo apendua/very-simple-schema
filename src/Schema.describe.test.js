@@ -43,7 +43,7 @@ describe('Test Schema.describe', function () {
           a: { error: ERROR_NOT_STRING },
         },
       }).should.deep.equal({
-        a: 'Value.a should be a string',
+        a: 'a should be a string',
       });
     });
 
@@ -57,7 +57,7 @@ describe('Test Schema.describe', function () {
       }).should.deep.equal([
         undefined,
         undefined,
-        'Value.2 should be a string',
+        '2 should be a string',
       ]);
     });
 
@@ -75,7 +75,7 @@ describe('Test Schema.describe', function () {
           },
         },
       }).should.deep.equal({
-        a: { b: { c: 'Value.a.b.c should be a string' } },
+        a: { b: { c: 'a.b.c should be a string' } },
       });
     });
 
@@ -103,14 +103,14 @@ describe('Test Schema.describe', function () {
       }).should.deep.equal({
         books: [
           {
-            author: 'Value.books.0.author is not allowed',
+            author: 'books.0.author is not allowed',
           },
           {
-            title: 'Value.books.1.title is required',
+            title: 'books.1.title is required',
           },
         ],
         name: {
-          last: 'Value.name.last is required',
+          last: 'name.last is required',
         },
       });
     });
