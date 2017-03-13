@@ -27,6 +27,18 @@ function createSchema(options = {}) {
       });
     }
 
+    static oneOf(array) {
+      return new this(array, { oneOf: true });
+    }
+
+    static merge(array) {
+      return new this(array, { merge: true });
+    }
+
+    static pick(schemaDef, fields) {
+      return new this(schemaDef, { pick: fields });
+    }
+
     get compiled() {
       Object.defineProperty(this, 'compiled', {
         value: this.constructor.compiler.compile(this.schemaDef, this.schemaOptions),
@@ -48,6 +60,10 @@ function createSchema(options = {}) {
       return undefined;
     }
 
+    validator(validateOptions) {
+      return value => this.validate(value, validateOptions);
+    }
+
     validate(value, {
       noException = false,
       customErrors = defaultCustomErrors,
@@ -63,10 +79,6 @@ function createSchema(options = {}) {
         return details;
       }
       return undefined;
-    }
-
-    validator(validateOptions) {
-      return value => this.validate(value, validateOptions);
     }
 
     describe(descriptor, {
@@ -105,18 +117,6 @@ function createSchema(options = {}) {
         }
       }
       return undefined;
-    }
-
-    static oneOf(array) {
-      return new this(array, { oneOf: true });
-    }
-
-    static merge(array) {
-      return new this(array, { merge: true });
-    }
-
-    static pick(schemaDef, fields) {
-      return new this(schemaDef, { pick: fields });
     }
   }
 
