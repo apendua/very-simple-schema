@@ -10,7 +10,10 @@ const pluginMerge = {
     merge,
     additionalProperties = compiler.options.additionalProperties,
   }) {
-    if (merge && isArray(schemaDef)) {
+    if (merge) {
+      if (!isArray(schemaDef)) {
+        throw new Error('Merge requires an array');
+      }
       const properties = {};
       schemaDef.forEach((definition) => {
         // NOTE: We are not passing any options here. It's intentional.

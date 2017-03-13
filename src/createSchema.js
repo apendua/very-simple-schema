@@ -76,31 +76,15 @@ function createSchema(plugins, compilerOptions) {
     }
 
     static oneOf(array) {
-      if (!isArray(array)) {
-        throw new Error('OneOf requires an array');
-      }
-      if (array.length < 2) {
-        throw new Error('Array should contain at least two elements');
-      }
       return new this(array, { isOneOf: true });
     }
 
     static merge(array) {
-      if (!isArray(array)) {
-        throw new Error('Merge requires an array');
-      }
       return new this(array, { merge: true });
     }
 
     static pick(schemaDef, fields) {
-      if (!isArray(fields)) {
-        throw new Error('Pick requires an array of fields');
-      }
       return new this(schemaDef, { pick: fields });
-    }
-
-    static arrayOf(schemaDef) {
-      return new this([schemaDef]);
     }
   }
 

@@ -8,7 +8,10 @@ import {
 
 const pluginOneOf = {
   compile(compiler, schemaDef, { oneOf }) {
-    if (oneOf && isArray(schemaDef) && schemaDef.length > 1) {
+    if (oneOf) {
+      if (!(isArray(schemaDef) && schemaDef.length > 1)) {
+        throw new Error('OneOf requires and array with at least two elements');
+      }
       const memberValidators = schemaDef.map(x => compiler.compile(x));
       return {
         isOneOf: true,

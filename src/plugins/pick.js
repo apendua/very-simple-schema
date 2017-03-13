@@ -13,7 +13,7 @@ const pluginPick = {
   }) {
     if (pick) {
       if (!isArray(pick)) {
-        throw new Error('Pick needs to be an array.');
+        throw new Error('Pick requires an array of fields');
       }
       const schema = compiler.compile(schemaDef, otherOptions);
       if (!schema.isObject) {

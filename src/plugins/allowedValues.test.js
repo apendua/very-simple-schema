@@ -18,7 +18,7 @@ describe('Test allowedValues plugin', function () {
     this.Schema = function () {};
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginAllowedValues.compile(compiler, schemaDef, schemaOptions).validate;
+      pluginAllowedValues.compile.call({ isAtomic: true }, compiler, schemaDef, schemaOptions).validate;
   });
 
   describe('Given a schema with allowedValues', function () {

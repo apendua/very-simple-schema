@@ -1,5 +1,4 @@
 import {
-  isArray,
   createValidateIsAllowed,
 } from '../validators.js';
 
@@ -8,7 +7,10 @@ const pluginAllowedValues = {
     const {
       allowedValues,
     } = schemaOptions;
-    if (allowedValues && !isArray(schemaDef)) {
+    if (allowedValues) {
+      if (!this.isAtomic) {
+        throw new Error('AllowedValues requires an atomic schema');
+      }
       return {
         validate: createValidateIsAllowed(allowedValues),
       };
