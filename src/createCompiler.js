@@ -1,5 +1,4 @@
-
-export function createCompiler(Schema, options) {
+function createCompiler(Schema, options) {
   const compiler = {
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
@@ -11,17 +10,14 @@ export function createCompiler(Schema, options) {
           return previous;
         }
         const current = plugin.compile.call(previous, compiler, schemaDef, schemaOptions);
-        if (!current || typeof current.validate !== 'function') {
-          return {
-            ...previous,
-            ...current,
-            validate: previous.validate,
-          };
-        }
         return {
           ...previous,
           ...current,
-          validate: value => previous.validate(value) || current.validate(value),
+          validate: (
+            current && typeof current.validate === 'function'
+              ? value => previous.validate(value) || current.validate(value)
+              : previous.validate
+          ),
         };
       }, {
         ...schemaOptions.label && { label: schemaOptions.label },
@@ -31,3 +27,5 @@ export function createCompiler(Schema, options) {
   };
   return compiler;
 }
+
+export default createCompiler;

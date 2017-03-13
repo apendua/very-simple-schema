@@ -4,9 +4,7 @@ import {
 import {
   MESSAGES,
 } from './constants.js';
-import {
-  createCompiler,
-} from './createCompiler.js';
+import createCompiler from './createCompiler.js';
 import createError from './createError.js';
 
 function createSchema(options = {}) {
