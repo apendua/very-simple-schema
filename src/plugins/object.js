@@ -10,6 +10,7 @@ import {
 const pluginObject = {
   compile(compiler, schemaDef, {
     additionalProperties = compiler.options.additionalProperties,
+    requiredImpliesNonEmpty = compiler.options.requiredImpliesNonEmpty,
   }) {
     if (isObject(schemaDef)) {
       const properties = {};
@@ -24,7 +25,10 @@ const pluginObject = {
             optional,
             ...otherOptions
           } = definition;
-          properties[key] = compiler.compile(type, otherOptions);
+          properties[key] = compiler.compile(type, {
+            ...otherOptions,
+            ...requiredImpliesNonEmpty && !optional && { nonEmpty: true },
+          });
           properties[key].optional = !!optional;
         } else {
           properties[key] = compiler.compile(definition);

@@ -9,6 +9,7 @@ import {
   ERROR_NOT_NUMBER,
   ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
+  ERROR_IS_EMPTY,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -67,6 +68,33 @@ describe('Test createSchema', function () {
       });
       it('should accept value that is allowed', function () {
         should.not.exist(this.schema1.getErrors(['1', '12', '123']));
+      });
+    });
+  });
+
+  describe('Given an object schema with required properties', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema({
+        a: { type: String },
+      });
+      this.schema2 = new Schema({
+        a: { type: String },
+      }, {
+        requiredImpliesNonEmpty: true,
+      });
+    });
+    it('should accept empty strings by default even though field is required', function () {
+      should.not.exist(this.schema1.getErrors({
+        a: '',
+      }));
+    });
+    it('should not accept empty strings if requiredImpliesNonEmpty flag is used', function () {
+      this.schema2.getErrors({
+        a: '',
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_IS_EMPTY, actual: '' },
+        },
       });
     });
   });
