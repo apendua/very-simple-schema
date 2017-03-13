@@ -16,7 +16,11 @@ import {
 
 const pluginAtomic = {
   compile(compiler, schemaDef, schemaOptions) {
-    const { min, max, decimal } = schemaOptions;
+    const {
+      min,
+      max,
+      decimal = compiler.options.decimal,
+    } = schemaOptions;
     const validators = [];
     const schema = {
       isAtomic: true,

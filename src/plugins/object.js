@@ -8,24 +8,26 @@ import {
 } from '../validators.js';
 
 const pluginObject = {
-  compile(compiler, schemaDef, { additionalProperties }) {
+  compile(compiler, schemaDef, {
+    additionalProperties = compiler.options.additionalProperties,
+  }) {
     if (isObject(schemaDef)) {
       const properties = {};
       Object.keys(schemaDef).forEach((key) => {
-        const propSchemaDef = schemaDef[key];
-        if (propSchemaDef &&
-            typeof propSchemaDef === 'object' &&
-            !isArray(propSchemaDef) &&
-            has(propSchemaDef, 'type')) {
+        const definition = schemaDef[key];
+        if (definition &&
+            typeof definition === 'object' &&
+            !isArray(definition) &&
+            has(definition, 'type')) {
           const {
             type,
             optional,
             ...otherOptions
-          } = propSchemaDef;
+          } = definition;
           properties[key] = compiler.compile(type, otherOptions);
           properties[key].optional = !!optional;
         } else {
-          properties[key] = compiler.compile(propSchemaDef);
+          properties[key] = compiler.compile(definition);
         }
       });
       return {

@@ -6,11 +6,15 @@ import {
 } from '../validators.js';
 
 const pluginMerge = {
-  compile(compiler, schemaDef, { merge, additionalProperties }) {
+  compile(compiler, schemaDef, {
+    merge,
+    additionalProperties = compiler.options.additionalProperties,
+  }) {
     if (merge && isArray(schemaDef)) {
       const properties = {};
-      schemaDef.forEach((memberSchemaDef) => {
-        const schema = compiler.compile(memberSchemaDef);
+      schemaDef.forEach((definition) => {
+        // NOTE: We are not passing any options here. It's intentional.
+        const schema = compiler.compile(definition);
         if (!schema.isObject) {
           throw new Error('Merge requires all source schema to be objects');
         }
