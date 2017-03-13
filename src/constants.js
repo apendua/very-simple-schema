@@ -19,6 +19,7 @@ export const ERROR_TOO_LONG = 'tooLong';
 export const ERROR_TOO_SHORT = 'tooShort';
 export const ERROR_TOO_LARGE = 'tooLarge';
 export const ERROR_TOO_SMALL = 'tooSmall';
+export const ERROR_IS_EMPTY = 'isEmpty';
 
 export const MESSAGES = {
   [ERROR_MISSING_FIELD]:       ({ label }) => `${label} is required`,
@@ -41,4 +42,5 @@ export const MESSAGES = {
   [ERROR_TOO_SHORT]:           ({ label, expected }) => `${label} should be of length at least ${expected}`,
   [ERROR_TOO_LARGE]:           ({ label, expected }) => `${label} should be at most ${expected}`,
   [ERROR_TOO_SMALL]:           ({ label, expected }) => `${label} should be at least ${expected}`,
+  [ERROR_IS_EMPTY]:            ({ label }) => `${label} should be non empty`,
 };

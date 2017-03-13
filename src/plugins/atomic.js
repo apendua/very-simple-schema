@@ -12,6 +12,7 @@ import {
   createValidateMax,
   createValidateMinLength,
   createValidateMaxLength,
+  validateNonEmpty,
 } from '../validators.js';
 
 const pluginAtomic = {
@@ -19,6 +20,7 @@ const pluginAtomic = {
     const {
       min,
       max,
+      nonEmpty,
       decimal = compiler.options.decimal,
     } = schemaOptions;
     const validators = [];
@@ -34,6 +36,7 @@ const pluginAtomic = {
       schema.isNumber = true;
     } else if (schemaDef === String) {
       validators.push(validateIsString);
+      validators.push(nonEmpty && validateNonEmpty);
       validators.push(min !== undefined && createValidateMinLength(min));
       validators.push(max !== undefined && createValidateMaxLength(max));
       schema.isString = true;

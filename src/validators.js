@@ -19,6 +19,7 @@ import {
   ERROR_TOO_SHORT,
   ERROR_TOO_SMALL,
   ERROR_TOO_LARGE,
+  ERROR_IS_EMPTY,
 } from './constants.js';
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
@@ -54,6 +55,7 @@ export const validateIsInteger = actual => (actual % 1 === 0 ? undefined : { err
 export const validateIsObject = actual => (actual && typeof actual === 'object' ? undefined : { error: ERROR_NOT_OBJECT, actual });
 export const validateIsArray = actual => (isArray(actual) ? undefined : { error: ERROR_NOT_ARRAY, actual });
 export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
+export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });
 
 export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
 export const createValidateProperties = (properties, additionalProperties) => (value) => {

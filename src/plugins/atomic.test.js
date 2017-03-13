@@ -16,6 +16,7 @@ import {
   ERROR_NOT_DATE,
   ERROR_INVALID_DATE,
   ERROR_NOT_INSTANCE_OF,
+  ERROR_IS_EMPTY,
 } from '../constants.js';
 
 const should = chai.should();
@@ -165,6 +166,7 @@ describe('Test atomic plugin', function () {
     describe('and the definition is "String"', function () {
       beforeEach(function () {
         this.schema2 = this.compile(String);
+        this.schema2x = this.compile(String, { nonEmpty: true });
       });
       it('should recognize this is an atomic schema', function () {
         this.schema2.isAtomic.should.be.true;
@@ -179,6 +181,12 @@ describe('Test atomic plugin', function () {
         this.schema2.validate(true).should.deep.equal({
           error: ERROR_NOT_STRING,
           actual: true,
+        });
+      });
+      it('should reject an empty a string', function () {
+        this.schema2x.validate('').should.deep.equal({
+          error: ERROR_IS_EMPTY,
+          actual: '',
         });
       });
     });
