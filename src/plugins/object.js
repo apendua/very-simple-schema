@@ -10,7 +10,7 @@ import {
 const pluginObject = {
   compile(compiler, schemaDef, {
     additionalProperties = compiler.options.additionalProperties,
-    requiredImpliesNonEmpty = compiler.options.requiredImpliesNonEmpty,
+    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
     if (isObject(schemaDef)) {
       const properties = {};
@@ -27,7 +27,6 @@ const pluginObject = {
           } = definition;
           properties[key] = compiler.compile(type, {
             ...otherOptions,
-            ...requiredImpliesNonEmpty && !optional && { nonEmpty: true },
           });
           properties[key].optional = !!optional;
         } else {
@@ -40,7 +39,11 @@ const pluginObject = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties, additionalProperties),
+          createValidateProperties({
+            properties,
+            additionalProperties,
+            emptyStringsAreMissingValues,
+          }),
         ]),
         getSubSchema: key => properties[key],
       };

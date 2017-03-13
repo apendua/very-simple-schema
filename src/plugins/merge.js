@@ -9,6 +9,7 @@ const pluginMerge = {
   compile(compiler, schemaDef, {
     merge,
     additionalProperties = compiler.options.additionalProperties,
+    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
     if (merge) {
       if (!isArray(schemaDef)) {
@@ -29,7 +30,11 @@ const pluginMerge = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties, additionalProperties),
+          createValidateProperties({
+            properties,
+            additionalProperties,
+            emptyStringsAreMissingValues,
+          }),
         ]),
       };
     }

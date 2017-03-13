@@ -9,6 +9,7 @@ const pluginPick = {
   compile(compiler, schemaDef, {
     pick,
     additionalProperties = compiler.options.additionalProperties,
+    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
     ...otherOptions
   }) {
     if (pick) {
@@ -29,7 +30,11 @@ const pluginPick = {
         isObject: true,
         validate: combine([
           validateIsObject,
-          createValidateProperties(properties, additionalProperties),
+          createValidateProperties({
+            properties,
+            additionalProperties,
+            emptyStringsAreMissingValues,
+          }),
         ]),
       };
     }

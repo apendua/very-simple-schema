@@ -58,16 +58,25 @@ export const validateIsDate = actual => (isDate(actual) ? undefined : { error: E
 export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });
 
 export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
-export const createValidateProperties = (properties, additionalProperties) => (value) => {
+export const createValidateProperties = ({
+  properties,
+  additionalProperties,
+  emptyStringsAreMissingValues,
+}) => (value) => {
   const errors = {};
   Object.keys(properties).forEach((key) => {
     const property = properties[key];
-    if (!has(value, key)) {
+    const valueAtKey = value[key];
+    if (
+        valueAtKey === undefined ||
+        valueAtKey === null ||
+        (emptyStringsAreMissingValues && valueAtKey === '')
+    ) {
       if (!property.optional) {
         errors[key] = { error: ERROR_MISSING_FIELD };
       }
     } else {
-      const error = property.validate(value[key]);
+      const error = property.validate(valueAtKey);
       if (error) {
         errors[key] = error;
       }

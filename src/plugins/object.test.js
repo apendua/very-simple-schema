@@ -40,6 +40,12 @@ describe('Test object plugin', function () {
         b: String,
         x: String,
       });
+      this.validate3 = this.createValidate({
+        a: { type: String },
+        b: { type: String, optional: true },
+      }, {
+        emptyStringsAreMissingValues: true,
+      });
     });
     it('should accept a valid object', function () {
       should.not.exist(this.validate1({
@@ -50,6 +56,17 @@ describe('Test object plugin', function () {
     });
     it('should reject if required fields are missing', function () {
       this.validate1({}).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+          x: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+    it('should reject if required fields are null or undefined', function () {
+      this.validate1({
+        a: null,
+        x: undefined,
+      }).should.deep.equal({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           x: { error: ERROR_MISSING_FIELD },
@@ -86,6 +103,16 @@ describe('Test object plugin', function () {
           a: { error: ERROR_NOT_STRING, actual: 1 },
           b: { error: ERROR_NOT_STRING, actual: 2 },
           x: { error: ERROR_NOT_STRING, actual: true },
+        },
+      });
+    });
+    it('should if required string is empty and emptyStringsAreMissingValues', function () {
+      this.validate3({
+        a: '',
+        b: '', // this one is optional
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
         },
       });
     });
