@@ -9,14 +9,15 @@ import createError from './createError.js';
 
 function createSchema(options = {}) {
   const {
+    defaultLabelCreator = (keys, custom) => custom || keys.join('.'),
     defaultLabel = 'Value',
     defaultCustomErrors,
     defaultErrorCreator = createError,
-    defaultLabelCreator = (keys, custom) => custom || keys.join('.'),
+    ...compilerOptions
   } = options;
 
-  if (!options.plugins) {
-    throw new Error('At lest you need to prvide an array of plugins');
+  if (!compilerOptions.plugins) {
+    throw new Error('At minimum you need to prvide an array of plugins');
   }
 
   class Schema {
@@ -120,10 +121,10 @@ function createSchema(options = {}) {
     }
   }
 
-  Schema.compiler = createCompiler(Schema, options);
+  Schema.compiler = createCompiler(Schema, compilerOptions);
   Schema.messages = { ...MESSAGES };
 
-  options.plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
+  compilerOptions.plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
 
   return Schema;
 }
