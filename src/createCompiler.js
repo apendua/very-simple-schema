@@ -1,9 +1,14 @@
+import { validateAlways } from './validators.js';
+
 function createCompiler(Schema, options) {
   const compiler = {
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
         return schemaDef.compiled;
+      }
+      if (schemaDef === Schema.Any) {
+        return { isAny: true, validate: validateAlways };
       }
       return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
@@ -21,7 +26,7 @@ function createCompiler(Schema, options) {
         };
       }, {
         ...schemaOptions.label && { label: schemaOptions.label },
-        validate: () => {},
+        validate: validateAlways,
       });
     },
   };

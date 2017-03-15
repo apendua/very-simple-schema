@@ -26,6 +26,7 @@ const hasOwnProperty = Object.prototype.hasOwnProperty;
 const toString = Object.prototype.toString;
 
 export const has = (object, property) => hasOwnProperty.call(object, property);
+export const validateAlways = () => {};
 
 export const createValidateEquals = expected => actual => (actual === expected ? undefined : { error: ERROR_NOT_EQUAL, actual, expected });
 export const createValidateInstanceOf = expected => actual => (actual instanceof expected ? undefined : { error: ERROR_NOT_INSTANCE_OF, actual, expected });

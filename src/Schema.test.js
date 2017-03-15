@@ -9,13 +9,27 @@ import {
   ERROR_NOT_NUMBER,
   ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
-  ERROR_IS_EMPTY,
 } from './constants.js';
 import Schema from './Schema.js';
 
 const should = chai.should();
 
 describe('Test createSchema', function () {
+  describe('Given "any" schema', function () {
+    beforeEach(function () {
+      this.schema = new Schema(Schema.Any);
+    });
+    it('should set "any" flag', function () {
+      this.schema.compiled.isAny.should.be.true;
+    });
+    it('should accept an empty object', function () {
+      should.not.exist(this.schema.getErrors({}));
+    });
+    it('should accept a number', function () {
+      should.not.exist(this.schema.getErrors(1));
+    });
+  });
+
   describe('Given empty schema', function () {
     beforeEach(function () {
       this.schema = new Schema({});

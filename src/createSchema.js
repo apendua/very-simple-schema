@@ -127,6 +127,7 @@ function createSchema(options = {}) {
     }
   }
 
+  Schema.Any = {};
   Schema.compiler = createCompiler(Schema, compilerOptions);
   Schema.messages = { ...MESSAGES };
 
