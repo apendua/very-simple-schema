@@ -9,10 +9,12 @@ import createError from './createError.js';
 
 function createSchema(options = {}) {
   const {
-    defaultLabelCreator = (keys, custom) => custom || keys.join('.'),
+    defaultLabelCreator = (keys, label) => label || keys.join('.'),
     defaultLabel = 'Value',
     defaultCustomErrors,
     defaultErrorCreator = createError,
+    // eslint-disable-next-line no-use-before-define
+    defaultGetMessageTemplate = type => Schema.messages[type],
     ...compilerOptions
   } = options;
 
@@ -70,10 +72,14 @@ function createSchema(options = {}) {
       customErrors = defaultCustomErrors,
       errorCreator = defaultErrorCreator,
       labelCreator = defaultLabelCreator,
+      getMessageTemplate = defaultGetMessageTemplate,
     } = {}) {
       const errors = this.getErrors(value, customErrors);
       if (errors) {
-        const details = this.describe(errors, { labelCreator });
+        const details = this.describe(errors, {
+          labelCreator,
+          getMessageTemplate,
+        });
         if (!noException) {
           throw errorCreator(details);
         }
@@ -86,23 +92,23 @@ function createSchema(options = {}) {
       keys = [],
       context = this.compiled,
       labelCreator = defaultLabelCreator,
+      getMessageTemplate = defaultGetMessageTemplate,
     } = {}) {
       if (descriptor && typeof descriptor === 'object') {
         if (descriptor.error) {
-          const messageTemplate = this.constructor.messages[descriptor.error];
-          if (!messageTemplate) {
-            return descriptor.error;
-          }
-          return messageTemplate({
-            ...descriptor,
-            label: labelCreator(keys, context && context.label) || defaultLabel,
-          });
+          const messageTemplate = getMessageTemplate(descriptor.error) || descriptor.error;
+          return typeof messageTemplate === 'function'
+            ? messageTemplate({
+              ...descriptor,
+              label: labelCreator(keys, context && context.label) || defaultLabel,
+            })
+            : messageTemplate;
         } else if (descriptor.errors) {
           if (isArray(descriptor.errors)) {
-            return descriptor.errors.map((item, index) => this.describe(item, {
+            return descriptor.errors.map((item, idx) => this.describe(item, {
               labelCreator,
-              keys: [...keys, index],
-              context: context && context.getSubSchema && context.getSubSchema(index),
+              keys: [...keys, idx],
+              context: context && context.getSubSchema && context.getSubSchema(idx),
             }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};

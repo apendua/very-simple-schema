@@ -14,6 +14,7 @@ describe('Test createSchema', function () {
     this.errorCreator = sinon.spy();
     this.labelCreator = sinon.spy();
     this.customErrors = sinon.spy();
+    this.getMessageTemplate = sinon.spy();
     this.Schema = createSchema({
       plugins: presetDefault,
       defaultCustomErrors: this.customErrors,
@@ -22,6 +23,7 @@ describe('Test createSchema', function () {
         this.errorCreator();
         return new Error('error');
       },
+      defaultGetMessageTemplate: () => this.getMessageTemplate,
     });
   });
 
@@ -40,6 +42,9 @@ describe('Test createSchema', function () {
     it('should ask for custom errors', function () {
       this.customErrors.should.be.calledOnce;
     });
+    it('should ask for custom message tempaltes', function () {
+      this.getMessageTemplate.should.be.calledOnce;
+    });
   });
 
   describe('Given a customized validator is used', function () {
@@ -47,6 +52,11 @@ describe('Test createSchema', function () {
       this.errorCreator2 = sinon.spy();
       this.labelCreator2 = sinon.spy();
       this.customErrors2 = sinon.spy();
+      this.getMessageTemplateSpy = sinon.spy();
+      this.getMessageTemplate2 = (error) => {
+        this.getMessageTemplateSpy();
+        return () => error;
+      };
     });
 
     beforeEach(function () {
@@ -57,6 +67,7 @@ describe('Test createSchema', function () {
           this.errorCreator2();
           return new Error('error');
         },
+        getMessageTemplate: this.getMessageTemplate2,
       });
       (() => {
         this.validate('');
@@ -70,6 +81,9 @@ describe('Test createSchema', function () {
     });
     it('should ask for custom errors', function () {
       this.customErrors2.should.be.calledOnce;
+    });
+    it('should ask for custom message tempaltes', function () {
+      this.getMessageTemplateSpy.should.be.calledOnce;
     });
   });
 });
