@@ -1,6 +1,6 @@
 # very-simple-schema
 
-Bundle size: ~18.8 kB, ~4.6 kB gzipped
+Bundle size: ~21.1 kB, ~5.0 kB gzipped
 
 [![Build Status](https://travis-ci.org/apendua/very-simple-schema.svg?branch=master)](https://travis-ci.org/apendua/very-simple-schema)
 

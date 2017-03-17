@@ -9,7 +9,9 @@ import {
 
 const pluginObject = {
   compile(compiler, schemaDef, {
+    required,
     additionalProperties = compiler.options.additionalProperties,
+    fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
     if (isObject(schemaDef)) {
@@ -22,7 +24,7 @@ const pluginObject = {
             has(definition, 'type')) {
           const {
             type,
-            optional,
+            optional = fieldsOptionalByDefault,
             ...otherOptions
           } = definition;
           properties[key] = compiler.compile(type, {
@@ -33,6 +35,20 @@ const pluginObject = {
           properties[key] = compiler.compile(definition);
         }
       });
+      if (required) {
+        if (!fieldsOptionalByDefault) {
+          throw new Error('Required is only allowed when fields are optional by default');
+        }
+        if (!isArray(required)) {
+          throw new Error('Required should be an array');
+        }
+        required.forEach((key) => {
+          if (!properties[key]) {
+            throw new Error(`Unknown required property ${key}`);
+          }
+          properties[key].optional = false;
+        });
+      }
       return {
         properties,
         compiled: true,

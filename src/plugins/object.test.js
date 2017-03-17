@@ -118,6 +118,44 @@ describe('Test object plugin', function () {
     });
   });
 
+  describe('Given fields are optional by default', function () {
+    beforeEach(function () {
+      this.validate1 = this.createValidate({
+        a: { type: String },
+        b: { type: String },
+        c: { type: String },
+      }, {
+        required: ['a', 'b'],
+        fieldsOptionalByDefault: true,
+      });
+    });
+    it('should accept a valid object', function () {
+      should.not.exist(this.validate1({
+        a: '',
+        b: '',
+      }));
+    });
+    it('should reject if required fields are missing', function () {
+      this.validate1({}).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+          b: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+    it('should reject if required fields are null or undefined', function () {
+      this.validate1({
+        a: null,
+        b: undefined,
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+          b: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+  });
+
   describe('Given a nested object schema', function () {
     beforeEach(function () {
       this.validate1 = this.createValidate({

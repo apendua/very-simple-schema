@@ -7,6 +7,7 @@ const SimpleSchema = createSchema({
   ],
   decimal: false,
   additionalProperties: false,
+  fieldsOptionalByDefault: false,
   emptyStringsAreMissingValues: true,
 });
 
