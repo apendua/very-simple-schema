@@ -14,7 +14,7 @@ import Schema from './Schema.js';
 
 const should = chai.should();
 
-describe('Test createSchema', function () {
+describe('Test Schema', function () {
   describe('Given "any" schema', function () {
     beforeEach(function () {
       this.schema = new Schema(Schema.Any);

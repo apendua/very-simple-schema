@@ -26,9 +26,9 @@ import { Schema } from 'very-simple-schema';
 
 const Book = new Schema({
   // must be present and non-empty
-  author:   { type: String, nonEmpty: true },
+  author: { type: String, nonEmpty: true },
   // can be missing, but if present then must be non-empty
-  title:    { type: String, optional: true, nonEmpty: true },
+  title: { type: String, optional: true, nonEmpty: true },
   // can be missing
   abstract: { type: String, optional: true },
 });
