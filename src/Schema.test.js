@@ -215,4 +215,47 @@ describe('Test Schema', function () {
       });
     });
   });
+
+  describe('Given a merged schema', function () {
+    beforeEach(function () {
+      this.schema1 = Schema.merge([
+        {
+          a: { type: String },
+          b: { type: String },
+        },
+        {
+          b: { type: String, optional: true },
+          c: { type: String },
+          d: { type: String },
+        },
+      ]);
+    });
+
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema1.getErrors({
+        a: 'a',
+        c: 'c',
+        d: 'd',
+      }));
+    });
+
+    it('should reject an invalid object', function () {
+      this.schema1.getErrors({
+        c: 'c',
+        d: 'd',
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+
+    it('should flag itself with isObject', function () {
+      this.schema1.compiled.isObject.should.be.true;
+    });
+
+    it('should provide getSubSchema function', function () {
+      this.schema1.compiled.getSubSchema.should.be.ok;
+    });
+  });
 });
