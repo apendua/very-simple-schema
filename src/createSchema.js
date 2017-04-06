@@ -1,11 +1,11 @@
 import {
   isArray,
 } from './validators.js';
-import {
-  MESSAGES,
-} from './constants.js';
+import * as constants from './constants.js';
 import createCompiler from './createCompiler.js';
 import createError from './createError.js';
+
+const { MESSAGES, ...ERRORS } = constants;
 
 function createSchema(options = {}) {
   const {
@@ -130,6 +130,7 @@ function createSchema(options = {}) {
   Schema.Any = {};
   Schema.compiler = createCompiler(Schema, compilerOptions);
   Schema.messages = { ...MESSAGES };
+  Object.assign(Schema, ERRORS);
 
   compilerOptions.plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
 

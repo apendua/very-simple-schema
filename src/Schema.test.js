@@ -15,6 +15,75 @@ import Schema from './Schema.js';
 const should = chai.should();
 
 describe('Test Schema', function () {
+  describe('Given a Schema class', function () {
+    it('should expose ERROR_MISSING_FIELD', function () {
+      Schema.ERROR_MISSING_FIELD.should.be.ok;
+    });
+    it('should expose ERROR_KEY_NOT_ALLOWED', function () {
+      Schema.ERROR_KEY_NOT_ALLOWED.should.be.ok;
+    });
+    it('should expose ERROR_INVALID_DATE', function () {
+      Schema.ERROR_INVALID_DATE.should.be.ok;
+    });
+    it('should expose ERROR_DOES_NOT_MATCH', function () {
+      Schema.ERROR_DOES_NOT_MATCH.should.be.ok;
+    });
+    it('should expose ERROR_NOT_EQUAL', function () {
+      Schema.ERROR_NOT_EQUAL.should.be.ok;
+    });
+    it('should expose ERROR_NOT_INTEGER', function () {
+      Schema.ERROR_NOT_INTEGER.should.be.ok;
+    });
+    it('should expose ERROR_NOT_STRING', function () {
+      Schema.ERROR_NOT_STRING.should.be.ok;
+    });
+    it('should expose ERROR_NOT_NUMBER', function () {
+      Schema.ERROR_NOT_NUMBER.should.be.ok;
+    });
+    it('should expose ERROR_NOT_BOOLEAN', function () {
+      Schema.ERROR_NOT_BOOLEAN.should.be.ok;
+    });
+    it('should expose ERROR_NOT_ARRAY', function () {
+      Schema.ERROR_NOT_ARRAY.should.be.ok;
+    });
+    it('should expose ERROR_NOT_OBJECT', function () {
+      Schema.ERROR_NOT_OBJECT.should.be.ok;
+    });
+    it('should expose ERROR_NOT_DATE', function () {
+      Schema.ERROR_NOT_DATE.should.be.ok;
+    });
+    it('should expose ERROR_NOT_INSTANCE_OF', function () {
+      Schema.ERROR_NOT_INSTANCE_OF.should.be.ok;
+    });
+    it('should expose ERROR_NO_ALTERNATIVE', function () {
+      Schema.ERROR_NO_ALTERNATIVE.should.be.ok;
+    });
+    it('should expose ERROR_VALUE_NOT_ALLOWED', function () {
+      Schema.ERROR_VALUE_NOT_ALLOWED.should.be.ok;
+    });
+    it('should expose ERROR_TOO_MANY', function () {
+      Schema.ERROR_TOO_MANY.should.be.ok;
+    });
+    it('should expose ERROR_TOO_FEW', function () {
+      Schema.ERROR_TOO_FEW.should.be.ok;
+    });
+    it('should expose ERROR_TOO_LONG', function () {
+      Schema.ERROR_TOO_LONG.should.be.ok;
+    });
+    it('should expose ERROR_TOO_SHORT', function () {
+      Schema.ERROR_TOO_SHORT.should.be.ok;
+    });
+    it('should expose ERROR_TOO_LARGE', function () {
+      Schema.ERROR_TOO_LARGE.should.be.ok;
+    });
+    it('should expose ERROR_TOO_SMALL', function () {
+      Schema.ERROR_TOO_SMALL.should.be.ok;
+    });
+    it('should expose ERROR_IS_EMPTY', function () {
+      Schema.ERROR_IS_EMPTY.should.be.ok;
+    });
+  });
+
   describe('Given "any" schema', function () {
     beforeEach(function () {
       this.schema = new Schema(Schema.Any);
