@@ -31,6 +31,8 @@ const Book = new Schema({
   title: { type: String, optional: true, nonEmpty: true },
   // can be missing
   abstract: { type: String, optional: true },
+  // must be present, if present can be empty
+  signature: { type: String },
 });
 ```
 
@@ -48,4 +50,35 @@ const Schema = createSchema({
   ],
   emptyStringsAreMissingValues: true,
 });
+```
+
+## Examples
+
+```javascript
+import { Schema } from 'very-simple-schema';
+
+// a number between 0 and 10
+new Schema(Number, { min: 0, max: 10 });
+
+// an array of anything with at least one element
+new Schema([Schema.Any], { minCount: 1 });
+
+const Id = Schema.oneOf([String, Number]); // can be one of the specified types
+
+const User = new Schema({
+  name: { type: String },
+  email: { type: String, regEx: Schema.RegEx.Email, optional: true },
+}, { typeName: 'User' }); // custom typeName can improve some error messages
+
+const Book = new Schema({
+  id: { type: Id },
+  author: { type: User }, // type can be another schema
+  title: { type: String, nonEmpty: true },
+  abstract: { type: String },
+  chapters: { type: [String], max: 128 }, // max refers individual chapter
+}, { typeName: 'Book' });
+
+const Library = new Schema({
+  books: { type: [Book], maxCount: 1000 },
+}, { typeName: 'Library' });
 ```
