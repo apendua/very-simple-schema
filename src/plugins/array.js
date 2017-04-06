@@ -14,6 +14,7 @@ const pluginArray = {
       return {
         element,
         isArray: true,
+        typeName: `array of ${element.typeName}`,
         compiled: true,
         validate: combine([
           validateIsArray,

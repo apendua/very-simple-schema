@@ -8,6 +8,7 @@ import {
 const pluginPick = {
   compile(compiler, schemaDef, {
     pick,
+    typeName = 'object',
     additionalProperties = compiler.options.additionalProperties,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
     ...otherOptions
@@ -26,6 +27,7 @@ const pluginPick = {
       });
       return {
         properties,
+        typeName,
         compiled: true,
         isObject: true,
         validate: combine([

@@ -9,6 +9,7 @@ const pluginLazy = {
       return {
         isLazy: true,
         compiled: true,
+        typeName: 'lazy',
         validate: (value) => {
           if (!validate) {
             validate = compiler.compile(schemaDef()).validate;

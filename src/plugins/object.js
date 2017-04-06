@@ -9,6 +9,7 @@ import {
 
 const pluginObject = {
   compile(compiler, schemaDef, {
+    typeName = 'object',
     required,
     additionalProperties = compiler.options.additionalProperties,
     fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
@@ -51,6 +52,7 @@ const pluginObject = {
       }
       return {
         properties,
+        typeName,
         compiled: true,
         isObject: true,
         validate: combine([

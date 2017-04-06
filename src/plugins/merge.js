@@ -8,6 +8,7 @@ import {
 const pluginMerge = {
   compile(compiler, schemaDef, {
     merge,
+    typeName = 'object',
     additionalProperties = compiler.options.additionalProperties,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
@@ -26,6 +27,7 @@ const pluginMerge = {
       });
       return {
         properties,
+        typeName,
         compiled: true,
         isObject: true,
         validate: combine([

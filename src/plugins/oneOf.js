@@ -16,14 +16,17 @@ const pluginOneOf = {
       return {
         isOneOf: true,
         compiled: true,
+        typeName: `one of ${memberValidators.map(x => x.typeName).join(', ')}`,
         validate: (value) => {
-          for (const { validate } of memberValidators) {
+          const expected = [];
+          for (const { validate, typeName } of memberValidators) {
             const error = validate(value);
             if (!error) {
               return undefined;
             }
+            expected.push(typeName || '[unknown]');
           }
-          return { error: ERROR_NO_ALTERNATIVE };
+          return { error: ERROR_NO_ALTERNATIVE, expected };
         },
       };
     }

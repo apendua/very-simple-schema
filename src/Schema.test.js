@@ -327,4 +327,18 @@ describe('Test Schema', function () {
       this.schema1.compiled.getSubSchema.should.be.ok;
     });
   });
+
+  describe('Given an alternative schema', function () {
+    beforeEach(function () {
+      this.schema = new Schema([
+        new Schema({}, { typeName: 'empty' }),
+        new Schema(String, { typeName: 'text' }),
+        new Schema([Number]),
+      ], { oneOf: true });
+    });
+
+    it('should generate a descriptive error of there is no match', function () {
+      this.schema.validate(true, { noException: true }).should.equal('Value should be one of: empty, text, array of number');
+    });
+  });
 });

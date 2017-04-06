@@ -8,7 +8,7 @@ function createCompiler(Schema, options) {
         return schemaDef.compiled;
       }
       if (schemaDef === Schema.Any) {
-        return { isAny: true, validate: validateAlways };
+        return { isAny: true, typeName: 'any', validate: validateAlways };
       }
       return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
