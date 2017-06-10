@@ -31,7 +31,7 @@ describe('Test createSchema', function () {
     beforeEach(function () {
       (() => {
         new this.Schema(Number).validate('');
-      }).should.throw('error');
+      }).should.throw();
     });
     it('should use custom error creator', function () {
       this.errorCreator.should.be.calledOnce;
@@ -84,6 +84,24 @@ describe('Test createSchema', function () {
     });
     it('should ask for custom message tempaltes', function () {
       this.getMessageTemplateSpy.should.be.calledOnce;
+    });
+  });
+
+  describe('Given custom message templates are used', function () {
+    beforeEach(function () {
+      this.schema = new this.Schema({
+        a: { type: Number },
+        b: { type: Number },
+      });
+    });
+    it('should throw a custom error message', function () {
+      const errors = this.schema.getErrors({ a: 'a', b: 'b' });
+      this.schema.describe(errors, {
+        getMessageTemplate: type => () => type,
+      }).should.deep.equal({
+        a: this.Schema.ERROR_NOT_NUMBER,
+        b: this.Schema.ERROR_NOT_NUMBER,
+      });
     });
   });
 });

@@ -107,6 +107,7 @@ function createSchema(options = {}) {
           if (isArray(descriptor.errors)) {
             return descriptor.errors.map((item, idx) => this.describe(item, {
               labelCreator,
+              getMessageTemplate,
               keys: [...keys, idx],
               context: context && context.getSubSchema && context.getSubSchema(idx),
             }));
@@ -115,6 +116,7 @@ function createSchema(options = {}) {
             Object.keys(descriptor.errors).forEach((key) => {
               described[key] = this.describe(descriptor.errors[key], {
                 labelCreator,
+                getMessageTemplate,
                 keys: [...keys, key],
                 context: context && context.getSubSchema && context.getSubSchema(key),
               });
