@@ -24,6 +24,7 @@ import {
 import {
   has,
   isArray,
+  isPlainObject,
   isDate,
 } from './utils.js';
 
@@ -50,7 +51,7 @@ export const validateIsBoolean = actual => (typeof actual === 'boolean' ? undefi
 
 export const validateIsValidDate = actual => (!isNaN(actual.getTime()) ? undefined : { error: ERROR_INVALID_DATE, actual });
 export const validateIsInteger = actual => (actual % 1 === 0 ? undefined : { error: ERROR_NOT_INTEGER, actual });
-export const validateIsObject = actual => (actual && typeof actual === 'object' ? undefined : { error: ERROR_NOT_OBJECT, actual });
+export const validateIsObject = actual => (isPlainObject(actual) ? undefined : { error: ERROR_NOT_OBJECT, actual });
 export const validateIsArray = actual => (isArray(actual) ? undefined : { error: ERROR_NOT_ARRAY, actual });
 export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
 export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });

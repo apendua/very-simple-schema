@@ -5,6 +5,7 @@ import chai from 'chai';
 import {
   ERROR_MISSING_FIELD,
   ERROR_NOT_STRING,
+  ERROR_NOT_OBJECT,
 } from '../constants.js';
 import pluginObject from './object.js';
 import Schema from '../Schema.js';
@@ -31,6 +32,21 @@ describe('Test object plugin', function () {
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
       pluginObject.compile(this.compiler, schemaDef, schemaOptions).validate;
+  });
+
+  describe('Given an empty object schema', function () {
+    beforeEach(function () {
+      this.validate = this.createValidate({});
+    });
+    it('should accept an empty object', function () {
+      should.not.exist(this.validate({}));
+    });
+    it('should reject an array', function () {
+      this.validate([]).should.deep.equal({
+        actual: [],
+        error: ERROR_NOT_OBJECT,
+      });
+    });
   });
 
   describe('Given an object schema', function () {
