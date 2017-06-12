@@ -1,6 +1,6 @@
 # very-simple-schema
 
-Bundle size: ~21.1 kB, ~5.0 kB gzipped
+Bundle size: ~22.5 kB, ~5.5 kB gzipped
 
 [![Build Status](https://travis-ci.org/apendua/very-simple-schema.svg?branch=master)](https://travis-ci.org/apendua/very-simple-schema)
 
@@ -71,9 +71,9 @@ const User = new Schema({
 }, { typeName: 'User' }); // custom typeName can improve some error messages
 
 const Book = new Schema({
-  id: { type: Id },
-  author: { type: User }, // type can be another schema
-  title: { type: String, nonEmpty: true },
+  id:       { type: Id },
+  author:   { type: User }, // type can be another schema
+  title:    { type: String, nonEmpty: true },
   abstract: { type: String },
   chapters: { type: [String], max: 128 }, // max refers individual chapter
 }, { typeName: 'Book' });
