@@ -158,10 +158,10 @@ describe('Test Schema', function () {
   describe('Given a nested object schema', function () {
     beforeEach(function () {
       this.schema1 = new Schema({
-        a: {
+        a: new Schema({
           x: Number,
           y: Number,
-        },
+        }),
         b: {
           type: new Schema({
             x: Number,

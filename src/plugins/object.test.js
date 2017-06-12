@@ -7,6 +7,7 @@ import {
   ERROR_NOT_STRING,
 } from '../constants.js';
 import pluginObject from './object.js';
+import Schema from '../Schema.js';
 
 const should = chai.should();
 
@@ -16,11 +17,15 @@ describe('Test object plugin', function () {
     this.compiler = {
       options: {},
       compile: (schemaDef, schemaOptions) => ({
-        validate: (
-          schemaDef === String
-            ? value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value })
-            : this.createValidate(schemaDef, schemaOptions)
-        ),
+        validate: (() => {
+          if (schemaDef === String) {
+            return value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value });
+          }
+          if (schemaDef instanceof Schema) {
+            return schemaDef.getErrors.bind(schemaDef);
+          }
+          return this.createValidate(schemaDef, schemaOptions);
+        })(),
       }),
     };
     this.createValidate =
@@ -159,10 +164,10 @@ describe('Test object plugin', function () {
   describe('Given a nested object schema', function () {
     beforeEach(function () {
       this.validate1 = this.createValidate({
-        a: {
+        a: new Schema({
           x: String,
           y: String,
-        },
+        }),
         b: {
           type: {
             x: String,

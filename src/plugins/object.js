@@ -4,9 +4,8 @@ import {
   createValidateProperties,
 } from '../validators.js';
 import {
-  has,
-  isObject,
   isArray,
+  isPlainObject,
 } from '../utils.js';
 
 const pluginObject = {
@@ -17,19 +16,19 @@ const pluginObject = {
     fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
-    if (isObject(schemaDef)) {
+    if (isPlainObject(schemaDef)) {
       const properties = {};
       Object.keys(schemaDef).forEach((key) => {
         const definition = schemaDef[key];
-        if (definition &&
-            typeof definition === 'object' &&
-            !isArray(definition) &&
-            has(definition, 'type')) {
+        if (isPlainObject(definition)) {
           const {
             type,
             optional = fieldsOptionalByDefault,
             ...otherOptions
           } = definition;
+          if (!type) {
+            throw new Error(`Missing type for property ${key}`);
+          }
           properties[key] = compiler.compile(type, {
             ...otherOptions,
           });
