@@ -1,9 +1,11 @@
 import {
-  isArray,
   validateIsObject,
   createValidateProperties,
   combine,
 } from '../validators.js';
+import {
+  isArray,
+} from '../utils.js';
 
 const pluginPick = {
   compile(compiler, schemaDef, {

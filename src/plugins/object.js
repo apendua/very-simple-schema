@@ -1,11 +1,13 @@
 import {
-  has,
-  isArray,
-  isObject,
   validateIsObject,
   combine,
   createValidateProperties,
 } from '../validators.js';
+import {
+  has,
+  isObject,
+  isArray,
+} from '../utils.js';
 
 const pluginObject = {
   compile(compiler, schemaDef, {

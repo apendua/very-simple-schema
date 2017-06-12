@@ -1,10 +1,12 @@
 import {
-  isArray,
   validateIsArray,
   combine,
   createValidateMinCount,
   createValidateMaxCount,
 } from '../validators.js';
+import {
+  isArray,
+} from '../utils.js';
 
 const pluginArray = {
   compile(compiler, schemaDef, schemaOptions) {

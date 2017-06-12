@@ -21,11 +21,12 @@ import {
   ERROR_TOO_LARGE,
   ERROR_IS_EMPTY,
 } from './constants.js';
+import {
+  has,
+  isArray,
+  isDate,
+} from './utils.js';
 
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const toString = Object.prototype.toString;
-
-export const has = (object, property) => hasOwnProperty.call(object, property);
 export const validateAlways = () => {};
 
 export const createValidateEquals = expected => actual => (actual === expected ? undefined : { error: ERROR_NOT_EQUAL, actual, expected });
@@ -42,10 +43,6 @@ export const createValidateMax = expected => actual => (actual <= expected ? und
 
 export const createValidateIsAllowed = expected => actual =>
   (expected.indexOf(actual) >= 0 ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
-
-export const isArray = actual => toString.call(actual) === '[object Array]';
-export const isDate = actual => toString.call(actual) === '[object Date]';
-export const isObject = actual => toString.call(actual) === '[object Object]';
 
 export const validateIsString = actual => (typeof actual === 'string' ? undefined : { error: ERROR_NOT_STRING, actual });
 export const validateIsNumber = actual => (typeof actual === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual });

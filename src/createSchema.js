@@ -1,6 +1,6 @@
 import {
   isArray,
-} from './validators.js';
+} from './utils.js';
 import * as constants from './constants.js';
 import createCompiler from './createCompiler.js';
 import createError from './createError.js';

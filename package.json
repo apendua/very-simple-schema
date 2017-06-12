@@ -50,5 +50,9 @@
     "sinon": "^1.17.7",
     "sinon-chai": "^2.8.0",
     "webpack": "^2.2.1"
+  },
+  "dependencies": {
+    "is-plain-object": "^2.0.3",
+    "isobject": "^3.0.0"
   }
 }

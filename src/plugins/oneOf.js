@@ -4,7 +4,7 @@ import {
 
 import {
   isArray,
-} from '../validators.js';
+} from '../utils.js';
 
 const pluginOneOf = {
   compile(compiler, schemaDef, { oneOf }) {

@@ -1,6 +1,6 @@
 import {
   isArray,
-} from './validators.js';
+} from './utils.js';
 
 const getError = (message, details) => {
   const error = new Error(message || 'Unknown error');
