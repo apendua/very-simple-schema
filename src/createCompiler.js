@@ -2,6 +2,7 @@ import { validateAlways } from './validators.js';
 
 function createCompiler(Schema, options) {
   const compiler = {
+    Schema,
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {

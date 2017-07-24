@@ -1,7 +1,8 @@
 import pluginAllowedValues from './allowedValues.js';
-import pluginLazy from './lazy.js';
 import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
+import pluginHash from './hash.js';
+import pluginLazy from './lazy.js';
 import pluginMerge from './merge.js';
 import pluginObject from './object.js';
 import pluginOneOf from './oneOf.js';
@@ -11,10 +12,11 @@ import pluginRegExp from './regExp.js';
 export default [
   pluginMerge,
   pluginPick,
-  pluginObject,
   pluginArray,
-  pluginOneOf,
+  pluginHash,
   pluginLazy,
+  pluginObject,
+  pluginOneOf,
   pluginAtomic,
   pluginAllowedValues,
   pluginRegExp,

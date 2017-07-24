@@ -328,6 +328,44 @@ describe('Test Schema', function () {
     });
   });
 
+  describe('Given a hash with object sub-schema', function () {
+    beforeEach(function () {
+      this.schema = Schema.hash({
+        a: Number,
+        b: String,
+      });
+    });
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema.getErrors({
+        xxx: { a: 1, b: 'x' },
+        yyy: { a: 2, b: 'y' },
+      }));
+    });
+    it('should reject an invalid object', function () {
+      this.schema.getErrors({
+        xxx: { b: 'x' },
+        yyy: { c: 2, a: 1, b: 'y' },
+      }).should.deep.equal({
+        errors: {
+          xxx: {
+            errors: {
+              a: {
+                error: ERROR_MISSING_FIELD,
+              },
+            },
+          },
+          yyy: {
+            errors: {
+              c: {
+                error: ERROR_KEY_NOT_ALLOWED,
+              },
+            },
+          },
+        },
+      });
+    });
+  });
+
   describe('Given an alternative schema', function () {
     beforeEach(function () {
       this.schema = new Schema([
