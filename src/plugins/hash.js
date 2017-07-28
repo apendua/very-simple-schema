@@ -32,7 +32,7 @@ const pluginHash = {
         getSubSchema: () => element,
       };
     }
-    return {};
+    return null;
   },
   mixin(Schema) {
     class Hash {

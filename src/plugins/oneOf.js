@@ -12,14 +12,14 @@ const pluginOneOf = {
       if (!(isArray(schemaDef) && schemaDef.length > 1)) {
         throw new Error('OneOf requires and array with at least two elements');
       }
-      const memberValidators = schemaDef.map(x => compiler.compile(x));
+      const memberSchema = schemaDef.map(x => compiler.compile(x));
       return {
         isOneOf: true,
         compiled: true,
-        typeName: `one of ${memberValidators.map(x => x.typeName).join(', ')}`,
+        typeName: `one of ${memberSchema.map(x => x.typeName).join(', ')}`,
         validate: (value) => {
           const expected = [];
-          for (const { validate, typeName } of memberValidators) {
+          for (const { validate, typeName } of memberSchema) {
             const error = validate(value);
             if (!error) {
               return undefined;
@@ -30,7 +30,7 @@ const pluginOneOf = {
         },
       };
     }
-    return {};
+    return null;
   },
 };
 

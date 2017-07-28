@@ -17,6 +17,9 @@ function createCompiler(Schema, options) {
           return previous;
         }
         const current = plugin.compile.call(previous, compiler, schemaDef, schemaOptions);
+        if (!current) {
+          return previous;
+        }
         return {
           ...previous,
           ...current,

@@ -18,7 +18,7 @@ const pluginLazy = {
         },
       };
     }
-    return {};
+    return null;
   },
 };
 

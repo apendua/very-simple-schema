@@ -83,7 +83,7 @@ const pluginObject = {
         getSubSchema: key => properties[key],
       };
     }
-    return {};
+    return null;
   },
 };
 

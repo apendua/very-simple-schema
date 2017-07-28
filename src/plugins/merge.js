@@ -43,7 +43,7 @@ const pluginMerge = {
         getSubSchema: key => properties[key],
       };
     }
-    return {};
+    return null;
   },
 };
 

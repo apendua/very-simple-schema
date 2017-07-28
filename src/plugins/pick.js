@@ -42,7 +42,7 @@ const pluginPick = {
         ]),
       };
     }
-    return {};
+    return null;
   },
 };
 

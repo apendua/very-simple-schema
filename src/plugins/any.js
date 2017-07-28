@@ -14,7 +14,7 @@ const pluginAny = {
         isAny:    true,
       };
     }
-    return undefined;
+    return null;
   },
   mixin(Schema) {
     class Any {
