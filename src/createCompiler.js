@@ -12,14 +12,6 @@ function createCompiler(Schema, options) {
         // add additional fields to it, e.g. "optiona" in object plugin.
         return Object.create(schemaDef.compiled);
       }
-      if (schemaDef === Schema.Any) {
-        return {
-          isAny: true,
-          typeName: 'any',
-          validate: validateAlways,
-          clean: identity,
-        };
-      }
       return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
           return previous;

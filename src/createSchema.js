@@ -133,7 +133,6 @@ function createSchema(options = {}) {
     }
   }
 
-  Schema.Any = {};
   Schema.compiler = createCompiler(Schema, compilerOptions);
   Schema.messages = { ...MESSAGES };
   Object.assign(Schema, ERRORS);

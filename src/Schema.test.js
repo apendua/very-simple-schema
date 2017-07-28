@@ -86,7 +86,7 @@ describe('Test Schema', function () {
 
   describe('Given "any" schema', function () {
     beforeEach(function () {
-      this.schema = new Schema(Schema.Any);
+      this.schema = Schema.any();
     });
     it('should set "any" flag', function () {
       this.schema.compiled.isAny.should.be.true;

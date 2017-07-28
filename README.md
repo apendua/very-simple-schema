@@ -61,7 +61,7 @@ import { Schema } from 'very-simple-schema';
 new Schema(Number, { min: 0, max: 10 });
 
 // an array of anything with at least one element
-new Schema([Schema.Any], { minCount: 1 });
+new Schema([new Schema.Any()], { minCount: 1 });
 
 const Id = Schema.oneOf([String, Number]); // can be one of the specified types
 
