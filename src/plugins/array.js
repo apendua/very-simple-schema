@@ -27,6 +27,10 @@ const pluginArray = {
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
+        clean: value => (isArray(value)
+          ? value.map(x => element.clean(x))
+          : value
+        ),
         getSubSchema: () => element,
       };
     }

@@ -36,6 +36,7 @@ const pluginAtomic = {
       validators.push(max !== undefined && createValidateMax(max));
       schema.isNumber = true;
       schema.typeName = 'number';
+      schema.clean = x => (typeof x === 'string' ? +x : x);
     } else if (schemaDef === String) {
       validators.push(validateIsString);
       validators.push(nonEmpty && validateNonEmpty);
@@ -43,6 +44,7 @@ const pluginAtomic = {
       validators.push(max !== undefined && createValidateMaxLength(max));
       schema.isString = true;
       schema.typeName = 'string';
+      schema.clean = x => (typeof x !== 'string' ? JSON.stringify(x) : x);
     } else if (schemaDef === Boolean) {
       validators.push(validateIsBoolean);
       schema.isBoolean = true;

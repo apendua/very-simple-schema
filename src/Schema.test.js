@@ -379,4 +379,68 @@ describe('Test Schema', function () {
       this.schema.validate(true, { noException: true }).should.equal('Value should be one of: empty, text, array of number');
     });
   });
+
+  describe('Schema.clean()', function () {
+    beforeEach(function () {
+      this.schema = new Schema({
+        a: new Schema({
+          x: Number,
+          y: String,
+        }),
+        b: [new Schema(Number)],
+      });
+      this.schema2 = new Schema({
+        a: Number,
+        b: Number,
+      }, {
+        additionalProperties: true,
+      });
+    });
+    it('should not modify a valid object', function () {
+      this.schema.clean({
+        a: { x: 1, y: 'y' },
+        b: [1, 2, 3],
+      }).should.deep.equal({
+        a: { x: 1, y: 'y' },
+        b: [1, 2, 3],
+      });
+    });
+    it('should convert strings to numbers', function () {
+      this.schema.clean({
+        a: { x: '1.5' },
+        b: ['1', '2', 3],
+      }).should.deep.equal({
+        a: { x: 1.5 },
+        b: [1, 2, 3],
+      });
+    });
+    it('should convert numbers to strings', function () {
+      this.schema.clean({
+        a: { y: 1 },
+      }).should.deep.equal({
+        a: { y: '1' },
+      });
+    });
+    it('should remove properties that are not allowed', function () {
+      this.schema.clean({
+        a: { z: {} },
+      }).should.deep.equal({
+        a: {},
+      });
+    });
+    it('should keep additional properties if they are allowed', function () {
+      this.schema2.clean({
+        c: 3,
+      }).should.deep.equal({
+        c: 3,
+      });
+    });
+    it('should not change things that cannot be cleaned', function () {
+      this.schema.clean({
+        a: [1, 2, 3],
+      }).should.deep.equal({
+        a: [1, 2, 3],
+      });
+    });
+  });
 });

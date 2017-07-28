@@ -49,6 +49,10 @@ function createSchema(options = {}) {
       return this.compiled;
     }
 
+    clean(value) {
+      return this.compiled.clean(value);
+    }
+
     getErrors(value, customErrors) {
       let errors = this.compiled.validate(value);
       if (customErrors) {

@@ -4,6 +4,8 @@ import {
   createValidateProperties,
 } from '../validators.js';
 import {
+  has,
+  each,
   isArray,
   isPlainObject,
 } from '../utils.js';
@@ -64,6 +66,20 @@ const pluginObject = {
             emptyStringsAreMissingValues,
           }),
         ]),
+        clean: (value) => {
+          if (!isPlainObject(value)) {
+            return value;
+          }
+          const cleaned = {};
+          each(value, (val, key) => {
+            if (has(properties, key)) {
+              cleaned[key] = properties[key].clean(val);
+            } else if (additionalProperties) {
+              cleaned[key] = val;
+            }
+          });
+          return cleaned;
+        },
         getSubSchema: key => properties[key],
       };
     }

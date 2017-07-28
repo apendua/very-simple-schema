@@ -1,15 +1,24 @@
 import { validateAlways } from './validators.js';
 
+const identity = x => x;
+
 function createCompiler(Schema, options) {
   const compiler = {
     Schema,
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
-        return schemaDef.compiled;
+        // Return a proxy because users of this method may potentionally
+        // add additional fields to it, e.g. "optiona" in object plugin.
+        return Object.create(schemaDef.compiled);
       }
       if (schemaDef === Schema.Any) {
-        return { isAny: true, typeName: 'any', validate: validateAlways };
+        return {
+          isAny: true,
+          typeName: 'any',
+          validate: validateAlways,
+          clean: identity,
+        };
       }
       return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
@@ -24,10 +33,16 @@ function createCompiler(Schema, options) {
               ? value => previous.validate(value) || current.validate(value)
               : previous.validate
           ),
+          clean: (
+            current && typeof current.clean === 'function'
+              ? value => current.clean(previous.clean(value))
+              : previous.clean
+          ),
         };
       }, {
         ...schemaOptions.label && { label: schemaOptions.label },
         validate: validateAlways,
+        clean: identity,
       });
     },
   };
