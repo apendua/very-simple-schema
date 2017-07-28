@@ -9,6 +9,7 @@ import {
   ERROR_NOT_NUMBER,
   ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
+  ERROR_TOO_LONG,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -331,8 +332,11 @@ describe('Test Schema', function () {
   describe('Given a hash with object sub-schema', function () {
     beforeEach(function () {
       this.schema = Schema.hash({
-        a: Number,
-        b: String,
+        key: new Schema(String, { max: 3 }),
+        value: {
+          a: Number,
+          b: String,
+        },
       });
     });
     it('should accept a valid object', function () {
@@ -340,6 +344,19 @@ describe('Test Schema', function () {
         xxx: { a: 1, b: 'x' },
         yyy: { a: 2, b: 'y' },
       }));
+    });
+    it('should reject if key is too long', function () {
+      this.schema.getErrors({
+        xxxx: { a: 1, b: 'x' },
+      }).should.deep.equal({
+        errors: {
+          xxxx: {
+            actual: 'xxxx',
+            error: ERROR_TOO_LONG,
+            expected: 3,
+          },
+        },
+      });
     });
     it('should reject an invalid object', function () {
       this.schema.getErrors({

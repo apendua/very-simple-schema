@@ -3,7 +3,7 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_NOT_NUMBER,
+  ERROR_NOT_STRING,
   ERROR_NOT_OBJECT,
 } from '../constants.js';
 import pluginHash from './hash.js';
@@ -15,12 +15,12 @@ describe('Test hash plugin', function () {
     const compiler = {
       Schema: class Schema {},
       options: {},
-      compile: () => ({ validate: value => (typeof value !== 'number' ? { error: ERROR_NOT_NUMBER, actual: value } : undefined) }),
+      compile: () => ({ validate: value => (typeof value !== 'string' ? { error: ERROR_NOT_STRING, actual: value } : undefined) }),
     };
     pluginHash.mixin(compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginHash.compile(compiler, new compiler.Schema.Hash(schemaDef), schemaOptions).validate;
+      pluginHash.compile(compiler, new compiler.Schema.Hash({ value: schemaDef }), schemaOptions).validate;
   });
 
   describe('Given an hash schema', function () {
@@ -33,26 +33,26 @@ describe('Test hash plugin', function () {
         actual: [],
       });
     });
-    it('should accept hash of numbers', function () {
+    it('should accept hash of strings', function () {
       should.not.exist(this.validate1({
-        a: 1,
-        b: 2,
-        c: 3,
-      }));
-    });
-    it('should reject hash of strings', function () {
-      this.validate1({
         a: 'a',
         b: 'b',
+        c: 'c',
+      }));
+    });
+    it('should reject hash of numbers', function () {
+      this.validate1({
+        a: 1,
+        b: 2,
       }).should.deep.equal({
         errors: {
           a: {
-            error: ERROR_NOT_NUMBER,
-            actual: 'a',
+            error: ERROR_NOT_STRING,
+            actual: 1,
           },
           b: {
-            error: ERROR_NOT_NUMBER,
-            actual: 'b',
+            error: ERROR_NOT_STRING,
+            actual: 2,
           },
         },
       });

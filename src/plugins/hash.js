@@ -9,10 +9,10 @@ import {
 const pluginHash = {
   compile(compiler, schemaDef, schemaOptions) {
     if (schemaDef instanceof compiler.Schema.Hash) {
-      const element = compiler.compile(schemaDef.elementSchemaDef, schemaOptions);
+      const valueSchema = compiler.compile(schemaDef.valueSchemaDef, schemaOptions);
+      const keySchema = compiler.compile(schemaDef.keySchemaDef, schemaOptions);
       return {
-        element,
-        typeName: `hash of ${element.typeName}`,
+        typeName: `hash of ${valueSchema.typeName}`,
         compiled: true,
         validate: combine([
           validateIsObject,
@@ -20,29 +20,39 @@ const pluginHash = {
             let hasErrors = false;
             const errors = {};
             each(value, (x, key) => {
-              const elementErrors = element.validate(x);
-              if (elementErrors) {
+              const keyErrors = keySchema.validate(key);
+              if (keyErrors) {
                 hasErrors = true;
+                errors[key] = keyErrors;
+              } else {
+                const valueErrors = valueSchema.validate(x);
+                if (valueErrors) {
+                  hasErrors = true;
+                }
+                errors[key] = valueErrors;
               }
-              errors[key] = elementErrors;
             });
             return hasErrors ? { errors } : undefined;
           },
         ]),
-        getSubSchema: () => element,
+        getSubSchema: () => valueSchema,
       };
     }
     return null;
   },
   mixin(Schema) {
     class Hash {
-      constructor(schemaDef) {
-        this.elementSchemaDef = schemaDef;
+      constructor({ value: valueSchemaDef, key: keySchemaDef = String }) {
+        Object.assign(this, {
+          keySchemaDef,
+          valueSchemaDef,
+        });
       }
     }
     Object.assign(Schema, {
       Hash,
-      hash: (schemaDef, schemaOptions) => new Schema(new Hash(schemaDef), schemaOptions),
+      hash: (schemaDef, schemaOptions) =>
+        new Schema(new Hash(schemaDef), schemaOptions),
     });
   },
 };
