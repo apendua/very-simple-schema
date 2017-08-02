@@ -223,7 +223,7 @@ describe('Test Schema', function () {
 
   describe('Given a merge schema', function () {
     beforeEach(function () {
-      this.schema1 = new Schema([
+      this.schema1 = Schema.merge([
         {
           a: { type: Number },
           b: { type: String },
@@ -232,7 +232,7 @@ describe('Test Schema', function () {
           b: { type: Number },
           c: { type: String },
         },
-      ], { merge: true });
+      ]);
     });
 
     it('should accept a valid object', function () {
@@ -385,11 +385,11 @@ describe('Test Schema', function () {
 
   describe('Given an alternative schema', function () {
     beforeEach(function () {
-      this.schema = new Schema([
+      this.schema = Schema.oneOf([
         new Schema({}, { typeName: 'empty' }),
         new Schema(String, { typeName: 'text' }),
         new Schema([Number]),
-      ], { oneOf: true });
+      ]);
     });
 
     it('should generate a descriptive error of there is no match', function () {

@@ -30,10 +30,6 @@ function createSchema(options = {}) {
       });
     }
 
-    static merge(array) {
-      return new this(array, { merge: true });
-    }
-
     static pick(schemaDef, fields) {
       return new this(schemaDef, { pick: fields });
     }

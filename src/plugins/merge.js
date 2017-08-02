@@ -9,17 +9,13 @@ import {
 
 const pluginMerge = {
   compile(compiler, schemaDef, {
-    merge,
     typeName = 'object',
     additionalProperties = compiler.options.additionalProperties,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
   }) {
-    if (merge) {
-      if (!isArray(schemaDef)) {
-        throw new Error('Merge requires an array');
-      }
+    if (schemaDef instanceof compiler.Schema.Merge) {
       const properties = {};
-      schemaDef.forEach((definition) => {
+      schemaDef.schemaDefs.forEach((definition) => {
         // NOTE: We are not passing any options here. It's intentional.
         const schema = compiler.compile(definition);
         if (!schema.isObject) {
@@ -44,6 +40,23 @@ const pluginMerge = {
       };
     }
     return null;
+  },
+  mixin(Schema) {
+    class Merge {
+      constructor(schemaDefs) {
+        if (!isArray(schemaDefs)) {
+          throw new Error('Merge requires and array of object schemas');
+        }
+        Object.assign(this, {
+          schemaDefs,
+        });
+      }
+    }
+    Object.assign(Schema, {
+      Merge,
+      merge: (schemaDefs, schemaOptions) =>
+        new Schema(new Merge(schemaDefs), schemaOptions),
+    });
   },
 };
 
