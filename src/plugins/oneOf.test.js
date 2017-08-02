@@ -10,35 +10,36 @@ import {
 import pluginOneOf from './oneOf.js';
 
 const should = chai.should();
-const compiler = {
-  options: {},
-  compile: (schemaDef) => {
-    if (schemaDef === String) {
-      return {
-        typeName: 'string',
-        validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }),
-      };
-    } else if (schemaDef === Number) {
-      return {
-        typeName: 'number',
-        validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }),
-      };
-    }
-    return { validate: () => ({}) };
-  },
-};
 
 describe('Test oneOf plugin', function () {
   beforeEach(function () {
-    this.Schema = function () {};
+    const compiler = {
+      Schema: class Schema {},
+      options: {},
+      compile: (schemaDef) => {
+        if (schemaDef === String) {
+          return {
+            typeName: 'string',
+            validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }),
+          };
+        } else if (schemaDef === Number) {
+          return {
+            typeName: 'number',
+            validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }),
+          };
+        }
+        return { validate: () => ({}) };
+      },
+    };
+    pluginOneOf.mixin(compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginOneOf.compile(compiler, schemaDef, schemaOptions).validate;
+      pluginOneOf.compile(compiler, new compiler.Schema.OneOf(schemaDef), schemaOptions).validate;
   });
 
   describe('Given a "oneOf" schema', function () {
     beforeEach(function () {
-      this.validate1 = this.createValidate([Number, String], { oneOf: true });
+      this.validate1 = this.createValidate([Number, String]);
     });
     it('should accept a number', function () {
       should.not.exist(this.validate1(1));

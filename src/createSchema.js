@@ -30,10 +30,6 @@ function createSchema(options = {}) {
       });
     }
 
-    static oneOf(array) {
-      return new this(array, { oneOf: true });
-    }
-
     static merge(array) {
       return new this(array, { merge: true });
     }
