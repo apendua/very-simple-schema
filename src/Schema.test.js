@@ -258,11 +258,11 @@ describe('Test Schema', function () {
 
   describe('Given a schema with "pick"', function () {
     beforeEach(function () {
-      this.schema1 = new Schema({
+      this.schema1 = Schema.pick({
         a: { type: Number },
         b: { type: String },
         c: { type: Number },
-      }, { pick: ['a', 'b'] });
+      }, ['a', 'b']);
     });
 
     it('should accept a valid object', function () {

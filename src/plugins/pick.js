@@ -9,22 +9,18 @@ import {
 
 const pluginPick = {
   compile(compiler, schemaDef, {
-    pick,
     typeName = 'object',
     additionalProperties = compiler.options.additionalProperties,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
     ...otherOptions
   }) {
-    if (pick) {
-      if (!isArray(pick)) {
-        throw new Error('Pick requires an array of fields');
-      }
-      const schema = compiler.compile(schemaDef, otherOptions);
+    if (schemaDef instanceof compiler.Schema.Pick) {
+      const schema = compiler.compile(schemaDef.originalSchemaDef, otherOptions);
       if (!schema.isObject) {
-        throw new Error('Pick requires all source schema to be objects');
+        throw new Error('Pick the original type to be an object');
       }
       const properties = {};
-      pick.forEach((name) => {
+      schemaDef.fields.forEach((name) => {
         properties[name] = schema.properties[name];
       });
       return {
@@ -43,6 +39,24 @@ const pluginPick = {
       };
     }
     return null;
+  },
+  mixin(Schema) {
+    class Pick {
+      constructor(originalSchemaDef, fields) {
+        if (!isArray(fields)) {
+          throw new Error('Pick requires and array fields as the second argument');
+        }
+        Object.assign(this, {
+          fields,
+          originalSchemaDef,
+        });
+      }
+    }
+    Object.assign(Schema, {
+      Pick,
+      pick: (schemaDef, fields, schemaOptions) =>
+        new Schema(new Pick(schemaDef, fields), schemaOptions),
+    });
   },
 };
 
