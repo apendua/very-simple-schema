@@ -66,19 +66,9 @@ export const createValidateProperties = ({
   Object.keys(properties).forEach((key) => {
     const property = properties[key];
     const valueAtKey = value[key];
-    if (
-        valueAtKey === undefined ||
-        valueAtKey === null ||
-        (emptyStringsAreMissingValues && valueAtKey === '')
-    ) {
-      if (!property.optional) {
-        errors[key] = { error: ERROR_MISSING_FIELD };
-      }
-    } else {
-      const error = property.validate(valueAtKey);
-      if (error) {
-        errors[key] = error;
-      }
+    const error = property.validate(emptyStringsAreMissingValues && valueAtKey === '' ? null : valueAtKey);
+    if (error) {
+      errors[key] = error;
     }
   });
   if (!additionalProperties) {

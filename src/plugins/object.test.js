@@ -8,6 +8,7 @@ import {
   ERROR_NOT_OBJECT,
 } from '../constants.js';
 import pluginObject from './object.js';
+import pluginMember from './member.js';
 import Schema from '../Schema.js';
 
 const should = chai.should();
@@ -16,6 +17,7 @@ describe('Test object plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
     this.compiler = {
+      Schema,
       options: {},
       compile: (schemaDef, schemaOptions) => ({
         validate: (() => {
@@ -29,6 +31,7 @@ describe('Test object plugin', function () {
         })(),
       }),
     };
+    pluginMember.mixin(this.compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
       pluginObject.compile(this.compiler, schemaDef, schemaOptions).validate;

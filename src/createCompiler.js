@@ -1,4 +1,10 @@
-import { validateAlways } from './validators.js';
+import {
+  validateAlways,
+} from './validators.js';
+import {
+  has,
+  isPlainObject,
+} from './utils.js';
 
 const identity = x => x;
 
@@ -6,17 +12,33 @@ function createCompiler(Schema, options) {
   const compiler = {
     Schema,
     options: { ...options },
-    compile: (schemaDef, schemaOptions = {}) => {
+    compile: (schemaDef, additionalSchemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
         // Return a proxy because users of this method may potentionally
         // add additional fields to it, e.g. "optiona" in object plugin.
         return Object.create(schemaDef.compiled);
       }
+      let schemaType;
+      let schemaOptions;
+      if (isPlainObject(schemaDef) && has(schemaDef, 'type')) {
+        const {
+          type,
+          ...otherOptions,
+        } = schemaDef;
+        schemaType = type;
+        schemaOptions = {
+          ...otherOptions,
+          ...additionalSchemaOptions,
+        };
+      } else {
+        schemaType = schemaDef;
+        schemaOptions = additionalSchemaOptions;
+      }
       return options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
           return previous;
         }
-        const current = plugin.compile.call(previous, compiler, schemaDef, schemaOptions);
+        const current = plugin.compile.call(previous, compiler, schemaType, schemaOptions);
         if (!current) {
           return previous;
         }

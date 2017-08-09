@@ -20,25 +20,7 @@ const pluginObject = {
   }) {
     if (isPlainObject(schemaDef)) {
       const properties = {};
-      Object.keys(schemaDef).forEach((key) => {
-        const definition = schemaDef[key];
-        if (isPlainObject(definition)) {
-          const {
-            type,
-            optional = fieldsOptionalByDefault,
-            ...otherOptions
-          } = definition;
-          if (!type) {
-            throw new Error(`Missing type for property ${key}`);
-          }
-          properties[key] = compiler.compile(type, {
-            ...otherOptions,
-          });
-          properties[key].optional = !!optional;
-        } else {
-          properties[key] = compiler.compile(definition);
-        }
-      });
+      const requiredKeys = {};
       if (required) {
         if (!fieldsOptionalByDefault) {
           throw new Error('Required is only allowed when fields are optional by default');
@@ -50,7 +32,30 @@ const pluginObject = {
           if (!properties[key]) {
             throw new Error(`Unknown required property ${key}`);
           }
-          properties[key].optional = false;
+          requiredKeys[key] = true;
+        });
+      }
+      Object.keys(schemaDef).forEach((key) => {
+        const memberSchemaDef = schemaDef[key];
+        const optional = fieldsOptionalByDefault ? !requiredKeys[key] : false;
+        properties[key] = compiler.compile(
+          compiler.Schema.member(isPlainObject(memberSchemaDef)
+            ? {
+              optional,
+              ...memberSchemaDef,
+            }
+            : {
+              optional,
+              type: memberSchemaDef,
+            }
+          ),
+        );
+      });
+      if (required) {
+        required.forEach((key) => {
+          if (!properties[key]) {
+            throw new Error(`Unknown required property ${key}`);
+          }
         });
       }
       return {
