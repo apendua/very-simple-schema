@@ -409,8 +409,16 @@ describe('Test Schema', function () {
       this.schema2 = new Schema({
         a: Number,
         b: Number,
+        c: String,
       }, {
         additionalProperties: true,
+      });
+      this.schema3 = new Schema({
+        a: Number,
+        b: Number,
+        c: String,
+      }, {
+        emptyStringsAreMissingValues: true,
       });
     });
     it('should not modify a valid object', function () {
@@ -445,11 +453,27 @@ describe('Test Schema', function () {
         a: {},
       });
     });
+    it('should remove properties that are null, undefined or empty', function () {
+      this.schema3.clean({
+        a: null,
+        b: undefined,
+        c: '',
+      }).should.deep.equal({});
+    });
+    it('should not remove empty strings if they are not considerd missing values', function () {
+      this.schema2.clean({
+        a: null,
+        b: undefined,
+        c: '',
+      }).should.deep.equal({
+        c: '',
+      });
+    });
     it('should keep additional properties if they are allowed', function () {
       this.schema2.clean({
-        c: 3,
+        d: 3,
       }).should.deep.equal({
-        c: 3,
+        d: 3,
       });
     });
     it('should not change things that cannot be cleaned', function () {

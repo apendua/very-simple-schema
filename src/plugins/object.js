@@ -71,11 +71,15 @@ const pluginObject = {
             return value;
           }
           const cleaned = {};
-          each(value, (val, key) => {
-            if (has(properties, key)) {
-              cleaned[key] = properties[key].clean(val);
+          each(value, (valueAtKey, key) => {
+            if (valueAtKey === undefined ||
+                valueAtKey === null ||
+                (emptyStringsAreMissingValues && valueAtKey === '')) {
+              delete cleaned[key];
+            } else if (has(properties, key)) {
+              cleaned[key] = properties[key].clean(valueAtKey);
             } else if (additionalProperties) {
-              cleaned[key] = val;
+              cleaned[key] = valueAtKey;
             }
           });
           return cleaned;
