@@ -34,7 +34,7 @@ const pluginObject = {
           properties[key] = compiler.compile(type, {
             ...otherOptions,
           });
-          properties[key].optional = !!optional;
+          properties[key].optional = !!optional || properties[key].isAssumed;
         } else {
           properties[key] = compiler.compile(definition);
         }
@@ -48,7 +48,7 @@ const pluginObject = {
         }
         required.forEach((key) => {
           if (!properties[key]) {
-            throw new Error(`Unknown required property ${key}`);
+            throw new Error(`Unknown required property "${key}"`);
           }
           properties[key].optional = false;
         });

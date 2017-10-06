@@ -515,4 +515,64 @@ describe('Test Schema', function () {
       });
     });
   });
+
+  describe('Given a an object schema with assumed value', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema({
+        a: new Schema({
+          x: { type: new Schema(Number, { assumed: 0 }), optional: true },
+          y: new Schema(Number, { assumed: 0 }),
+        }),
+        b: {
+          type: new Schema({
+            x: Number,
+            y: Number,
+          }, {
+            assumed: {
+              x: 0,
+            },
+          }),
+          optional: true,
+        },
+      }, {
+        assumed: {},
+      });
+    });
+    it('should return relevant errors web validating null', function () {
+      this.schema1.getErrors(null).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+          b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+        },
+      });
+    });
+    it('should return relevant errors when validating empty object ', function () {
+      this.schema1.getErrors({}).should.deep.equal({
+        errors: {
+          a: { error: ERROR_MISSING_FIELD },
+          b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+        },
+      });
+    });
+    it('should return relevant errors when properties are empty objects', function () {
+      this.schema1.getErrors({
+        a: {},
+        b: {},
+      }).should.deep.equal({
+        errors: {
+          a: {
+            errors: {
+              y: { error: ERROR_MISSING_FIELD },
+            },
+          },
+          b: {
+            errors: {
+              x: { error: ERROR_MISSING_FIELD },
+              y: { error: ERROR_MISSING_FIELD },
+            },
+          },
+        },
+      });
+    });
+  });
 });

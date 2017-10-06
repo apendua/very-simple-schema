@@ -2,6 +2,7 @@ import pluginAllowedValues from './allowedValues.js';
 import pluginAny from './any.js';
 import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
+import pluginAssumed from './assumed.js';
 import pluginHash from './hash.js';
 import pluginLazy from './lazy.js';
 import pluginMerge from './merge.js';
@@ -11,6 +12,7 @@ import pluginPick from './pick.js';
 import pluginRegExp from './regExp.js';
 
 export default [
+  pluginAssumed,
   pluginAny,
   pluginMerge,
   pluginPick,
