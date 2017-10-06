@@ -12,7 +12,7 @@ function createCompiler(Schema, options) {
         // add additional fields to it, e.g. "optiona" in object plugin.
         return Object.create(schemaDef.compiled);
       }
-      return options.plugins.reduce((previous, plugin) => {
+      const compiled = options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
           return previous;
         }
@@ -39,6 +39,11 @@ function createCompiler(Schema, options) {
         validate: validateAlways,
         clean: identity,
       });
+      // Make sure compiled flag is eventually set.
+      return {
+        ...compiled,
+        compiled: true,
+      };
     },
   };
   return compiler;
