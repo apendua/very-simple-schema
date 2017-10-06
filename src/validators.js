@@ -69,7 +69,7 @@ export const createValidateProperties = ({
     if (
         valueAtKey === undefined ||
         valueAtKey === null ||
-        (emptyStringsAreMissingValues && valueAtKey === '')
+        (emptyStringsAreMissingValues && valueAtKey === '' && property.isString)
     ) {
       if (!property.optional) {
         errors[key] = { error: ERROR_MISSING_FIELD };

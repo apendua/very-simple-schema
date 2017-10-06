@@ -10,6 +10,7 @@ import {
   ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
   ERROR_TOO_LONG,
+  ERROR_NOT_OBJECT,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -175,6 +176,8 @@ describe('Test Schema', function () {
             y: Number,
           },
         },
+      }, {
+        emptyStringsAreMissingValues: true,
       });
     });
     it('should reject object with missing properties', function () {
@@ -187,6 +190,34 @@ describe('Test Schema', function () {
           a: { errors: { y: { error: ERROR_MISSING_FIELD } } },
           b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
           c: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+        },
+      });
+    });
+    it('should not report empty string, if object is expected', function () {
+      this.schema1.getErrors({
+        a: '',
+        b: null,
+        c: undefined,
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_NOT_OBJECT, actual: '' },
+          b: { error: ERROR_MISSING_FIELD },
+          c: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+    it('should not report missing string, if number is expected', function () {
+      this.schema1.getErrors({
+        a: { x: '', y: 1 },
+      }).should.deep.equal({
+        errors: {
+          a: {
+            errors: {
+              x: { error: ERROR_NOT_NUMBER, actual: '' },
+            },
+          },
+          b: { error: ERROR_MISSING_FIELD },
+          c: { error: ERROR_MISSING_FIELD },
         },
       });
     });

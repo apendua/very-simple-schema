@@ -18,6 +18,7 @@ describe('Test object plugin', function () {
     this.compiler = {
       options: {},
       compile: (schemaDef, schemaOptions) => ({
+        isString: true,
         validate: (() => {
           if (schemaDef === String) {
             return value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value });
@@ -127,7 +128,7 @@ describe('Test object plugin', function () {
         },
       });
     });
-    it('should if required string is empty and emptyStringsAreMissingValues', function () {
+    it('should reject if required string is empty and emptyStringsAreMissingValues', function () {
       this.validate3({
         a: '',
         b: '', // this one is optional
