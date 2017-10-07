@@ -7,6 +7,7 @@ import {
   ERROR_VALUE_NOT_ALLOWED,
   ERROR_DOES_NOT_MATCH,
   ERROR_NOT_NUMBER,
+  ERROR_NOT_INTEGER,
   ERROR_NOT_STRING,
   ERROR_KEY_NOT_ALLOWED,
   ERROR_TOO_LONG,
@@ -107,6 +108,38 @@ describe('Test Schema', function () {
     });
     it('should validate empty object', function () {
       should.not.exist(this.schema.getErrors({}));
+    });
+  });
+
+  describe('Given object schema that overwrites property options', function () {
+    beforeEach(function () {
+      const MyNumber = new Schema(Number, { decimal: false });
+      this.schema = new Schema({
+        a: MyNumber,
+        b: { type: MyNumber, decimal: true },
+      });
+    });
+    it('should accept integers', function () {
+      should.not.exist(this.schema.getErrors({
+        a: 1,
+        b: 2,
+      }));
+    });
+    it('should accept one decimal', function () {
+      should.not.exist(this.schema.getErrors({
+        a: 1,
+        b: 2.5,
+      }));
+    });
+    it('should reject two decimals', function () {
+      this.schema.getErrors({
+        a: 1.5,
+        b: 2.5,
+      }).should.deep.equal({
+        errors: {
+          a: { error: ERROR_NOT_INTEGER, actual: 1.5 },
+        },
+      });
     });
   });
 

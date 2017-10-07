@@ -8,9 +8,11 @@ function createCompiler(Schema, options) {
     options: { ...options },
     compile: (schemaDef, schemaOptions = {}) => {
       if (schemaDef instanceof Schema) {
-        // Return a proxy because users of this method may potentionally
-        // add additional fields to it, e.g. "optiona" in object plugin.
-        return Object.create(schemaDef.compiled);
+        // Recompile the original schemaDef with (potentionally) new options.
+        return compiler.compile(schemaDef.schemaDef, {
+          ...schemaDef.schemaOptions,
+          ...schemaOptions,
+        });
       }
       const compiled = options.plugins.reduce((previous, plugin) => {
         if (previous.compiled) {
