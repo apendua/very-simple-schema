@@ -12,6 +12,7 @@ import {
   ERROR_KEY_NOT_ALLOWED,
   ERROR_TOO_LONG,
   ERROR_NOT_OBJECT,
+  ERROR_TOO_SMALL,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -553,8 +554,8 @@ describe('Test Schema', function () {
     beforeEach(function () {
       this.schema1 = new Schema({
         a: new Schema({
-          x: { type: new Schema(Number, { assumed: 0 }), optional: true },
-          y: new Schema(Number, { assumed: 0 }),
+          x: { type: Number, assumed: 0, optional: true, min: 1 },
+          y: { type: new Schema(Number, { assumed: 0 }) }, // NOTE: it does not imply optional automatically
         }),
         b: {
           type: new Schema({
@@ -595,6 +596,7 @@ describe('Test Schema', function () {
         errors: {
           a: {
             errors: {
+              x: { error: ERROR_TOO_SMALL, expected: 1, actual: 0 },
               y: { error: ERROR_MISSING_FIELD },
             },
           },

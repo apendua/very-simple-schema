@@ -34,7 +34,7 @@ const pluginObject = {
           properties[key] = compiler.compile(type, {
             ...otherOptions,
           });
-          properties[key].optional = !!optional || properties[key].isAssumed;
+          properties[key].optional = !!optional;
         } else {
           properties[key] = compiler.compile(definition);
         }
