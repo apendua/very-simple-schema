@@ -610,4 +610,35 @@ describe('Test Schema', function () {
       });
     });
   });
+
+  describe('Given a hash schema with implicit value', function () {
+    beforeEach(function () {
+      this.schema1 = Schema.hash({
+        key: String,
+        value: new Schema({
+          x: { type: Number, implicit: 0, optional: true, min: 1 },
+          y: { type: Number },
+        }, { implicit: {} }),
+      }, {
+        implicit: {},
+      });
+    });
+    it('should not return any errors on null', function () {
+      should.not.exist(this.schema1.getErrors(null));
+    });
+    it('should return relevant errors there is key with null value', function () {
+      this.schema1.getErrors({
+        a: null,
+      }).should.deep.equal({
+        errors: {
+          a: {
+            errors: {
+              x: { error: ERROR_TOO_SMALL, actual: 0, expected: 1 },
+              y: { error: ERROR_MISSING_FIELD },
+            },
+          },
+        },
+      });
+    });
+  });
 });
