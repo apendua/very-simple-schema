@@ -7,10 +7,10 @@ import {
 } from '../utils.js';
 
 const pluginHash = {
-  compile(compiler, schemaDef, schemaOptions) {
+  compile(compiler, schemaDef) {
     if (schemaDef instanceof compiler.Schema.Hash) {
-      const valueSchema = compiler.compile(schemaDef.valueSchemaDef, schemaOptions);
-      const keySchema = compiler.compile(schemaDef.keySchemaDef, schemaOptions);
+      const valueSchema = compiler.compile(schemaDef.valueSchemaDef);
+      const keySchema = compiler.compile(schemaDef.keySchemaDef);
       return {
         typeName: `hash of ${valueSchema.typeName}`,
         compiled: true,
