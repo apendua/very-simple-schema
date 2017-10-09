@@ -25,14 +25,10 @@ npm install --save very-simple-schema
 import { Schema } from 'very-simple-schema';
 
 const Book = new Schema({
-  // must be present and non-empty
-  author: { type: String, nonEmpty: true },
-  // can be missing, but if present then must be non-empty
-  title: { type: String, optional: true, nonEmpty: true },
-  // can be missing
-  abstract: { type: String, optional: true },
-  // must be present, if present can be empty
-  signature: { type: String },
+  author:    { type: String, nonEmpty: true }, // must be present and non-empty
+  title:     { type: String, optional: true, nonEmpty: true }, // can be missing, but if present then must be non-empty
+  abstract:  { type: String, optional: true }, // can be missing
+  signature: { type: String }, // must be present, if present can be empty
 });
 ```
 
@@ -66,7 +62,7 @@ new Schema([new Schema.Any()], { minCount: 1 });
 const Id = Schema.oneOf([String, Number]); // can be one of the specified types
 
 const User = new Schema({
-  name: { type: String },
+  name:  { type: String },
   email: { type: String, regEx: Schema.RegEx.Email, optional: true },
 }, { typeName: 'User' }); // custom typeName can improve some error messages
 
@@ -75,7 +71,7 @@ const Book = new Schema({
   author:   { type: User }, // type can be another schema
   title:    { type: String, nonEmpty: true },
   abstract: { type: String },
-  chapters: { type: [String], max: 128 }, // max refers individual chapter
+  chapters: { type: [String], max: 128, maxCount: 10 }, // maxCount refers to array lenght, max refers to string length
 }, { typeName: 'Book' });
 
 const Library = new Schema({
