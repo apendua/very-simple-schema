@@ -1,11 +1,11 @@
 
-const pluginAssumed = {
+const pluginImplicit = {
   compile(compiler, schemaDef, {
-    assumed,
+    implicit,
     emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
     ...otherOptions
   }) {
-    if (assumed !== undefined) {
+    if (implicit !== undefined) {
       const compiled = compiler.compile(schemaDef, {
         emptyStringsAreMissingValues,
         ...otherOptions,
@@ -17,12 +17,12 @@ const pluginAssumed = {
                                       !!(emptyStringsAreMissingValues && value === '' && isString);
       return {
         ...compiled,
-        isAssumed: true,
-        validate: value => (valueIsMissing(value) ? validate(assumed) : validate(value)),
+        isImplicit: true,
+        validate: value => (valueIsMissing(value) ? validate(implicit) : validate(value)),
       };
     }
     return null;
   },
 };
 
-export default pluginAssumed;
+export default pluginImplicit;

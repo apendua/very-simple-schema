@@ -550,26 +550,26 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given a an object schema with assumed value', function () {
+  describe('Given a an object schema with implicit value', function () {
     beforeEach(function () {
       this.schema1 = new Schema({
         a: new Schema({
-          x: { type: Number, assumed: 0, optional: true, min: 1 },
-          y: { type: new Schema(Number, { assumed: 0 }) }, // NOTE: it does not imply optional automatically
+          x: { type: Number, implicit: 0, optional: true, min: 1 },
+          y: { type: new Schema(Number, { implicit: 0 }) }, // NOTE: it does not imply optional automatically
         }),
         b: {
           type: new Schema({
             x: Number,
             y: Number,
           }, {
-            assumed: {
+            implicit: {
               x: 0,
             },
           }),
           optional: true,
         },
       }, {
-        assumed: {},
+        implicit: {},
       });
     });
     it('should return relevant errors web validating null', function () {
