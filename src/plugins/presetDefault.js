@@ -10,8 +10,10 @@ import pluginObject from './object.js';
 import pluginOneOf from './oneOf.js';
 import pluginPick from './pick.js';
 import pluginRegExp from './regExp.js';
+import pluginSchema from './schema.js';
 
 export default [
+  pluginSchema,
   pluginImplicit,
   pluginAny,
   pluginMerge,

@@ -16,7 +16,6 @@ import {
 } from '../utils.js';
 import {
   applyPlugins,
-  pluginSchema,
 } from '../createCompiler.js';
 
 const should = chai.should();
@@ -31,6 +30,19 @@ const pluginString = {
           validateIsString,
         ]),
       }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
+};
+
+const pluginSchema = {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef instanceof compiler.Schema) {
+      // Recompile the original schemaDef with (potentionally) new options.
+      return compiler.compile({}, schemaDef.schemaDef, {
+        ...schemaDef.schemaOptions,
+        ...schemaOptions,
+      });
     }
     return next(validator, schemaDef, schemaOptions);
   },

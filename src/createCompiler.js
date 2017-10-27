@@ -21,7 +21,7 @@ export const compose = (...functions) => {
  * @param {Object[]} plugins
  * @returns {Object}
  */
-export const applyPlugins = (compiler, plugins) => {
+export const applyPlugins = (compiler, plugins = []) => {
   const compile = compiler.compile || identity;
   const options = {
     ...compiler,
@@ -48,29 +48,13 @@ export const applyPlugins = (compiler, plugins) => {
   return options;
 };
 
-export const pluginSchema = {
-  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef instanceof compiler.Schema) {
-      // Recompile the original schemaDef with (potentionally) new options.
-      return compiler.compile({}, schemaDef.schemaDef, {
-        ...schemaDef.schemaOptions,
-        ...schemaOptions,
-      });
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
-
 function createCompiler(Schema, options) {
   const compiler = {
     Schema,
     options: { ...options },
     compile: identity,
   };
-  return applyPlugins(compiler, [
-    pluginSchema,
-    ...options.plugins,
-  ]);
+  return applyPlugins(compiler, options.plugins);
 }
 
 export default createCompiler;
