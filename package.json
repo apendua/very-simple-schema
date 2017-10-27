@@ -32,6 +32,7 @@
   "devDependencies": {
     "babel-cli": "^6.23.0",
     "babel-core": "^6.21.0",
+    "babel-eslint": "^7.2.3",
     "babel-loader": "^6.2.10",
     "babel-plugin-transform-runtime": "^6.15.0",
     "babel-polyfill": "^6.20.0",

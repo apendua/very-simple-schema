@@ -1,5 +1,6 @@
 {
   "extends": "airbnb-base",
+  "parser": "babel-eslint",
   "rules": {
     "import/no-absolute-path": "off",
     "import/no-extraneous-dependencies": "off",
@@ -15,13 +16,6 @@
     "max-len": ["error", 140],
     "func-names": "off",
     "no-console": "off"
-  },
-  "parserOptions": {
-    "ecmaVersion": 7,
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "experimentalObjectRestSpread": true
-    }
   },
   "env": {
     "es6": true,
