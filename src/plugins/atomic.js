@@ -18,7 +18,7 @@ import {
 } from '../utils.js';
 
 const pluginAtomic = {
-  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     const {
       min,
       max,
@@ -26,7 +26,9 @@ const pluginAtomic = {
       nonEmpty,
       decimal = compiler.options.decimal,
     } = schemaOptions;
-    const validators = [];
+    const validators = [
+      validator.validate,
+    ];
     const properties = {
       isAtomic: true,
     };

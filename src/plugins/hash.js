@@ -11,7 +11,7 @@ const pluginHash = {
     if (schemaDef instanceof compiler.Schema.Hash) {
       const valueSchema = compiler.compile({}, schemaDef.valueSchemaDef);
       const keySchema = compiler.compile({}, schemaDef.keySchemaDef);
-      return {
+      return next({
         ...validator,
         typeName: `hash of ${valueSchema.typeName}`,
         validate: combine([
@@ -36,7 +36,7 @@ const pluginHash = {
           },
         ]),
         getSubSchema: () => valueSchema,
-      };
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },

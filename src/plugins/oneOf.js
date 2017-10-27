@@ -10,7 +10,7 @@ const pluginOneOf = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.OneOf) {
       const alternativeSchemas = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x));
-      return {
+      return next({
         isOneOf: true,
         typeName: `one of ${alternativeSchemas.map(x => x.typeName).join(', ')}`,
         validate: (value) => {
@@ -24,7 +24,7 @@ const pluginOneOf = {
           }
           return { error: ERROR_NO_ALTERNATIVE, expected };
         },
-      };
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },

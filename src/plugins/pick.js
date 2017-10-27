@@ -24,7 +24,7 @@ const pluginPick = {
       schemaDef.fields.forEach((name) => {
         properties[name] = schema.properties[name];
       });
-      return {
+      return next({
         properties,
         typeName,
         compiled: true,
@@ -37,7 +37,7 @@ const pluginPick = {
             emptyStringsAreMissingValues,
           }),
         ]),
-      };
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },

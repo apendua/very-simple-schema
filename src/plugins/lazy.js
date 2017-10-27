@@ -1,5 +1,9 @@
+import {
+  annotateError,
+} from '../utils.js';
+
 const pluginLazy = {
-  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     const {
       lazy = false,
       ...otherOptions
@@ -13,12 +17,12 @@ const pluginLazy = {
         ...validator,
         isLazy: true,
         typeName: 'lazy',
-        validate: (value) => {
+        validate: annotateError((value) => {
           if (!validate) {
             validate = compiler.compile({}, schemaDef(), otherOptions).validate;
           }
           return validate(value);
-        },
+        }, schemaOptions.label),
       };
     }
     return next(validator, schemaDef, schemaOptions);

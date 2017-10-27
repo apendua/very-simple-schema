@@ -24,7 +24,7 @@ const pluginMerge = {
         }
         Object.assign(properties, schema.properties);
       });
-      return {
+      return next({
         properties,
         typeName,
         isObject: true,
@@ -37,7 +37,7 @@ const pluginMerge = {
           }),
         ]),
         getSubSchema: key => properties[key],
-      };
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },

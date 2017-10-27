@@ -54,7 +54,7 @@ const pluginObject = {
           properties[key].optional = false;
         });
       }
-      return {
+      return next({
         ...validator,
         properties,
         typeName,
@@ -86,7 +86,7 @@ const pluginObject = {
           return cleaned;
         },
         getSubSchema: key => properties[key],
-      };
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },
