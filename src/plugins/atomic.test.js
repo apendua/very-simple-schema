@@ -18,18 +18,21 @@ import {
   ERROR_NOT_INSTANCE_OF,
   ERROR_IS_EMPTY,
 } from '../constants.js';
+import { applyPlugins } from '../createCompiler.js';
 
 const should = chai.should();
-const compiler = {
+const compiler = applyPlugins({
   options: {},
-  compile: () => ({ validate: () => {} }),
-};
+}, [
+  pluginAtomic,
+]);
+
 class Model {}
 
 describe('Test atomic plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
-    this.compile = (schemaDef, schemaOptions = {}) => pluginAtomic.compile(compiler, schemaDef, schemaOptions);
+    this.compile = (schemaDef, schemaOptions = {}) => compiler.compile({}, schemaDef, schemaOptions);
   });
 
   describe('Given the definition is not atomic', function () {

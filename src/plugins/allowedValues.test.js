@@ -5,20 +5,20 @@ import chai from 'chai';
 import {
   ERROR_VALUE_NOT_ALLOWED,
 } from '../constants.js';
+import { applyPlugins } from '../createCompiler.js';
 import pluginAllowedValues from './allowedValues.js';
 
 const should = chai.should();
-const compiler = {
-  options: {},
-  compile: () => ({ validate: () => {} }),
-};
+const compiler = applyPlugins({}, [
+  pluginAllowedValues,
+]);
 
 describe('Test allowedValues plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginAllowedValues.compile.call({ isAtomic: true }, compiler, schemaDef, schemaOptions).validate;
+        compiler.compile({ isAtomic: true }, schemaDef, schemaOptions).validate;
   });
 
   describe('Given a schema with allowedValues', function () {

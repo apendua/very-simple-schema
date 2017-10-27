@@ -1,24 +1,27 @@
 const pluginLazy = {
-  compile(compiler, schemaDef, schemaOptions) {
-    const { lazy = false } = schemaOptions;
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
+    const {
+      lazy = false,
+      ...otherOptions
+    } = schemaOptions;
     if (lazy) {
       if (typeof schemaDef !== 'function') {
         throw new Error('If lazy flag is set, schemaDef must be a function');
       }
       let validate;
       return {
+        ...validator,
         isLazy: true,
-        compiled: true,
         typeName: 'lazy',
         validate: (value) => {
           if (!validate) {
-            validate = compiler.compile(schemaDef()).validate;
+            validate = compiler.compile({}, schemaDef(), otherOptions).validate;
           }
           return validate(value);
         },
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
 };
 

@@ -1,15 +1,15 @@
 
 const pluginImplicit = {
-  compile(compiler, schemaDef, {
-    implicit,
-    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
-    ...otherOptions
-  }) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
+    const {
+      implicit,
+      ...otherOptions
+    } = schemaOptions;
     if (implicit !== undefined) {
-      const compiled = compiler.compile(schemaDef, {
-        emptyStringsAreMissingValues,
-        ...otherOptions,
-      });
+      const {
+        emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
+      } = otherOptions;
+      const compiled = next(validator, schemaDef, otherOptions);
       const isString = compiled.isString;
       const validate = compiled.validate;
       const valueIsMissing = value => value === undefined ||
@@ -21,7 +21,7 @@ const pluginImplicit = {
         validate: value => (valueIsMissing(value) ? validate(implicit) : validate(value)),
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
 };
 

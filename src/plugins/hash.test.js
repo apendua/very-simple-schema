@@ -7,25 +7,48 @@ import {
   ERROR_NOT_OBJECT,
 } from '../constants.js';
 import pluginHash from './hash.js';
+import {
+  validateIsString,
+} from '../validators.js';
+import {
+  combine,
+} from '../utils.js';
+import { applyPlugins } from '../createCompiler.js';
 
 const should = chai.should();
+const pluginString = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === String) {
+      return next({
+        ...validator,
+        validate: combine([
+          validator.validate,
+          validateIsString,
+        ]),
+      }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
+};
 
 describe('Test hash plugin', function () {
   beforeEach(function () {
-    const compiler = {
+    const compiler = applyPlugins({
       Schema: class Schema {},
       options: {},
-      compile: () => ({ validate: value => (typeof value !== 'string' ? { error: ERROR_NOT_STRING, actual: value } : undefined) }),
-    };
+    }, [
+      pluginString,
+      pluginHash,
+    ]);
     pluginHash.mixin(compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginHash.compile(compiler, new compiler.Schema.Hash({ value: schemaDef }), schemaOptions).validate;
+        compiler.compile({}, new compiler.Schema.Hash({ value: schemaDef }), schemaOptions).validate;
   });
 
   describe('Given an hash schema', function () {
     beforeEach(function () {
-      this.validate1 = this.createValidate(Number);
+      this.validate1 = this.createValidate(String);
     });
     it('should return error if not an hash', function () {
       this.validate1([]).should.deep.equal({

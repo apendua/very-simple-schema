@@ -3,30 +3,43 @@
 /* eslint prefer-arrow-callback: "off" */
 import chai from 'chai';
 import {
-  ERROR_NOT_STRING,
   ERROR_NOT_NUMBER,
 } from '../constants.js';
-import lazyPlugin from './lazy.js';
+import pluginLazy from './lazy.js';
+import {
+  combine,
+} from '../utils.js';
+import {
+  validateIsNumber,
+} from '../validators.js';
+import { applyPlugins } from '../createCompiler.js';
 
 const should = chai.should();
-const compiler = {
-  options: {},
-  compile: (schemaDef) => {
-    if (schemaDef === String) {
-      return { validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }) };
-    } else if (schemaDef === Number) {
-      return { validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }) };
+const pluginNumber = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === Number) {
+      return {
+        ...validator,
+        validate: combine([
+          validator.validate,
+          validateIsNumber,
+        ]),
+      };
     }
-    return { validate: () => ({}) };
+    return next(validator, schemaDef, schemaOptions);
   },
 };
+const compiler = applyPlugins({}, [
+  pluginNumber,
+  pluginLazy,
+]);
 
 describe('Test lazy plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      lazyPlugin.compile(compiler, schemaDef, schemaOptions).validate;
+        compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
   describe('Given a lazy Number schema', function () {

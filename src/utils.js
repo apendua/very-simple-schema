@@ -19,6 +19,14 @@ export const each = (object, action) => {
 export const isArray = actual => Array.isArray(actual);
 export const isDate = actual => toString.call(actual) === '[object Date]';
 
+const noop = () => {};
+export const combine = validators => validators.reduce(
+  (previous, current) => (
+    current ? (actual => previous(actual) || current(actual)) : previous
+  ),
+  noop,
+);
+
 export {
   isObject,
   isPlainObject,

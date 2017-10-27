@@ -36,7 +36,7 @@ function createSchema(options = {}) {
 
     get compiled() {
       Object.defineProperty(this, 'compiled', {
-        value: this.constructor.compiler.compile(this.schemaDef, this.schemaOptions),
+        value: this.constructor.compiler.compile({}, this.schemaDef, this.schemaOptions),
       });
       return this.compiled;
     }

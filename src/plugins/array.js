@@ -1,23 +1,23 @@
 import {
   validateIsArray,
-  combine,
   createValidateMinCount,
   createValidateMaxCount,
 } from '../validators.js';
 import {
+  combine,
   isArray,
 } from '../utils.js';
 
 const pluginArray = {
-  compile(compiler, schemaDef, schemaOptions) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (isArray(schemaDef) && schemaDef.length === 1) {
-      const element = compiler.compile(schemaDef[0], schemaOptions);
+      const element = compiler.compile({}, schemaDef[0], schemaOptions);
       const { minCount, maxCount } = schemaOptions;
       return {
+        ...validator,
         element,
         isArray: true,
         typeName: `array of ${element.typeName}`,
-        compiled: true,
         validate: combine([
           validateIsArray,
           minCount !== undefined && createValidateMinCount(minCount),
@@ -34,7 +34,7 @@ const pluginArray = {
         getSubSchema: () => element,
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
 };
 

@@ -12,7 +12,6 @@ import {
   ERROR_NOT_ARRAY,
   ERROR_NOT_OBJECT,
   ERROR_NOT_INSTANCE_OF,
-  ERROR_VALUE_NOT_ALLOWED,
   ERROR_TOO_FEW,
   ERROR_TOO_MANY,
   ERROR_TOO_LONG,
@@ -42,9 +41,6 @@ export const createValidateMaxCount = expected => actual => (actual.length <= ex
 export const createValidateMin = expected => actual => (actual >= expected ? undefined : { error: ERROR_TOO_SMALL, actual, expected });
 export const createValidateMax = expected => actual => (actual <= expected ? undefined : { error: ERROR_TOO_LARGE, actual, expected });
 
-export const createValidateIsAllowed = expected => actual =>
-  (expected.indexOf(actual) >= 0 ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
-
 export const validateIsString = actual => (typeof actual === 'string' ? undefined : { error: ERROR_NOT_STRING, actual });
 export const validateIsNumber = actual => (typeof actual === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual });
 export const validateIsBoolean = actual => (typeof actual === 'boolean' ? undefined : { error: ERROR_NOT_BOOLEAN, actual });
@@ -56,7 +52,7 @@ export const validateIsArray = actual => (isArray(actual) ? undefined : { error:
 export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
 export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });
 
-export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
+// export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
 export const createValidateProperties = ({
   properties,
   additionalProperties,

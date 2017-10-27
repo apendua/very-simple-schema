@@ -1,19 +1,19 @@
 import {
   validateIsObject,
-  combine,
 } from '../validators.js';
 import {
   each,
+  combine,
 } from '../utils.js';
 
 const pluginHash = {
-  compile(compiler, schemaDef) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Hash) {
-      const valueSchema = compiler.compile(schemaDef.valueSchemaDef);
-      const keySchema = compiler.compile(schemaDef.keySchemaDef);
+      const valueSchema = compiler.compile({}, schemaDef.valueSchemaDef);
+      const keySchema = compiler.compile({}, schemaDef.keySchemaDef);
       return {
+        ...validator,
         typeName: `hash of ${valueSchema.typeName}`,
-        compiled: true,
         validate: combine([
           validateIsObject,
           (value) => {
@@ -38,7 +38,7 @@ const pluginHash = {
         getSubSchema: () => valueSchema,
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     class Hash {

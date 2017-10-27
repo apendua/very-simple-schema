@@ -2,11 +2,18 @@
 import {
   ERROR_DOES_NOT_MATCH,
 } from '../constants.js';
+import {
+  combine,
+} from '../utils.js';
 
 const pluginRegExp = {
-  compile(compiler, schemaDef, schemaOptions) {
+  compile: () => next => (validator, schemaDef, schemaOptions = {}) => {
     let { regEx } = schemaOptions;
     if (regEx) {
+      const compiled = next(validator, schemaDef, schemaOptions);
+      if (!compiled.isString) {
+        throw new Error('RegEx requires a string schema');
+      }
       let expected;
       if (regEx instanceof RegExp) {
         expected = `match ${regEx.toString()}`;
@@ -17,10 +24,14 @@ const pluginRegExp = {
         throw Error('Invalid regEx settings');
       }
       return {
-        validate: value => (regEx.test(value) ? undefined : { error: ERROR_DOES_NOT_MATCH, expected }),
+        ...compiled,
+        validate: combine([
+          compiled.validate,
+          value => (regEx.test(value) ? undefined : { error: ERROR_DOES_NOT_MATCH, expected }),
+        ]),
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     Schema.RegEx = {

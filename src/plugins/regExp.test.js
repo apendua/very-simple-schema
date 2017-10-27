@@ -6,20 +6,44 @@ import pluginRegExp from './regExp.js';
 import {
   ERROR_DOES_NOT_MATCH,
 } from '../constants.js';
+import { applyPlugins } from '../createCompiler.js';
+import {
+  validateIsString,
+} from '../validators.js';
+import {
+  combine,
+} from '../utils.js';
 
 const should = chai.should();
-const compiler = {
-  options: {},
-  compile: () => ({ validate: () => {} }),
+const pluginString = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === String) {
+      return next({
+        ...validator,
+        isString: true,
+        validate: combine([
+          validator.validate,
+          validateIsString,
+        ]),
+      }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
 };
 
 describe('Test regExp plugin', function () {
   beforeEach(function () {
-    this.Schema = function () {};
-    pluginRegExp.mixin(this.Schema);
+    const compiler = applyPlugins({
+      Schema() {},
+    }, [
+      pluginString,
+      pluginRegExp,
+    ]);
+    this.Schema = compiler.Schema;
+    pluginRegExp.mixin(compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions) =>
-      pluginRegExp.compile(compiler, schemaDef, schemaOptions).validate;
+        compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
   describe('given I use a custom regExp', function () {

@@ -5,16 +5,17 @@ import {
 const identity = x => x;
 
 const pluginAny = {
-  compile(compiler, schemaDef) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Any) {
       return {
+        ...validator,
         typeName: 'any',
         validate: validateAlways,
         clean:    identity,
         isAny:    true,
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     class Any {

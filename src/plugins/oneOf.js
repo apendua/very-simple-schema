@@ -7,12 +7,11 @@ import {
 } from '../utils.js';
 
 const pluginOneOf = {
-  compile(compiler, schemaDef) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.OneOf) {
-      const alternativeSchemas = schemaDef.alternativeSchemaDefs.map(x => compiler.compile(x));
+      const alternativeSchemas = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x));
       return {
         isOneOf: true,
-        compiled: true,
         typeName: `one of ${alternativeSchemas.map(x => x.typeName).join(', ')}`,
         validate: (value) => {
           const expected = [];
@@ -27,7 +26,7 @@ const pluginOneOf = {
         },
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     class OneOf {

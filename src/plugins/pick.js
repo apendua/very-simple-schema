@@ -1,21 +1,22 @@
 import {
   validateIsObject,
   createValidateProperties,
-  combine,
 } from '../validators.js';
 import {
+  combine,
   isArray,
 } from '../utils.js';
 
 const pluginPick = {
-  compile(compiler, schemaDef, {
-    typeName = 'object',
-    additionalProperties = compiler.options.additionalProperties,
-    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
-    ...otherOptions
-  }) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     if (schemaDef instanceof compiler.Schema.Pick) {
-      const schema = compiler.compile(schemaDef.originalSchemaDef, otherOptions);
+      const {
+        typeName = 'object',
+        additionalProperties = compiler.options.additionalProperties,
+        emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
+        ...otherOptions
+      } = schemaOptions;
+      const schema = compiler.compile({}, schemaDef.originalSchemaDef, otherOptions);
       if (!schema.isObject) {
         throw new Error('Pick the original type to be an object');
       }
@@ -38,7 +39,7 @@ const pluginPick = {
         ]),
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     class Pick {

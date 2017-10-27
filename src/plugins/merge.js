@@ -1,23 +1,24 @@
 import {
   validateIsObject,
   createValidateProperties,
-  combine,
 } from '../validators.js';
 import {
   isArray,
+  combine,
 } from '../utils.js';
 
 const pluginMerge = {
-  compile(compiler, schemaDef, {
-    typeName = 'object',
-    additionalProperties = compiler.options.additionalProperties,
-    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
-  }) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     if (schemaDef instanceof compiler.Schema.Merge) {
+      const {
+        typeName = 'object',
+        additionalProperties = compiler.options.additionalProperties,
+        emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
+      } = schemaOptions;
       const properties = {};
       schemaDef.schemaDefs.forEach((definition) => {
         // NOTE: We are not passing any options here. It's intentional.
-        const schema = compiler.compile(definition);
+        const schema = compiler.compile({}, definition, schemaOptions);
         if (!schema.isObject) {
           throw new Error('Merge requires all source schema to be objects');
         }
@@ -26,7 +27,6 @@ const pluginMerge = {
       return {
         properties,
         typeName,
-        compiled: true,
         isObject: true,
         validate: combine([
           validateIsObject,
@@ -39,7 +39,7 @@ const pluginMerge = {
         getSubSchema: key => properties[key],
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
   mixin(Schema) {
     class Merge {

@@ -4,37 +4,63 @@
 import chai from 'chai';
 import {
   ERROR_NO_ALTERNATIVE,
-  ERROR_NOT_STRING,
-  ERROR_NOT_NUMBER,
 } from '../constants.js';
 import pluginOneOf from './oneOf.js';
+import {
+  combine,
+} from '../utils.js';
+import {
+  validateIsNumber,
+  validateIsString,
+} from '../validators.js';
+import { applyPlugins } from '../createCompiler.js';
 
 const should = chai.should();
+const pluginNumber = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === Number) {
+      return next({
+        ...validator,
+        typeName: 'number',
+        validate: combine([
+          validator.validate,
+          validateIsNumber,
+        ]),
+      }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
+};
+const pluginString = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === String) {
+      return next({
+        ...validator,
+        typeName: 'string',
+        validate: combine([
+          validator.validate,
+          validateIsString,
+        ]),
+      }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
+};
 
 describe('Test oneOf plugin', function () {
   beforeEach(function () {
-    const compiler = {
+    const compiler = applyPlugins({
       Schema: class Schema {},
       options: {},
-      compile: (schemaDef) => {
-        if (schemaDef === String) {
-          return {
-            typeName: 'string',
-            validate: value => (typeof value === 'string' ? undefined : { error: ERROR_NOT_STRING, actual: value }),
-          };
-        } else if (schemaDef === Number) {
-          return {
-            typeName: 'number',
-            validate: value => (typeof value === 'number' ? undefined : { error: ERROR_NOT_NUMBER, actual: value }),
-          };
-        }
-        return { validate: () => ({}) };
-      },
-    };
+    }, [
+      pluginNumber,
+      pluginString,
+      pluginOneOf,
+    ]);
     pluginOneOf.mixin(compiler.Schema);
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginOneOf.compile(compiler, new compiler.Schema.OneOf(schemaDef), schemaOptions).validate;
+        compiler.compile({}, new compiler.Schema.OneOf(schemaDef), schemaOptions).validate;
   });
 
   describe('Given a "oneOf" schema', function () {

@@ -9,19 +9,40 @@ import {
   ERROR_TOO_MANY,
 } from '../constants.js';
 import pluginArray from './array.js';
+import {
+  combine,
+} from '../utils.js';
+import {
+  validateIsNumber,
+} from '../validators.js';
+import { applyPlugins } from '../createCompiler.js';
 
 const should = chai.should();
-const compiler = {
-  options: {},
-  compile: () => ({ validate: value => (typeof value !== 'number' ? { error: ERROR_NOT_NUMBER, actual: value } : undefined) }),
+const pluginNumber = {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef === Number) {
+      return next({
+        ...validator,
+        validate: combine([
+          validator.validate,
+          validateIsNumber,
+        ]),
+      }, schemaDef, schemaOptions);
+    }
+    return next(validator, schemaDef, schemaOptions);
+  },
 };
+const compiler = applyPlugins({}, [
+  pluginNumber,
+  pluginArray,
+]);
 
 describe('Test array plugin', function () {
   beforeEach(function () {
     this.Schema = function () {};
     this.createValidate =
       (schemaDef, schemaOptions = {}) =>
-      pluginArray.compile(compiler, schemaDef, schemaOptions).validate;
+        compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
   describe('Given an array schema', function () {

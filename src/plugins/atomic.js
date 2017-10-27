@@ -7,16 +7,18 @@ import {
   validateIsBoolean,
   validateIsValidDate,
   validateIsDate,
-  combine,
   createValidateMin,
   createValidateMax,
   createValidateMinLength,
   createValidateMaxLength,
   validateNonEmpty,
 } from '../validators.js';
+import {
+  combine,
+} from '../utils.js';
 
 const pluginAtomic = {
-  compile(compiler, schemaDef, schemaOptions) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     const {
       min,
       max,
@@ -25,7 +27,7 @@ const pluginAtomic = {
       decimal = compiler.options.decimal,
     } = schemaOptions;
     const validators = [];
-    const schema = {
+    const properties = {
       isAtomic: true,
     };
 
@@ -34,45 +36,49 @@ const pluginAtomic = {
       validators.push(decimal ? undefined : validateIsInteger);
       validators.push(min !== undefined && createValidateMin(min));
       validators.push(max !== undefined && createValidateMax(max));
-      schema.isNumber = true;
-      schema.typeName = 'number';
-      schema.clean = x => (typeof x === 'string' ? +x : x);
+      properties.isNumber = true;
+      properties.typeName = 'number';
+      properties.clean = x => (typeof x === 'string' ? +x : x);
     } else if (schemaDef === String) {
       validators.push(validateIsString);
       validators.push(nonEmpty && validateNonEmpty);
       validators.push(min !== undefined && createValidateMinLength(min));
       validators.push(max !== undefined && createValidateMaxLength(max));
-      schema.isString = true;
-      schema.typeName = 'string';
-      schema.clean = x => (typeof x !== 'string' ? JSON.stringify(x) : x);
+      properties.isString = true;
+      properties.typeName = 'string';
+      properties.clean = x => (typeof x !== 'string' ? JSON.stringify(x) : x);
     } else if (schemaDef === Boolean) {
       validators.push(validateIsBoolean);
-      schema.isBoolean = true;
-      schema.typeName = 'boolean';
+      properties.isBoolean = true;
+      properties.typeName = 'boolean';
     } else if (schemaDef === Date) {
       validators.push(validateIsDate);
       validators.push(validateIsValidDate);
       validators.push(min !== undefined && createValidateMin(min));
       validators.push(max !== undefined && createValidateMax(max));
-      schema.isDate = true;
-      schema.typeName = 'date';
+      properties.isDate = true;
+      properties.typeName = 'date';
     } else if (typeof schemaDef === 'function') {
       validators.push(createValidateInstanceOf(schemaDef));
-      schema.isFunction = true;
-      schema.typeName = schemaDef.name || '[unknown]';
+      properties.isFunction = true;
+      properties.typeName = schemaDef.name || '[unknown]';
     } else if (typeof schemaDef !== 'object' || schemaDef === null) {
       validators.push(createValidateEquals(schemaDef));
-      schema.isLiteral = true;
-      schema.typeName = schemaDef === undefined ? 'undefined' : JSON.stringify(schemaDef);
+      properties.isLiteral = true;
+      properties.typeName = schemaDef === undefined ? 'undefined' : JSON.stringify(schemaDef);
     } else {
-      schema.isAtomic = false;
+      properties.isAtomic = false;
     }
 
     if (typeName) {
-      schema.typeName = typeName;
+      properties.typeName = typeName;
     }
-    schema.validate = combine(validators);
-    return schema;
+
+    return next({
+      ...validator,
+      ...properties,
+      validate: combine(validators),
+    }, schemaDef, schemaOptions);
   },
 };
 

@@ -1,24 +1,25 @@
 import {
   validateIsObject,
-  combine,
   createValidateProperties,
 } from '../validators.js';
 import {
   has,
   each,
+  combine,
   isArray,
   isPlainObject,
 } from '../utils.js';
 
 const pluginObject = {
-  compile(compiler, schemaDef, {
-    typeName = 'object',
-    required,
-    additionalProperties = compiler.options.additionalProperties,
-    fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
-    emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
-  }) {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     if (isPlainObject(schemaDef)) {
+      const {
+        typeName = 'object',
+        required,
+        additionalProperties = compiler.options.additionalProperties,
+        fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
+        emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
+      } = schemaOptions;
       const properties = {};
       Object.keys(schemaDef).forEach((key) => {
         const definition = schemaDef[key];
@@ -31,12 +32,12 @@ const pluginObject = {
           if (!type) {
             throw new Error(`Missing type for property ${key}`);
           }
-          properties[key] = compiler.compile(type, {
+          properties[key] = compiler.compile({}, type, {
             ...otherOptions,
           });
           properties[key].optional = !!optional;
         } else {
-          properties[key] = compiler.compile(definition);
+          properties[key] = compiler.compile({}, definition);
         }
       });
       if (required) {
@@ -54,9 +55,9 @@ const pluginObject = {
         });
       }
       return {
+        ...validator,
         properties,
         typeName,
-        compiled: true,
         isObject: true,
         validate: combine([
           validateIsObject,
@@ -87,7 +88,7 @@ const pluginObject = {
         getSubSchema: key => properties[key],
       };
     }
-    return null;
+    return next(validator, schemaDef, schemaOptions);
   },
 };
 
