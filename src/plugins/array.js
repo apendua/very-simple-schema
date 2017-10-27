@@ -36,7 +36,6 @@ const pluginArray = {
           ? value.map(x => element.clean(x))
           : value
         ),
-        getSubSchema: () => element,
       }, schemaDef, { label });
     }
     return next(validator, schemaDef, schemaOptions);

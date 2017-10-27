@@ -84,9 +84,12 @@ function createSchema(options = {}) {
       return undefined;
     }
 
-    describe(descriptor, {
+    describe(...args) {
+      return this.constructor.describe(...args);
+    }
+
+    static describe(descriptor, {
       keys = [],
-      context = this.compiled,
       labelCreator = defaultLabelCreator,
       getMessageTemplate = defaultGetMessageTemplate,
     } = {}) {
@@ -96,7 +99,7 @@ function createSchema(options = {}) {
           return typeof messageTemplate === 'function'
             ? messageTemplate({
               ...descriptor,
-              label: labelCreator(keys, context && context.label) || defaultLabel,
+              label: labelCreator(keys, descriptor && descriptor.label) || defaultLabel,
             })
             : messageTemplate;
         } else if (descriptor.errors) {
@@ -105,7 +108,6 @@ function createSchema(options = {}) {
               labelCreator,
               getMessageTemplate,
               keys: [...keys, idx],
-              context: context && context.getSubSchema && context.getSubSchema(idx),
             }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};
@@ -114,7 +116,6 @@ function createSchema(options = {}) {
                 labelCreator,
                 getMessageTemplate,
                 keys: [...keys, key],
-                context: context && context.getSubSchema && context.getSubSchema(key),
               });
             });
             return described;

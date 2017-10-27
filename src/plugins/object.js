@@ -85,7 +85,6 @@ const pluginObject = {
           });
           return cleaned;
         },
-        getSubSchema: key => properties[key],
       }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);

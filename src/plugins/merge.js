@@ -36,7 +36,6 @@ const pluginMerge = {
             emptyStringsAreMissingValues,
           }),
         ]),
-        getSubSchema: key => properties[key],
       }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);

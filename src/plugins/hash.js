@@ -35,7 +35,6 @@ const pluginHash = {
             return hasErrors ? { errors } : undefined;
           },
         ]),
-        getSubSchema: () => valueSchema,
       }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);

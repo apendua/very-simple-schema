@@ -13,36 +13,32 @@ chai.should();
 
 describe('Test Schema.describe', function () {
   describe('Given different error types', function () {
-    beforeEach(function () {
-      this.schema = new Schema({});
-    });
-
     it('should describe a string type error', function () {
-      this.schema.describe({
+      Schema.describe({
         error: ERROR_NOT_STRING,
       }).should.equal('Value should be a string');
     });
 
     it('should describe a number type error', function () {
-      this.schema.describe({
+      Schema.describe({
         error: ERROR_NOT_NUMBER,
       }).should.equal('Value should be a number');
     });
 
     it('should describe an array error', function () {
-      this.schema.describe({
+      Schema.describe({
         error: ERROR_NOT_ARRAY,
       }).should.equal('Value should be an array');
     });
 
     it('should describe an object error', function () {
-      this.schema.describe({
+      Schema.describe({
         error: ERROR_NOT_ARRAY,
       }).should.equal('Value should be an array');
     });
 
     it('should describe an object field error', function () {
-      this.schema.describe({
+      Schema.describe({
         errors: {
           a: { error: ERROR_NOT_STRING },
         },
@@ -52,7 +48,7 @@ describe('Test Schema.describe', function () {
     });
 
     it('should describe errors in an array', function () {
-      this.schema.describe({
+      Schema.describe({
         errors: [
           undefined,
           undefined,
@@ -66,7 +62,7 @@ describe('Test Schema.describe', function () {
     });
 
     it('should describe an deep nested field error', function () {
-      this.schema.describe({
+      Schema.describe({
         errors: {
           a: {
             errors: {
@@ -83,7 +79,7 @@ describe('Test Schema.describe', function () {
       });
     });
 
-    it.skip('should describe errors in a complex object', function () {
+    it('should describe errors in a complex object', function () {
       new Schema({
         name: {
           type: new Schema({

@@ -389,10 +389,6 @@ describe('Test Schema', function () {
     it('should flag itself with isObject', function () {
       this.schema1.compiled.isObject.should.be.true;
     });
-
-    it('should provide getSubSchema function', function () {
-      this.schema1.compiled.getSubSchema.should.be.ok;
-    });
   });
 
   describe('Given a hash with object sub-schema', function () {
