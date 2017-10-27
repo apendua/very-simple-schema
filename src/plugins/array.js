@@ -11,9 +11,14 @@ import {
 const pluginArray = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (isArray(schemaDef) && schemaDef.length === 1) {
-      const element = compiler.compile({}, schemaDef[0], schemaOptions);
-      const { minCount, maxCount } = schemaOptions;
-      return {
+      const {
+        label,
+        minCount,
+        maxCount,
+        ...otherOptions
+      } = schemaOptions;
+      const element = compiler.compile({}, schemaDef[0], otherOptions);
+      return next({
         ...validator,
         element,
         isArray: true,
@@ -32,7 +37,7 @@ const pluginArray = {
           : value
         ),
         getSubSchema: () => element,
-      };
+      }, schemaDef, { label });
     }
     return next(validator, schemaDef, schemaOptions);
   },

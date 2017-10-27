@@ -28,7 +28,9 @@ const pluginRegExp = {
         validate: combine([
           compiled.validate,
           value => (regEx.test(value) ? undefined : { error: ERROR_DOES_NOT_MATCH, expected }),
-        ]),
+        ], {
+          label: schemaOptions.label,
+        }),
       };
     }
     return next(validator, schemaDef, schemaOptions);

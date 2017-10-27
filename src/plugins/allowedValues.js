@@ -16,14 +16,16 @@ const pluginAllowedValues = {
     if (allowedValues) {
       const compiled = next(validator, schemaDef, schemaOptions);
       if (!compiled.isAtomic) {
-        throw new Error('AllowedValues requires an atomic schema');
+        throw new Error('You can only specify allowed values for an atomic schema');
       }
       return {
         ...compiled,
         validate: combine([
           compiled.validate,
           createValidateIsAllowed(allowedValues),
-        ]),
+        ], {
+          label: schemaOptions.label,
+        }),
       };
     }
     return next(validator, schemaDef, schemaOptions);

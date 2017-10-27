@@ -20,12 +20,37 @@ const isArray = actual => Array.isArray(actual);
 const isDate = actual => toString.call(actual) === '[object Date]';
 
 const noop = () => {};
-export const combine = validators => validators.reduce(
-  (previous, current) => (
-    current ? (actual => previous(actual) || current(actual)) : previous
-  ),
-  noop,
-);
+export const annotateError = (validate, label) => {
+  if (!validate) {
+    return noop;
+  }
+  if (!label) {
+    return validate;
+  }
+  return (value) => {
+    const error = validate(value);
+    if (error) {
+      return {
+        label,
+        ...error,
+      };
+    }
+    return error;
+  };
+};
+
+export const combine = (validators, { label } = {}) => {
+  if (!validators || validators.length === 0) {
+    return noop;
+  }
+  const validate = validators.reduce(
+    (previous, current) => (
+      current ? (actual => previous(actual) || current(actual)) : previous
+    ),
+    noop,
+  );
+  return annotateError(validate, label);
+};
 
 export {
   isDate,

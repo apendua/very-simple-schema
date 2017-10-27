@@ -13,6 +13,7 @@ import {
   ERROR_TOO_LONG,
   ERROR_NOT_OBJECT,
   ERROR_TOO_SMALL,
+  ERROR_TOO_MANY,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -638,6 +639,73 @@ describe('Test Schema', function () {
             },
           },
         },
+      });
+    });
+  });
+
+  describe('Given a schema with labels', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema({
+        a: { type: String, label: 'A' },
+        b: {
+          type: {
+            x: { type: Number, label: 'X' },
+            y: { type: Number, label: 'Y' },
+          },
+        },
+      });
+      this.schema2 = new Schema([new Schema(String, { label: 'Item' })], { maxCount: 2, label: 'Array' });
+    });
+    it('should attach labels to error descriptor', function () {
+      this.schema1.getErrors({
+        b: {
+          x: '',
+        },
+      }).should.deep.equal({
+        errors: {
+          a: {
+            error: ERROR_MISSING_FIELD,
+            label: 'A',
+          },
+          b: {
+            errors: {
+              x: {
+                error: ERROR_NOT_NUMBER,
+                label: 'X',
+                actual: '',
+              },
+              y: {
+                error: ERROR_MISSING_FIELD,
+                label: 'Y',
+              },
+            },
+          },
+        },
+      });
+    });
+    it('should properly attach label to an array', function () {
+      this.schema2.getErrors([1, 2, 3]).should.deep.equal({
+        actual: [1, 2, 3],
+        error: ERROR_TOO_MANY,
+        expected: 2,
+        label: 'Array',
+      });
+    });
+    it('should properly attach label to an array elements', function () {
+      this.schema2.getErrors([1, 2]).should.deep.equal({
+        label: 'Array',
+        errors: [
+          {
+            actual: 1,
+            error: ERROR_NOT_STRING,
+            label: 'Item',
+          },
+          {
+            actual: 2,
+            error: ERROR_NOT_STRING,
+            label: 'Item',
+          },
+        ],
       });
     });
   });

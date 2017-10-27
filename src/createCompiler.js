@@ -1,3 +1,7 @@
+import {
+  annotateError,
+} from './utils.js';
+
 const identity = x => x;
 const constant = x => () => x;
 
@@ -48,13 +52,17 @@ export const applyPlugins = (compiler, plugins = []) => {
   return options;
 };
 
-function createCompiler(Schema, options) {
+const createCompiler = (Schema, options) => {
   const compiler = {
     Schema,
     options: { ...options },
-    compile: identity,
+    compile: (validator, schemaDef, { label } = {}) => ({
+      ...validator,
+      ...label && { label },
+      validate: annotateError(validator.validate, label),
+    }),
   };
   return applyPlugins(compiler, options.plugins);
-}
+};
 
 export default createCompiler;
