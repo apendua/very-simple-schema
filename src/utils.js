@@ -19,6 +19,16 @@ const each = (object, action) => {
 const isArray = actual => Array.isArray(actual);
 const isDate = actual => toString.call(actual) === '[object Date]';
 
+export const isEmpty = (object) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const key in object) {
+    if (has(object, key)) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const noop = () => {};
 export const annotateError = (validate, label) => {
   if (!validate) {
