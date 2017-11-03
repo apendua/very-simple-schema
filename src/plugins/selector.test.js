@@ -7,12 +7,6 @@ import {
   ERROR_MISSING_FIELD,
   ERROR_KEY_NOT_ALLOWED,
 } from '../constants.js';
-import {
-  validateIsArray,
-} from '../validators.js';
-import {
-  combine,
-} from '../utils.js';
 import { applyPlugins } from '../createCompiler.js';
 import pluginSelector from './selector.js';
 import pluginObject from './object.js';
@@ -58,23 +52,22 @@ describe('Test selector plugin', function () {
         },
       }, {
         operators: {
-          $elemMatch: (validator, {
+          $elemMatch: ({
+            validator,
             validateSelector,
           }) => ({
             validate: validateSelector(validator),
           }),
-          $and: (validator, {
+          '$in,$each': ({
+            arrayOf,
+            validator,
+            validateExpression,
+          }) => arrayOf(validateExpression(validator)),
+          '$and,$or': ({
+            arrayOf,
+            validator,
             validateSelector,
-          }) => ({
-            isArray: true,
-            validate: combine([
-              validateIsArray,
-              (value) => {
-                const errors = value.map(x => validateSelector(validator)(x));
-                return errors.some(err => !!err) ? { errors } : undefined;
-              },
-            ]),
-          }),
+          }) => arrayOf(validateSelector(validator)),
         },
       });
     });
@@ -252,6 +245,24 @@ describe('Test selector plugin', function () {
           },
         },
       });
+    });
+    it('should accept selector with nested $or/$and operators', function () {
+      should.not.exist(this.validate({
+        $and: [
+          {
+            $or: [
+              { 'a.x': 1 },
+              { 'a.x': 2 },
+            ],
+          },
+          {
+            $or: [
+              { 'b.z': 1 },
+              { 'b.z': 2 },
+            ],
+          },
+        ],
+      }));
     });
   });
 });

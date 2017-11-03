@@ -2,6 +2,7 @@ import {
   ERROR_KEY_NOT_ALLOWED,
 } from '../constants.js';
 import {
+  validateIsArray,
   validateIsObject,
 } from '../validators.js';
 import {
@@ -25,10 +26,19 @@ const splitKey = (key) => {
 };
 
 const isLiteral = object => Object.keys(object).every(key => key[0] !== '$');
+const createValidateArray = validate => (value) => {
+  const errors = value.map(validate);
+  return errors.some(err => !!err) ? { errors } : undefined;
+};
 
 class Validator {
   constructor({ operators }) {
-    this.operators = operators;
+    this.operators = {};
+    each(operators, (createOperator, keys) => {
+      keys.split(',').forEach((key) => {
+        this.operators[key] = createOperator;
+      });
+    });
     this.validateKeys = this.validateKeys.bind(this);
     this.validateSelector = this.validateSelector.bind(this);
     this.validateExpression = this.validateExpression.bind(this);
@@ -40,9 +50,17 @@ class Validator {
       each(expression, (value, key) => {
         let validatorAtKey;
         if (key[0] === '$') {
-          validatorAtKey = this.operators[key] && this.operators[key](currentValidator, {
+          validatorAtKey = this.operators[key] && this.operators[key]({
             validateExpression: this.validateExpression,
             validateSelector:   this.validateSelector,
+            validator:          currentValidator,
+            arrayOf:            validate => ({
+              isArray: true,
+              validate: combine([
+                validateIsArray,
+                createValidateArray(validate),
+              ]),
+            }),
           });
         } else if (currentValidator.isObject) {
           validatorAtKey = currentValidator.properties[key];
