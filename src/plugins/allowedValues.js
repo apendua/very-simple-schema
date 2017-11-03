@@ -9,7 +9,7 @@ const createValidateIsAllowed = expected => actual =>
   (expected.indexOf(actual) >= 0 ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
 
 const pluginAllowedValues = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     const {
       allowedValues,
     } = schemaOptions;
@@ -18,7 +18,7 @@ const pluginAllowedValues = {
       if (!compiled.isAtomic) {
         throw new Error('You can only specify allowed values for an atomic schema');
       }
-      return {
+      return new compiler.Validator({
         ...compiled,
         validate: combine([
           compiled.validate,
@@ -26,7 +26,7 @@ const pluginAllowedValues = {
         ], {
           label: schemaOptions.label,
         }),
-      };
+      });
     }
     return next(validator, schemaDef, schemaOptions);
   },

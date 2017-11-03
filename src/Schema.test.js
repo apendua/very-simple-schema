@@ -639,6 +639,32 @@ describe('Test Schema', function () {
     });
   });
 
+  describe('Given two schemas with referencing properties', function () {
+    beforeEach(function () {
+      this.schema1 = new Schema({
+        a: { type: String, optional: true },
+        b: { type: Number },
+      });
+      this.schema2 = new Schema({
+        a: this.schema1.properties.a,
+        b: this.schema1.properties.b,
+      });
+    });
+    it('should reject object with missing property', function () {
+      this.schema2.getErrors({}).should.deep.equal({
+        errors: {
+          b: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+    it('should accept a valid object', function () {
+      should.not.exist(this.schema2.getErrors({
+        a: 'a',
+        b: 1,
+      }));
+    });
+  });
+
   describe('Given a schema with labels', function () {
     beforeEach(function () {
       this.schema1 = new Schema({

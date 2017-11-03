@@ -15,11 +15,11 @@ const pluginImplicit = {
       const valueIsMissing = value => value === undefined ||
                                       value === null ||
                                       !!(emptyStringsAreMissingValues && value === '' && isString);
-      return {
+      return new compiler.Validator({
         ...compiled,
         isImplicit: true,
         validate: value => (valueIsMissing(value) ? validate(implicit) : validate(value)),
-      };
+      });
     }
     return next(validator, schemaDef, schemaOptions);
   },

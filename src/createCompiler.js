@@ -53,16 +53,37 @@ export const applyPlugins = (compiler, plugins = []) => {
 };
 
 const createCompiler = (Schema, options) => {
+  class Validator {
+    constructor(props) {
+      Object.assign(this, props);
+    }
+    arrayOf(schemaOptions) {
+      return new Schema([this], schemaOptions);
+    }
+  }
+  const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
+    if (schemaDef instanceof Validator) {
+      // NOTE: We return validator in the original form, in particular
+      //       all schema options will be ingored, e.g.
+      //       an optional property cannot become a required one.
+      return schemaDef;
+    }
+    return next(validator, schemaDef, schemaOptions);
+  };
   const compiler = {
     Schema,
+    Validator,
     options: { ...options },
-    compile: (validator, schemaDef, { label } = {}) => ({
+    compile: (validator, schemaDef, { label } = {}) => new Validator({
       ...validator,
       ...label && { label },
       validate: annotateError(validator.validate, label),
     }),
   };
-  return applyPlugins(compiler, options.plugins);
+  return applyPlugins(compiler, [
+    pluginValidator,
+    ...options.plugins || [],
+  ]);
 };
 
 export default createCompiler;

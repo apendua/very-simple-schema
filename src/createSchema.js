@@ -41,6 +41,13 @@ function createSchema(options = {}) {
       return this.compiled;
     }
 
+    get properties() {
+      Object.defineProperty(this, 'properties', {
+        value: this.compiled.properties,
+      });
+      return this.properties;
+    }
+
     clean(value) {
       return this.compiled.clean(value);
     }

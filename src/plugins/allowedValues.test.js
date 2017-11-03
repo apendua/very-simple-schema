@@ -9,7 +9,11 @@ import { applyPlugins } from '../createCompiler.js';
 import pluginAllowedValues from './allowedValues.js';
 
 const should = chai.should();
-const compiler = applyPlugins({}, [
+const compiler = applyPlugins({
+  Validator(props) {
+    Object.assign(this, props);
+  },
+}, [
   pluginAllowedValues,
 ]);
 

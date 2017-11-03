@@ -7,7 +7,7 @@ import {
 } from '../utils.js';
 
 const pluginRegExp = {
-  compile: () => next => (validator, schemaDef, schemaOptions = {}) => {
+  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
     let { regEx } = schemaOptions;
     if (regEx) {
       const compiled = next(validator, schemaDef, schemaOptions);
@@ -23,7 +23,7 @@ const pluginRegExp = {
       } else {
         throw Error('Invalid regEx settings');
       }
-      return {
+      return new compiler.Validator({
         ...compiled,
         validate: combine([
           compiled.validate,
@@ -31,7 +31,7 @@ const pluginRegExp = {
         ], {
           label: schemaOptions.label,
         }),
-      };
+      });
     }
     return next(validator, schemaDef, schemaOptions);
   },

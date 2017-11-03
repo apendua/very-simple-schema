@@ -35,6 +35,9 @@ describe('Test regExp plugin', function () {
   beforeEach(function () {
     const compiler = applyPlugins({
       Schema() {},
+      Validator(props) {
+        Object.assign(this, props);
+      },
     }, [
       pluginString,
       pluginRegExp,
