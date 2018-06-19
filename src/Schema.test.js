@@ -144,6 +144,22 @@ describe('Test Schema', function () {
     });
   });
 
+  describe('Given an array schema', function () {
+    beforeEach(function () {
+      this.schema = new Schema([String]);
+    });
+    it('should throw descriptive error if the first element is invalid', function () {
+      (() => {
+        this.schema.validate([1]);
+      }).should.throw('0 should be a string');
+    });
+    it('should throw descriptive error if the second element is invalid', function () {
+      (() => {
+        this.schema.validate(['a', 1]);
+      }).should.throw('1 should be a string');
+    });
+  });
+
   describe('Given a schema with allowedValues', function () {
     describe('and the schema is an array', function () {
       beforeEach(function () {
