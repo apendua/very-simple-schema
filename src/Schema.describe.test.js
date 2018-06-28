@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NOT_STRING,
   ERROR_NOT_NUMBER,
@@ -9,60 +6,58 @@ import {
 } from './constants.js';
 import Schema from './Schema.js';
 
-chai.should();
-
-describe('Test Schema.describe', function () {
-  describe('Given different error types', function () {
-    it('should describe a string type error', function () {
-      Schema.describe({
+describe('Test Schema.describe', () => {
+  describe('Given different error types', () => {
+    test('should describe a string type error', () => {
+      expect(Schema.describe({
         error: ERROR_NOT_STRING,
-      }).should.equal('Value should be a string');
+      })).toBe('Value should be a string');
     });
 
-    it('should describe a number type error', function () {
-      Schema.describe({
+    test('should describe a number type error', () => {
+      expect(Schema.describe({
         error: ERROR_NOT_NUMBER,
-      }).should.equal('Value should be a number');
+      })).toBe('Value should be a number');
     });
 
-    it('should describe an array error', function () {
-      Schema.describe({
+    test('should describe an array error', () => {
+      expect(Schema.describe({
         error: ERROR_NOT_ARRAY,
-      }).should.equal('Value should be an array');
+      })).toBe('Value should be an array');
     });
 
-    it('should describe an object error', function () {
-      Schema.describe({
+    test('should describe an object error', () => {
+      expect(Schema.describe({
         error: ERROR_NOT_ARRAY,
-      }).should.equal('Value should be an array');
+      })).toBe('Value should be an array');
     });
 
-    it('should describe an object field error', function () {
-      Schema.describe({
+    test('should describe an object field error', () => {
+      expect(Schema.describe({
         errors: {
           a: { error: ERROR_NOT_STRING },
         },
-      }).should.deep.equal({
+      })).toEqual({
         a: 'a should be a string',
       });
     });
 
-    it('should describe errors in an array', function () {
-      Schema.describe({
+    test('should describe errors in an array', () => {
+      expect(Schema.describe({
         errors: [
           undefined,
           undefined,
           { error: ERROR_NOT_STRING },
         ],
-      }).should.deep.equal([
+      })).toEqual([
         undefined,
         undefined,
         '2 should be a string',
       ]);
     });
 
-    it('should describe an deep nested field error', function () {
-      Schema.describe({
+    test('should describe an deep nested field error', () => {
+      expect(Schema.describe({
         errors: {
           a: {
             errors: {
@@ -74,13 +69,13 @@ describe('Test Schema.describe', function () {
             },
           },
         },
-      }).should.deep.equal({
+      })).toEqual({
         a: { b: { c: 'a.b.c should be a string' } },
       });
     });
 
-    it('should describe errors in a complex object', function () {
-      new Schema({
+    test('should describe errors in a complex object', () => {
+      expect(new Schema({
         name: {
           type: new Schema({
             first: String,
@@ -102,7 +97,7 @@ describe('Test Schema.describe', function () {
         ],
       }, {
         noException: true,
-      }).should.deep.equal({
+      })).toEqual({
         books: [
           {
             author: 'books.0.author is not allowed',

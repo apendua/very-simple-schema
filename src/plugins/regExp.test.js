@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import pluginRegExp from './regExp.js';
 import {
   ERROR_DOES_NOT_MATCH,
@@ -14,7 +11,6 @@ import {
   combine,
 } from '../utils.js';
 
-const should = chai.should();
 const pluginString = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === String) {
@@ -31,8 +27,14 @@ const pluginString = {
   },
 };
 
-describe('Test regExp plugin', function () {
-  beforeEach(function () {
+describe('Test regExp plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
     const compiler = applyPlugins({
       Schema() {},
       Validator(props) {
@@ -42,79 +44,82 @@ describe('Test regExp plugin', function () {
       pluginString,
       pluginRegExp,
     ]);
-    this.Schema = compiler.Schema;
+    testContext.Schema = compiler.Schema;
     pluginRegExp.mixin(compiler.Schema);
-    this.createValidate =
+    testContext.createValidate =
       (schemaDef, schemaOptions) =>
         compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
-  describe('given I use a custom regExp', function () {
-    beforeEach(function () {
-      this.validate = this.createValidate(String, { regEx: /^a+/ });
+  describe('given I use a custom regExp', () => {
+    beforeEach(() => {
+      testContext.validate = testContext.createValidate(String, { regEx: /^a+/ });
     });
-    it('should not accept an empty string', function () {
-      this.validate('').should.deep.equal({
+    test('should not accept an empty string', () => {
+      expect(testContext.validate('')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
         expected: 'match /^a+/',
       });
     });
-    it('should not accept a non-matching string', function () {
-      this.validate('b').should.deep.equal({
+    test('should not accept a non-matching string', () => {
+      expect(testContext.validate('b')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
         expected: 'match /^a+/',
       });
     });
-    it('should accept a matching string', function () {
-      should.not.exist(this.validate('aaa'));
+    test('should accept a matching string', () => {
+      expect(testContext.validate('aaa')).toBeFalsy();
     });
   });
 
-  describe('given I use built-in RegEx.Email', function () {
-    beforeEach(function () {
-      this.validate = this.createValidate(String, { regEx: this.Schema.RegEx.Email });
+  describe('given I use built-in RegEx.Email', () => {
+    beforeEach(() => {
+      testContext.validate = testContext.createValidate(String, { regEx: testContext.Schema.RegEx.Email });
     });
-    it('should not accept an empty string', function () {
-      this.validate('').should.deep.equal({
+    test('should not accept an empty string', () => {
+      expect(testContext.validate('')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
-        expected: this.Schema.RegEx.Email.to,
+        expected: testContext.Schema.RegEx.Email.to,
       });
     });
-    it('should not accept an invalid email', function () {
-      this.validate('a@').should.deep.equal({
+    test('should not accept an invalid email', () => {
+      expect(testContext.validate('a@')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
-        expected: this.Schema.RegEx.Email.to,
+        expected: testContext.Schema.RegEx.Email.to,
       });
     });
-    it('should accept a basic email', function () {
-      should.not.exist(this.validate('a@b.c'));
+    test('should accept a basic email', () => {
+      expect(testContext.validate('a@b.c')).toBeFalsy();
     });
   });
 
-  describe('given I use built-in RegEx.Id', function () {
-    beforeEach(function () {
-      this.validate = this.createValidate(String, { regEx: this.Schema.RegEx.Id });
+  describe('given I use built-in RegEx.Id', () => {
+    beforeEach(() => {
+      testContext.validate = testContext.createValidate(String, { regEx: testContext.Schema.RegEx.Id });
     });
-    it('should not accept an empty string', function () {
-      this.validate('').should.deep.equal({
+    test('should not accept an empty string', () => {
+      expect(testContext.validate('')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
-        expected: this.Schema.RegEx.Id.to,
+        expected: testContext.Schema.RegEx.Id.to,
       });
     });
-    it('should not accept a string that is too short', function () {
-      this.validate('abcdefghijkmnopq').should.deep.equal({
+    test('should not accept a string that is too short', () => {
+      expect(testContext.validate('abcdefghijkmnopq')).toEqual({
         error: ERROR_DOES_NOT_MATCH,
-        expected: this.Schema.RegEx.Id.to,
+        expected: testContext.Schema.RegEx.Id.to,
       });
     });
-    it('should not accept a string that contains invalid characters', function () {
-      this.validate('0bcdefghijkmnopqr').should.deep.equal({
-        error: ERROR_DOES_NOT_MATCH,
-        expected: this.Schema.RegEx.Id.to,
-      });
-    });
-    it('should accept 17 alphabet characters', function () {
-      should.not.exist(this.validate('abcdefghijkmnopqr'));
+    test(
+      'should not accept a string that contains invalid characters',
+      () => {
+        expect(testContext.validate('0bcdefghijkmnopqr')).toEqual({
+          error: ERROR_DOES_NOT_MATCH,
+          expected: testContext.Schema.RegEx.Id.to,
+        });
+      },
+    );
+    test('should accept 17 alphabet characters', () => {
+      expect(testContext.validate('abcdefghijkmnopqr')).toBeFalsy();
     });
   });
 });

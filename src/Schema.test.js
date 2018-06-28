@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_MISSING_FIELD,
   ERROR_VALUE_NOT_ALLOWED,
@@ -17,127 +14,131 @@ import {
 } from './constants.js';
 import Schema from './Schema.js';
 
-const should = chai.should();
+describe('Test Schema', () => {
+  let testContext;
 
-describe('Test Schema', function () {
-  describe('Given a Schema class', function () {
-    it('should expose ERROR_MISSING_FIELD', function () {
-      Schema.ERROR_MISSING_FIELD.should.be.ok;
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  describe('Given a Schema class', () => {
+    test('should expose ERROR_MISSING_FIELD', () => {
+      expect(Schema.ERROR_MISSING_FIELD).toBeTruthy();
     });
-    it('should expose ERROR_KEY_NOT_ALLOWED', function () {
-      Schema.ERROR_KEY_NOT_ALLOWED.should.be.ok;
+    test('should expose ERROR_KEY_NOT_ALLOWED', () => {
+      expect(Schema.ERROR_KEY_NOT_ALLOWED).toBeTruthy();
     });
-    it('should expose ERROR_INVALID_DATE', function () {
-      Schema.ERROR_INVALID_DATE.should.be.ok;
+    test('should expose ERROR_INVALID_DATE', () => {
+      expect(Schema.ERROR_INVALID_DATE).toBeTruthy();
     });
-    it('should expose ERROR_DOES_NOT_MATCH', function () {
-      Schema.ERROR_DOES_NOT_MATCH.should.be.ok;
+    test('should expose ERROR_DOES_NOT_MATCH', () => {
+      expect(Schema.ERROR_DOES_NOT_MATCH).toBeTruthy();
     });
-    it('should expose ERROR_NOT_EQUAL', function () {
-      Schema.ERROR_NOT_EQUAL.should.be.ok;
+    test('should expose ERROR_NOT_EQUAL', () => {
+      expect(Schema.ERROR_NOT_EQUAL).toBeTruthy();
     });
-    it('should expose ERROR_NOT_INTEGER', function () {
-      Schema.ERROR_NOT_INTEGER.should.be.ok;
+    test('should expose ERROR_NOT_INTEGER', () => {
+      expect(Schema.ERROR_NOT_INTEGER).toBeTruthy();
     });
-    it('should expose ERROR_NOT_STRING', function () {
-      Schema.ERROR_NOT_STRING.should.be.ok;
+    test('should expose ERROR_NOT_STRING', () => {
+      expect(Schema.ERROR_NOT_STRING).toBeTruthy();
     });
-    it('should expose ERROR_NOT_NUMBER', function () {
-      Schema.ERROR_NOT_NUMBER.should.be.ok;
+    test('should expose ERROR_NOT_NUMBER', () => {
+      expect(Schema.ERROR_NOT_NUMBER).toBeTruthy();
     });
-    it('should expose ERROR_NOT_BOOLEAN', function () {
-      Schema.ERROR_NOT_BOOLEAN.should.be.ok;
+    test('should expose ERROR_NOT_BOOLEAN', () => {
+      expect(Schema.ERROR_NOT_BOOLEAN).toBeTruthy();
     });
-    it('should expose ERROR_NOT_ARRAY', function () {
-      Schema.ERROR_NOT_ARRAY.should.be.ok;
+    test('should expose ERROR_NOT_ARRAY', () => {
+      expect(Schema.ERROR_NOT_ARRAY).toBeTruthy();
     });
-    it('should expose ERROR_NOT_OBJECT', function () {
-      Schema.ERROR_NOT_OBJECT.should.be.ok;
+    test('should expose ERROR_NOT_OBJECT', () => {
+      expect(Schema.ERROR_NOT_OBJECT).toBeTruthy();
     });
-    it('should expose ERROR_NOT_DATE', function () {
-      Schema.ERROR_NOT_DATE.should.be.ok;
+    test('should expose ERROR_NOT_DATE', () => {
+      expect(Schema.ERROR_NOT_DATE).toBeTruthy();
     });
-    it('should expose ERROR_NOT_INSTANCE_OF', function () {
-      Schema.ERROR_NOT_INSTANCE_OF.should.be.ok;
+    test('should expose ERROR_NOT_INSTANCE_OF', () => {
+      expect(Schema.ERROR_NOT_INSTANCE_OF).toBeTruthy();
     });
-    it('should expose ERROR_NO_ALTERNATIVE', function () {
-      Schema.ERROR_NO_ALTERNATIVE.should.be.ok;
+    test('should expose ERROR_NO_ALTERNATIVE', () => {
+      expect(Schema.ERROR_NO_ALTERNATIVE).toBeTruthy();
     });
-    it('should expose ERROR_VALUE_NOT_ALLOWED', function () {
-      Schema.ERROR_VALUE_NOT_ALLOWED.should.be.ok;
+    test('should expose ERROR_VALUE_NOT_ALLOWED', () => {
+      expect(Schema.ERROR_VALUE_NOT_ALLOWED).toBeTruthy();
     });
-    it('should expose ERROR_TOO_MANY', function () {
-      Schema.ERROR_TOO_MANY.should.be.ok;
+    test('should expose ERROR_TOO_MANY', () => {
+      expect(Schema.ERROR_TOO_MANY).toBeTruthy();
     });
-    it('should expose ERROR_TOO_FEW', function () {
-      Schema.ERROR_TOO_FEW.should.be.ok;
+    test('should expose ERROR_TOO_FEW', () => {
+      expect(Schema.ERROR_TOO_FEW).toBeTruthy();
     });
-    it('should expose ERROR_TOO_LONG', function () {
-      Schema.ERROR_TOO_LONG.should.be.ok;
+    test('should expose ERROR_TOO_LONG', () => {
+      expect(Schema.ERROR_TOO_LONG).toBeTruthy();
     });
-    it('should expose ERROR_TOO_SHORT', function () {
-      Schema.ERROR_TOO_SHORT.should.be.ok;
+    test('should expose ERROR_TOO_SHORT', () => {
+      expect(Schema.ERROR_TOO_SHORT).toBeTruthy();
     });
-    it('should expose ERROR_TOO_LARGE', function () {
-      Schema.ERROR_TOO_LARGE.should.be.ok;
+    test('should expose ERROR_TOO_LARGE', () => {
+      expect(Schema.ERROR_TOO_LARGE).toBeTruthy();
     });
-    it('should expose ERROR_TOO_SMALL', function () {
-      Schema.ERROR_TOO_SMALL.should.be.ok;
+    test('should expose ERROR_TOO_SMALL', () => {
+      expect(Schema.ERROR_TOO_SMALL).toBeTruthy();
     });
-    it('should expose ERROR_IS_EMPTY', function () {
-      Schema.ERROR_IS_EMPTY.should.be.ok;
+    test('should expose ERROR_IS_EMPTY', () => {
+      expect(Schema.ERROR_IS_EMPTY).toBeTruthy();
     });
   });
 
-  describe('Given "any" schema', function () {
-    beforeEach(function () {
-      this.schema = Schema.any();
+  describe('Given "any" schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.any();
     });
-    it('should set "any" flag', function () {
-      this.schema.compiled.isAny.should.be.true;
+    test('should set "any" flag', () => {
+      expect(testContext.schema.compiled.isAny).toBe(true);
     });
-    it('should accept an empty object', function () {
-      should.not.exist(this.schema.getErrors({}));
+    test('should accept an empty object', () => {
+      expect(testContext.schema.getErrors({})).toBeFalsy();
     });
-    it('should accept a number', function () {
-      should.not.exist(this.schema.getErrors(1));
-    });
-  });
-
-  describe('Given empty schema', function () {
-    beforeEach(function () {
-      this.schema = new Schema({});
-    });
-    it('should validate empty object', function () {
-      should.not.exist(this.schema.getErrors({}));
+    test('should accept a number', () => {
+      expect(testContext.schema.getErrors(1)).toBeFalsy();
     });
   });
 
-  describe('Given object schema that overwrites property options', function () {
-    beforeEach(function () {
+  describe('Given empty schema', () => {
+    beforeEach(() => {
+      testContext.schema = new Schema({});
+    });
+    test('should validate empty object', () => {
+      expect(testContext.schema.getErrors({})).toBeFalsy();
+    });
+  });
+
+  describe('Given object schema that overwrites property options', () => {
+    beforeEach(() => {
       const MyNumber = new Schema(Number, { decimal: false });
-      this.schema = new Schema({
+      testContext.schema = new Schema({
         a: MyNumber,
         b: { type: MyNumber, decimal: true },
       });
     });
-    it('should accept integers', function () {
-      should.not.exist(this.schema.getErrors({
+    test('should accept integers', () => {
+      expect(testContext.schema.getErrors({
         a: 1,
         b: 2,
-      }));
+      })).toBeFalsy();
     });
-    it('should accept one decimal', function () {
-      should.not.exist(this.schema.getErrors({
+    test('should accept one decimal', () => {
+      expect(testContext.schema.getErrors({
         a: 1,
         b: 2.5,
-      }));
+      })).toBeFalsy();
     });
-    it('should reject two decimals', function () {
-      this.schema.getErrors({
+    test('should reject two decimals', () => {
+      expect(testContext.schema.getErrors({
         a: 1.5,
         b: 2.5,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_NOT_INTEGER, actual: 1.5 },
         },
@@ -145,29 +146,35 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given an array schema', function () {
-    beforeEach(function () {
-      this.schema = new Schema([String]);
+  describe('Given an array schema', () => {
+    beforeEach(() => {
+      testContext.schema = new Schema([String]);
     });
-    it('should throw descriptive error if the first element is invalid', function () {
-      (() => {
-        this.schema.validate([1]);
-      }).should.throw('0 should be a string');
-    });
-    it('should throw descriptive error if the second element is invalid', function () {
-      (() => {
-        this.schema.validate(['a', 1]);
-      }).should.throw('1 should be a string');
-    });
+    test(
+      'should throw descriptive error if the first element is invalid',
+      () => {
+        expect(() => {
+          testContext.schema.validate([1]);
+        }).toThrowError('0 should be a string');
+      },
+    );
+    test(
+      'should throw descriptive error if the second element is invalid',
+      () => {
+        expect(() => {
+          testContext.schema.validate(['a', 1]);
+        }).toThrowError('1 should be a string');
+      },
+    );
   });
 
-  describe('Given a schema with allowedValues', function () {
-    describe('and the schema is an array', function () {
-      beforeEach(function () {
-        this.schema1 = new Schema([String], { allowedValues: ['a', 'b', 'c'] });
+  describe('Given a schema with allowedValues', () => {
+    describe('and the schema is an array', () => {
+      beforeEach(() => {
+        testContext.schema1 = new Schema([String], { allowedValues: ['a', 'b', 'c'] });
       });
-      it('should reject value that is not allowed', function () {
-        this.schema1.getErrors(['a', 'b', 'x']).should.deep.equal({
+      test('should reject value that is not allowed', () => {
+        expect(testContext.schema1.getErrors(['a', 'b', 'x'])).toEqual({
           errors: [
             undefined,
             undefined,
@@ -179,19 +186,19 @@ describe('Test Schema', function () {
           ],
         });
       });
-      it('should accept value that is allowed', function () {
-        should.not.exist(this.schema1.getErrors(['a', 'b', 'c']));
+      test('should accept value that is allowed', () => {
+        expect(testContext.schema1.getErrors(['a', 'b', 'c'])).toBeFalsy();
       });
     });
   });
 
-  describe('Given a schema with regular expression', function () {
-    describe('and the schema is an array', function () {
-      beforeEach(function () {
-        this.schema1 = new Schema([String], { regEx: /\d+/ });
+  describe('Given a schema with regular expression', () => {
+    describe('and the schema is an array', () => {
+      beforeEach(() => {
+        testContext.schema1 = new Schema([String], { regEx: /\d+/ });
       });
-      it('should reject value that is not allowed', function () {
-        this.schema1.getErrors(['1', '12', 'xxx']).should.deep.equal({
+      test('should reject value that is not allowed', () => {
+        expect(testContext.schema1.getErrors(['1', '12', 'xxx'])).toEqual({
           errors: [
             undefined,
             undefined,
@@ -202,15 +209,15 @@ describe('Test Schema', function () {
           ],
         });
       });
-      it('should accept value that is allowed', function () {
-        should.not.exist(this.schema1.getErrors(['1', '12', '123']));
+      test('should accept value that is allowed', () => {
+        expect(testContext.schema1.getErrors(['1', '12', '123'])).toBeFalsy();
       });
     });
   });
 
-  describe('Given a nested object schema', function () {
-    beforeEach(function () {
-      this.schema1 = new Schema({
+  describe('Given a nested object schema', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
         a: new Schema({
           x: Number,
           y: Number,
@@ -231,12 +238,12 @@ describe('Test Schema', function () {
         emptyStringsAreMissingValues: true,
       });
     });
-    it('should reject object with missing properties', function () {
-      this.schema1.getErrors({
+    test('should reject object with missing properties', () => {
+      expect(testContext.schema1.getErrors({
         a: { x: 1 },
         b: { x: 1 },
         c: { x: 1 },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { errors: { y: { error: ERROR_MISSING_FIELD } } },
           b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
@@ -244,12 +251,12 @@ describe('Test Schema', function () {
         },
       });
     });
-    it('should not report empty string, if object is expected', function () {
-      this.schema1.getErrors({
+    test('should not report empty string, if object is expected', () => {
+      expect(testContext.schema1.getErrors({
         a: '',
         b: null,
         c: undefined,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_NOT_OBJECT, actual: '' },
           b: { error: ERROR_MISSING_FIELD },
@@ -257,10 +264,10 @@ describe('Test Schema', function () {
         },
       });
     });
-    it('should not report missing string, if number is expected', function () {
-      this.schema1.getErrors({
+    test('should not report missing string, if number is expected', () => {
+      expect(testContext.schema1.getErrors({
         a: { x: '', y: 1 },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             errors: {
@@ -274,28 +281,28 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given a schema with lazy fields', function () {
-    beforeEach(function () {
-      this.schema1 = new Schema({
+  describe('Given a schema with lazy fields', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
         children: {
-          type: [() => this.schema1],
+          type: [() => testContext.schema1],
           lazy: true,
         },
       });
     });
 
-    it('should accept a nested object', function () {
-      should.not.exist(this.schema1.getErrors({
+    test('should accept a nested object', () => {
+      expect(testContext.schema1.getErrors({
         children: [{
           children: [{
             children: [],
           }],
         }],
-      }));
+      })).toBeFalsy();
     });
 
-    it('should reject object with missing fields', function () {
-      this.schema1.getErrors({}).should.deep.equal({
+    test('should reject object with missing fields', () => {
+      expect(testContext.schema1.getErrors({})).toEqual({
         errors: {
           children: { error: ERROR_MISSING_FIELD },
         },
@@ -303,9 +310,9 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given a merge schema', function () {
-    beforeEach(function () {
-      this.schema1 = Schema.merge([
+  describe('Given a merge schema', () => {
+    beforeEach(() => {
+      testContext.schema1 = Schema.merge([
         {
           a: { type: Number },
           b: { type: String },
@@ -317,20 +324,20 @@ describe('Test Schema', function () {
       ]);
     });
 
-    it('should accept a valid object', function () {
-      should.not.exist(this.schema1.getErrors({
+    test('should accept a valid object', () => {
+      expect(testContext.schema1.getErrors({
         a: 1,
         b: 1,
         c: 'x',
-      }));
+      })).toBeFalsy();
     });
 
-    it('should reject an object with invalid property type', function () {
-      this.schema1.getErrors({
+    test('should reject an object with invalid property type', () => {
+      expect(testContext.schema1.getErrors({
         a: 1,
         b: 'x',
         c: 'x',
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           b: { error: ERROR_NOT_NUMBER, actual: 'x' },
         },
@@ -338,28 +345,28 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given a schema with "pick"', function () {
-    beforeEach(function () {
-      this.schema1 = Schema.pick({
+  describe('Given a schema with "pick"', () => {
+    beforeEach(() => {
+      testContext.schema1 = Schema.pick({
         a: { type: Number },
         b: { type: String },
         c: { type: Number },
       }, ['a', 'b']);
     });
 
-    it('should accept a valid object', function () {
-      should.not.exist(this.schema1.getErrors({
+    test('should accept a valid object', () => {
+      expect(testContext.schema1.getErrors({
         a: 1,
         b: 'x',
-      }));
+      })).toBeFalsy();
     });
 
-    it('should reject an object with invalid property type', function () {
-      this.schema1.getErrors({
+    test('should reject an object with invalid property type', () => {
+      expect(testContext.schema1.getErrors({
         a: 1,
         b: 1,
         c: 'x',
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           b: { error: ERROR_NOT_STRING, actual: 1 },
           c: { error: ERROR_KEY_NOT_ALLOWED },
@@ -368,9 +375,9 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given a merged schema', function () {
-    beforeEach(function () {
-      this.schema1 = Schema.merge([
+  describe('Given a merged schema', () => {
+    beforeEach(() => {
+      testContext.schema1 = Schema.merge([
         {
           a: { type: String },
           b: { type: String },
@@ -383,33 +390,33 @@ describe('Test Schema', function () {
       ]);
     });
 
-    it('should accept a valid object', function () {
-      should.not.exist(this.schema1.getErrors({
+    test('should accept a valid object', () => {
+      expect(testContext.schema1.getErrors({
         a: 'a',
         c: 'c',
         d: 'd',
-      }));
+      })).toBeFalsy();
     });
 
-    it('should reject an invalid object', function () {
-      this.schema1.getErrors({
+    test('should reject an invalid object', () => {
+      expect(testContext.schema1.getErrors({
         c: 'c',
         d: 'd',
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
         },
       });
     });
 
-    it('should flag itself with isObject', function () {
-      this.schema1.compiled.isObject.should.be.true;
+    test('should flag itself with isObject', () => {
+      expect(testContext.schema1.compiled.isObject).toBe(true);
     });
   });
 
-  describe('Given a hash with object sub-schema', function () {
-    beforeEach(function () {
-      this.schema = Schema.hash({
+  describe('Given a hash with object sub-schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.hash({
         key: new Schema(String, { max: 3 }),
         value: {
           a: Number,
@@ -417,16 +424,16 @@ describe('Test Schema', function () {
         },
       });
     });
-    it('should accept a valid object', function () {
-      should.not.exist(this.schema.getErrors({
+    test('should accept a valid object', () => {
+      expect(testContext.schema.getErrors({
         xxx: { a: 1, b: 'x' },
         yyy: { a: 2, b: 'y' },
-      }));
+      })).toBeFalsy();
     });
-    it('should reject if key is too long', function () {
-      this.schema.getErrors({
+    test('should reject if key is too long', () => {
+      expect(testContext.schema.getErrors({
         xxxx: { a: 1, b: 'x' },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           xxxx: {
             actual: 'xxxx',
@@ -436,11 +443,11 @@ describe('Test Schema', function () {
         },
       });
     });
-    it('should reject an invalid object', function () {
-      this.schema.getErrors({
+    test('should reject an invalid object', () => {
+      expect(testContext.schema.getErrors({
         xxx: { b: 'x' },
         yyy: { c: 2, a: 1, b: 'y' },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           xxx: {
             errors: {
@@ -461,37 +468,37 @@ describe('Test Schema', function () {
     });
   });
 
-  describe('Given an alternative schema', function () {
-    beforeEach(function () {
-      this.schema = Schema.oneOf([
+  describe('Given an alternative schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.oneOf([
         new Schema({}, { typeName: 'empty' }),
         new Schema(String, { typeName: 'text' }),
         new Schema([Number]),
       ]);
     });
 
-    it('should generate a descriptive error of there is no match', function () {
-      this.schema.validate(true, { noException: true }).should.equal('Value should be one of: empty, text, array of number');
+    test('should generate a descriptive error of there is no match', () => {
+      expect(testContext.schema.validate(true, { noException: true })).toBe('Value should be one of: empty, text, array of number');
     });
   });
 
-  describe('Schema.clean()', function () {
-    beforeEach(function () {
-      this.schema = new Schema({
+  describe('Schema.clean()', () => {
+    beforeEach(() => {
+      testContext.schema = new Schema({
         a: new Schema({
           x: Number,
           y: String,
         }),
         b: [new Schema(Number)],
       });
-      this.schema2 = new Schema({
+      testContext.schema2 = new Schema({
         a: Number,
         b: Number,
         c: String,
       }, {
         additionalProperties: true,
       });
-      this.schema3 = new Schema({
+      testContext.schema3 = new Schema({
         a: Number,
         b: Number,
         c: String,
@@ -499,73 +506,79 @@ describe('Test Schema', function () {
         emptyStringsAreMissingValues: true,
       });
     });
-    it('should not modify a valid object', function () {
-      this.schema.clean({
+    test('should not modify a valid object', () => {
+      expect(testContext.schema.clean({
         a: { x: 1, y: 'y' },
         b: [1, 2, 3],
-      }).should.deep.equal({
+      })).toEqual({
         a: { x: 1, y: 'y' },
         b: [1, 2, 3],
       });
     });
-    it('should convert strings to numbers', function () {
-      this.schema.clean({
+    test('should convert strings to numbers', () => {
+      expect(testContext.schema.clean({
         a: { x: '1.5' },
         b: ['1', '2', 3],
-      }).should.deep.equal({
+      })).toEqual({
         a: { x: 1.5 },
         b: [1, 2, 3],
       });
     });
-    it('should convert numbers to strings', function () {
-      this.schema.clean({
+    test('should convert numbers to strings', () => {
+      expect(testContext.schema.clean({
         a: { y: 1 },
-      }).should.deep.equal({
+      })).toEqual({
         a: { y: '1' },
       });
     });
-    it('should remove properties that are not allowed', function () {
-      this.schema.clean({
+    test('should remove properties that are not allowed', () => {
+      expect(testContext.schema.clean({
         a: { z: {} },
-      }).should.deep.equal({
+      })).toEqual({
         a: {},
       });
     });
-    it('should remove properties that are null, undefined or empty', function () {
-      this.schema3.clean({
-        a: null,
-        b: undefined,
-        c: '',
-      }).should.deep.equal({});
-    });
-    it('should not remove empty strings if they are not considerd missing values', function () {
-      this.schema2.clean({
-        a: null,
-        b: undefined,
-        c: '',
-      }).should.deep.equal({
-        c: '',
+    test(
+      'should remove properties that are null, undefined or empty',
+      () => {
+        expect(testContext.schema3.clean({
+          a: null,
+          b: undefined,
+          c: '',
+        })).toEqual({});
+      },
+    );
+    test(
+      'should not remove empty strings if they are not considerd missing values',
+      () => {
+        expect(testContext.schema2.clean({
+          a: null,
+          b: undefined,
+          c: '',
+        })).toEqual({
+          c: '',
+        });
+      },
+    );
+    test('should keep additional properties if they are allowed', () => {
+      expect(testContext.schema2.clean({
+        d: 3,
+      })).toEqual({
+        d: 3,
       });
     });
-    it('should keep additional properties if they are allowed', function () {
-      this.schema2.clean({
-        d: 3,
-      }).should.deep.equal({
-        d: 3,
-      });
-    });
-    it('should not change things that cannot be cleaned', function () {
-      this.schema.clean({
+    test('should not change things that cannot be cleaned', () => {
+      expect(testContext.schema.clean({
         a: [1, 2, 3],
-      }).should.deep.equal({
+      })).toEqual({
         a: [1, 2, 3],
       });
     });
   });
 
-  describe('Given a an object schema with implicit value', function () {
-    beforeEach(function () {
-      this.schema1 = new Schema({
+  describe('Given a an object schema with implicit value', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
         a: new Schema({
           x: { type: Number, implicit: 0, optional: true, min: 1 },
           y: { type: new Schema(Number, { implicit: 0 }) }, // NOTE: it does not imply optional automatically
@@ -585,48 +598,54 @@ describe('Test Schema', function () {
         implicit: {},
       });
     });
-    it('should return relevant errors web validating null', function () {
-      this.schema1.getErrors(null).should.deep.equal({
+    test('should return relevant errors web validating null', () => {
+      expect(testContext.schema1.getErrors(null)).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
         },
       });
     });
-    it('should return relevant errors when validating empty object ', function () {
-      this.schema1.getErrors({}).should.deep.equal({
-        errors: {
-          a: { error: ERROR_MISSING_FIELD },
-          b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
-        },
-      });
-    });
-    it('should return relevant errors when properties are empty objects', function () {
-      this.schema1.getErrors({
-        a: {},
-        b: {},
-      }).should.deep.equal({
-        errors: {
-          a: {
-            errors: {
-              x: { error: ERROR_TOO_SMALL, expected: 1, actual: 0 },
-              y: { error: ERROR_MISSING_FIELD },
+    test(
+      'should return relevant errors when validating empty object ',
+      () => {
+        expect(testContext.schema1.getErrors({})).toEqual({
+          errors: {
+            a: { error: ERROR_MISSING_FIELD },
+            b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
+          },
+        });
+      },
+    );
+    test(
+      'should return relevant errors when properties are empty objects',
+      () => {
+        expect(testContext.schema1.getErrors({
+          a: {},
+          b: {},
+        })).toEqual({
+          errors: {
+            a: {
+              errors: {
+                x: { error: ERROR_TOO_SMALL, expected: 1, actual: 0 },
+                y: { error: ERROR_MISSING_FIELD },
+              },
+            },
+            b: {
+              errors: {
+                x: { error: ERROR_MISSING_FIELD },
+                y: { error: ERROR_MISSING_FIELD },
+              },
             },
           },
-          b: {
-            errors: {
-              x: { error: ERROR_MISSING_FIELD },
-              y: { error: ERROR_MISSING_FIELD },
-            },
-          },
-        },
-      });
-    });
+        });
+      },
+    );
   });
 
-  describe('Given a hash schema with implicit value', function () {
-    beforeEach(function () {
-      this.schema1 = Schema.hash({
+  describe('Given a hash schema with implicit value', () => {
+    beforeEach(() => {
+      testContext.schema1 = Schema.hash({
         key: String,
         value: new Schema({
           x: { type: Number, implicit: 0, optional: true, min: 1 },
@@ -636,54 +655,57 @@ describe('Test Schema', function () {
         implicit: {},
       });
     });
-    it('should not return any errors on null', function () {
-      should.not.exist(this.schema1.getErrors(null));
+    test('should not return any errors on null', () => {
+      expect(testContext.schema1.getErrors(null)).toBeFalsy();
     });
-    it('should return relevant errors there is key with null value', function () {
-      this.schema1.getErrors({
-        a: null,
-      }).should.deep.equal({
-        errors: {
-          a: {
-            errors: {
-              x: { error: ERROR_TOO_SMALL, actual: 0, expected: 1 },
-              y: { error: ERROR_MISSING_FIELD },
+    test(
+      'should return relevant errors there is key with null value',
+      () => {
+        expect(testContext.schema1.getErrors({
+          a: null,
+        })).toEqual({
+          errors: {
+            a: {
+              errors: {
+                x: { error: ERROR_TOO_SMALL, actual: 0, expected: 1 },
+                y: { error: ERROR_MISSING_FIELD },
+              },
             },
           },
-        },
-      });
-    });
+        });
+      },
+    );
   });
 
-  describe('Given two schemas with referencing properties', function () {
-    beforeEach(function () {
-      this.schema1 = new Schema({
+  describe('Given two schemas with referencing properties', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
         a: { type: String, optional: true },
         b: { type: Number },
       });
-      this.schema2 = new Schema({
-        a: this.schema1.properties.a,
-        b: this.schema1.properties.b,
+      testContext.schema2 = new Schema({
+        a: testContext.schema1.properties.a,
+        b: testContext.schema1.properties.b,
       });
     });
-    it('should reject object with missing property', function () {
-      this.schema2.getErrors({}).should.deep.equal({
+    test('should reject object with missing property', () => {
+      expect(testContext.schema2.getErrors({})).toEqual({
         errors: {
           b: { error: ERROR_MISSING_FIELD },
         },
       });
     });
-    it('should accept a valid object', function () {
-      should.not.exist(this.schema2.getErrors({
+    test('should accept a valid object', () => {
+      expect(testContext.schema2.getErrors({
         a: 'a',
         b: 1,
-      }));
+      })).toBeFalsy();
     });
   });
 
-  describe('Given a schema with labels', function () {
-    beforeEach(function () {
-      this.schema1 = new Schema({
+  describe('Given a schema with labels', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
         a: { type: String, label: 'A' },
         b: {
           type: {
@@ -692,14 +714,14 @@ describe('Test Schema', function () {
           },
         },
       });
-      this.schema2 = new Schema([new Schema(String, { label: 'Item' })], { maxCount: 2, label: 'Array' });
+      testContext.schema2 = new Schema([new Schema(String, { label: 'Item' })], { maxCount: 2, label: 'Array' });
     });
-    it('should attach labels to error descriptor', function () {
-      this.schema1.getErrors({
+    test('should attach labels to error descriptor', () => {
+      expect(testContext.schema1.getErrors({
         b: {
           x: '',
         },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             error: ERROR_MISSING_FIELD,
@@ -721,16 +743,16 @@ describe('Test Schema', function () {
         },
       });
     });
-    it('should properly attach label to an array', function () {
-      this.schema2.getErrors([1, 2, 3]).should.deep.equal({
+    test('should properly attach label to an array', () => {
+      expect(testContext.schema2.getErrors([1, 2, 3])).toEqual({
         actual: [1, 2, 3],
         error: ERROR_TOO_MANY,
         expected: 2,
         label: 'Array',
       });
     });
-    it('should properly attach label to an array elements', function () {
-      this.schema2.getErrors([1, 2]).should.deep.equal({
+    test('should properly attach label to an array elements', () => {
+      expect(testContext.schema2.getErrors([1, 2])).toEqual({
         label: 'Array',
         errors: [
           {

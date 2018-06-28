@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_MISSING_FIELD,
   ERROR_NOT_INTEGER,
@@ -9,17 +6,21 @@ import {
 } from './constants.js';
 import SimpleSchema from './SimpleSchema.js';
 
-chai.should();
+describe('Test SimpleSchema', () => {
+  let testContext;
 
-describe('Test SimpleSchema', function () {
-  describe('Given empty schema', function () {
-    beforeEach(function () {
-      this.schema = new SimpleSchema({});
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  describe('Given empty schema', () => {
+    beforeEach(() => {
+      testContext.schema = new SimpleSchema({});
     });
-    it('should not allow additional properties', function () {
-      this.schema.getErrors({
+    test('should not allow additional properties', () => {
+      expect(testContext.schema.getErrors({
         a: 1,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             error: ERROR_KEY_NOT_ALLOWED,
@@ -29,28 +30,28 @@ describe('Test SimpleSchema', function () {
     });
   });
 
-  describe('Given a number schema', function () {
-    beforeEach(function () {
-      this.schema = new SimpleSchema(Number);
+  describe('Given a number schema', () => {
+    beforeEach(() => {
+      testContext.schema = new SimpleSchema(Number);
     });
-    it('should not non-integers by default', function () {
-      this.schema.getErrors(0.5).should.deep.equal({
+    test('should not non-integers by default', () => {
+      expect(testContext.schema.getErrors(0.5)).toEqual({
         error: ERROR_NOT_INTEGER,
         actual: 0.5,
       });
     });
   });
 
-  describe('Given an object schema', function () {
-    beforeEach(function () {
-      this.schema = new SimpleSchema({
+  describe('Given an object schema', () => {
+    beforeEach(() => {
+      testContext.schema = new SimpleSchema({
         a: { type: String },
       });
     });
-    it('should treat empty string as missing value', function () {
-      this.schema.getErrors({
+    test('should treat empty string as missing value', () => {
+      expect(testContext.schema.getErrors({
         a: '',
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             error: ERROR_MISSING_FIELD,

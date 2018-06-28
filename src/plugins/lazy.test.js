@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NOT_NUMBER,
 } from '../constants.js';
@@ -14,7 +11,6 @@ import {
 } from '../validators.js';
 import { applyPlugins } from '../createCompiler.js';
 
-const should = chai.should();
 const pluginNumber = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === Number) {
@@ -34,25 +30,31 @@ const compiler = applyPlugins({}, [
   pluginLazy,
 ]);
 
-describe('Test lazy plugin', function () {
-  beforeEach(function () {
-    this.Schema = function () {};
-    this.createValidate =
+describe('Test lazy plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
+    testContext.Schema = function () {};
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
-  describe('Given a lazy Number schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate(() => Number, { lazy: true });
+  describe('Given a lazy Number schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate(() => Number, { lazy: true });
     });
 
-    it('should accept a number', function () {
-      should.not.exist(this.validate1(1));
+    test('should accept a number', () => {
+      expect(testContext.validate1(1)).toBeFalsy();
     });
 
-    it('should reject if value is not a number', function () {
-      this.validate1(true).should.deep.equal({
+    test('should reject if value is not a number', () => {
+      expect(testContext.validate1(true)).toEqual({
         error: ERROR_NOT_NUMBER,
         actual: true,
       });

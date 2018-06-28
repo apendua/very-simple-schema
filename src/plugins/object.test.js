@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_MISSING_FIELD,
   ERROR_NOT_STRING,
@@ -18,7 +15,6 @@ import {
   applyPlugins,
 } from '../createCompiler.js';
 
-const should = chai.should();
 const pluginString = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === String) {
@@ -48,8 +44,14 @@ const pluginSchema = {
   },
 };
 
-describe('Test object plugin', function () {
-  beforeEach(function () {
+describe('Test object plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
     const compiler = applyPlugins({
       Schema: class Schema {
         constructor(schemaDef) {
@@ -62,74 +64,74 @@ describe('Test object plugin', function () {
       pluginObject,
       pluginSchema,
     ]);
-    this.Schema = compiler.Schema;
-    this.createValidate =
+    testContext.Schema = compiler.Schema;
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
-  describe('Given an empty object schema', function () {
-    beforeEach(function () {
-      this.validate = this.createValidate({});
+  describe('Given an empty object schema', () => {
+    beforeEach(() => {
+      testContext.validate = testContext.createValidate({});
     });
-    it('should accept an empty object', function () {
-      should.not.exist(this.validate({}));
+    test('should accept an empty object', () => {
+      expect(testContext.validate({})).toBeFalsy();
     });
-    it('should reject an array', function () {
-      this.validate([]).should.deep.equal({
+    test('should reject an array', () => {
+      expect(testContext.validate([])).toEqual({
         actual: [],
         error: ERROR_NOT_OBJECT,
       });
     });
   });
 
-  describe('Given an object schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate({
+  describe('Given an object schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate({
         a: { type: String },
         b: { type: String, optional: true },
         x: { type: String },
       });
-      this.validate2 = this.createValidate({
+      testContext.validate2 = testContext.createValidate({
         a: String,
         b: String,
         x: String,
       });
-      this.validate3 = this.createValidate({
+      testContext.validate3 = testContext.createValidate({
         a: { type: String },
         b: { type: String, optional: true },
       }, {
         emptyStringsAreMissingValues: true,
       });
     });
-    it('should accept a valid object', function () {
-      should.not.exist(this.validate1({
+    test('should accept a valid object', () => {
+      expect(testContext.validate1({
         a: '',
         b: '',
         x: '',
-      }));
+      })).toBeFalsy();
     });
-    it('should reject if required fields are missing', function () {
-      this.validate1({}).should.deep.equal({
+    test('should reject if required fields are missing', () => {
+      expect(testContext.validate1({})).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           x: { error: ERROR_MISSING_FIELD },
         },
       });
     });
-    it('should reject if required fields are null or undefined', function () {
-      this.validate1({
+    test('should reject if required fields are null or undefined', () => {
+      expect(testContext.validate1({
         a: null,
         x: undefined,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           x: { error: ERROR_MISSING_FIELD },
         },
       });
     });
-    it('should reject if required fields are missing (shorthand)', function () {
-      this.validate2({}).should.deep.equal({
+    test('should reject if required fields are missing (shorthand)', () => {
+      expect(testContext.validate2({})).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           b: { error: ERROR_MISSING_FIELD },
@@ -137,23 +139,23 @@ describe('Test object plugin', function () {
         },
       });
     });
-    it('should reject if a fields is of invalid type', function () {
-      this.validate1({
+    test('should reject if a fields is of invalid type', () => {
+      expect(testContext.validate1({
         a: 1,
         x: true,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_NOT_STRING, actual: 1 },
           x: { error: ERROR_NOT_STRING, actual: true },
         },
       });
     });
-    it('should reject if a fields is of invalid type (shorthand)', function () {
-      this.validate2({
+    test('should reject if a fields is of invalid type (shorthand)', () => {
+      expect(testContext.validate2({
         a: 1,
         b: 2,
         x: true,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_NOT_STRING, actual: 1 },
           b: { error: ERROR_NOT_STRING, actual: 2 },
@@ -161,21 +163,24 @@ describe('Test object plugin', function () {
         },
       });
     });
-    it('should reject if required string is empty and empty strings are missing values', function () {
-      this.validate3({
-        a: '',
-        b: '', // this one is optional
-      }).should.deep.equal({
-        errors: {
-          a: { error: ERROR_MISSING_FIELD },
-        },
-      });
-    });
+    test(
+      'should reject if required string is empty and empty strings are missing values',
+      () => {
+        expect(testContext.validate3({
+          a: '',
+          b: '', // this one is optional
+        })).toEqual({
+          errors: {
+            a: { error: ERROR_MISSING_FIELD },
+          },
+        });
+      },
+    );
   });
 
-  describe('Given fields are optional by default', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate({
+  describe('Given fields are optional by default', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate({
         a: { type: String },
         b: { type: String },
         c: { type: String },
@@ -184,25 +189,25 @@ describe('Test object plugin', function () {
         fieldsOptionalByDefault: true,
       });
     });
-    it('should accept a valid object', function () {
-      should.not.exist(this.validate1({
+    test('should accept a valid object', () => {
+      expect(testContext.validate1({
         a: '',
         b: '',
-      }));
+      })).toBeFalsy();
     });
-    it('should reject if required fields are missing', function () {
-      this.validate1({}).should.deep.equal({
+    test('should reject if required fields are missing', () => {
+      expect(testContext.validate1({})).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           b: { error: ERROR_MISSING_FIELD },
         },
       });
     });
-    it('should reject if required fields are null or undefined', function () {
-      this.validate1({
+    test('should reject if required fields are null or undefined', () => {
+      expect(testContext.validate1({
         a: null,
         b: undefined,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           b: { error: ERROR_MISSING_FIELD },
@@ -211,10 +216,10 @@ describe('Test object plugin', function () {
     });
   });
 
-  describe('Given a nested object schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate({
-        a: new this.Schema({
+  describe('Given a nested object schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate({
+        a: new testContext.Schema({
           x: String,
           y: String,
         }),
@@ -226,11 +231,11 @@ describe('Test object plugin', function () {
         },
       });
     });
-    it('should reject object with missing properties', function () {
-      this.validate1({
+    test('should reject object with missing properties', () => {
+      expect(testContext.validate1({
         a: { x: 'a' },
         b: { x: 'a' },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: { errors: { y: { error: ERROR_MISSING_FIELD } } },
           b: { errors: { y: { error: ERROR_MISSING_FIELD } } },

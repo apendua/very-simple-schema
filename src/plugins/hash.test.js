@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NOT_STRING,
   ERROR_NOT_OBJECT,
@@ -15,7 +12,6 @@ import {
 } from '../utils.js';
 import { applyPlugins } from '../createCompiler.js';
 
-const should = chai.should();
 const pluginString = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === String) {
@@ -31,8 +27,14 @@ const pluginString = {
   },
 };
 
-describe('Test hash plugin', function () {
-  beforeEach(function () {
+describe('Test hash plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
     const compiler = applyPlugins({
       Schema: class Schema {},
       options: {},
@@ -41,33 +43,33 @@ describe('Test hash plugin', function () {
       pluginHash,
     ]);
     pluginHash.mixin(compiler.Schema);
-    this.createValidate =
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, new compiler.Schema.Hash({ value: schemaDef }), schemaOptions).validate;
   });
 
-  describe('Given an hash schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate(String);
+  describe('Given an hash schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate(String);
     });
-    it('should return error if not an hash', function () {
-      this.validate1([]).should.deep.equal({
+    test('should return error if not an hash', () => {
+      expect(testContext.validate1([])).toEqual({
         error: ERROR_NOT_OBJECT,
         actual: [],
       });
     });
-    it('should accept hash of strings', function () {
-      should.not.exist(this.validate1({
+    test('should accept hash of strings', () => {
+      expect(testContext.validate1({
         a: 'a',
         b: 'b',
         c: 'c',
-      }));
+      })).toBeFalsy();
     });
-    it('should reject hash of numbers', function () {
-      this.validate1({
+    test('should reject hash of numbers', () => {
+      expect(testContext.validate1({
         a: 1,
         b: 2,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             error: ERROR_NOT_STRING,

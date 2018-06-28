@@ -1,14 +1,10 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_VALUE_NOT_ALLOWED,
 } from '../constants.js';
 import { applyPlugins } from '../createCompiler.js';
 import pluginAllowedValues from './allowedValues.js';
 
-const should = chai.should();
 const compiler = applyPlugins({
   Validator(props) {
     Object.assign(this, props);
@@ -17,28 +13,34 @@ const compiler = applyPlugins({
   pluginAllowedValues,
 ]);
 
-describe('Test allowedValues plugin', function () {
-  beforeEach(function () {
-    this.Schema = function () {};
-    this.createValidate =
+describe('Test allowedValues plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
+    testContext.Schema = function () {};
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({ isAtomic: true }, schemaDef, schemaOptions).validate;
   });
 
-  describe('Given a schema with allowedValues', function () {
-    describe('and the schema is atomic', function () {
-      beforeEach(function () {
-        this.validate1 = this.createValidate(Number, { allowedValues: [1, 2] });
+  describe('Given a schema with allowedValues', () => {
+    describe('and the schema is atomic', () => {
+      beforeEach(() => {
+        testContext.validate1 = testContext.createValidate(Number, { allowedValues: [1, 2] });
       });
-      it('should reject value that is not allowed', function () {
-        this.validate1(3).should.deep.equal({
+      test('should reject value that is not allowed', () => {
+        expect(testContext.validate1(3)).toEqual({
           error: ERROR_VALUE_NOT_ALLOWED,
           expected: [1, 2],
           actual: 3,
         });
       });
-      it('should accept value that is allowed', function () {
-        should.not.exist(this.validate1(1));
+      test('should accept value that is allowed', () => {
+        expect(testContext.validate1(1)).toBeFalsy();
       });
     });
   });

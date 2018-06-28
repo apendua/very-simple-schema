@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NOT_NUMBER,
   ERROR_MISSING_FIELD,
@@ -14,10 +11,14 @@ import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
 // import pluginSchema from './schema.js';
 
-const should = chai.should();
+describe('Test selector plugin', () => {
+  let testContext;
 
-describe('Test selector plugin', function () {
-  beforeEach(function () {
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
     const compiler = applyPlugins({
       Schema: class Schema {},
       options: {},
@@ -29,14 +30,14 @@ describe('Test selector plugin', function () {
       pluginArray,
     ]);
     pluginSelector.mixin(compiler.Schema);
-    this.createValidate =
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, new compiler.Schema.Operator(schemaDef), schemaOptions).validate;
   });
 
-  describe('Given an operator schema', function () {
-    beforeEach(function () {
-      this.validate = this.createValidate({
+  describe('Given an operator schema', () => {
+    beforeEach(() => {
+      testContext.validate = testContext.createValidate({
         a: {
           type: {
             x: Number,
@@ -71,19 +72,19 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should reject an unknown key', function () {
-      this.validate({
+    test('should reject an unknown key', () => {
+      expect(testContext.validate({
         c: 1,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           c: { error: ERROR_KEY_NOT_ALLOWED },
         },
       });
     });
-    it('should reject an unknown nested key', function () {
-      this.validate({
+    test('should reject an unknown nested key', () => {
+      expect(testContext.validate({
         'a.z': 1,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             errors: {
@@ -93,10 +94,10 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should reject a nested key of wrong type', function () {
-      this.validate({
+    test('should reject a nested key of wrong type', () => {
+      expect(testContext.validate({
         'a.x': '',
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             errors: {
@@ -106,14 +107,14 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should reject an unknown nested key (2)', function () {
-      this.validate({
+    test('should reject an unknown nested key (2)', () => {
+      expect(testContext.validate({
         a: {
           x: 1,
           y: 1,
           z: 1,
         },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             errors: {
@@ -123,31 +124,31 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should accept a valid key', function () {
-      should.not.exist(this.validate({
+    test('should accept a valid key', () => {
+      expect(testContext.validate({
         a: {
           x: 1,
           y: 1,
         },
-      }));
+      })).toBeFalsy();
     });
-    it('should accept a valid nested key', function () {
-      should.not.exist(this.validate({
+    test('should accept a valid nested key', () => {
+      expect(testContext.validate({
         'a.x': 1,
-      }));
+      })).toBeFalsy();
     });
-    it('should accept multiple nested keys', function () {
-      should.not.exist(this.validate({
+    test('should accept multiple nested keys', () => {
+      expect(testContext.validate({
         'a.x': 1,
         'a.y': 1,
-      }));
+      })).toBeFalsy();
     });
-    it('should reject missing properties in valid key', function () {
-      this.validate({
+    test('should reject missing properties in valid key', () => {
+      expect(testContext.validate({
         a: {
           x: 1,
         },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           a: {
             errors: {
@@ -157,19 +158,19 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should reject an unknown operator', function () {
-      this.validate({
+    test('should reject an unknown operator', () => {
+      expect(testContext.validate({
         $operator: {},
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           $operator: { error: ERROR_KEY_NOT_ALLOWED },
         },
       });
     });
-    it('should reject invalid key inside an array', function () {
-      this.validate({
+    test('should reject invalid key inside an array', () => {
+      expect(testContext.validate({
         'b.x': 1,
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           b: {
             errors: {
@@ -179,19 +180,19 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should accept a valid key inside an array', function () {
-      should.not.exist(this.validate({
+    test('should accept a valid key inside an array', () => {
+      expect(testContext.validate({
         'b.z': 1,
-      }));
+      })).toBeFalsy();
     });
-    it('should reject $elemMatch with invalid key', function () {
-      this.validate({
+    test('should reject $elemMatch with invalid key', () => {
+      expect(testContext.validate({
         b: {
           $elemMatch: {
             x: 1,
           },
         },
-      }).should.deep.equal({
+      })).toEqual({
         errors: {
           b: {
             errors: {
@@ -205,49 +206,52 @@ describe('Test selector plugin', function () {
         },
       });
     });
-    it('should accept $elemMatch with valid keys', function () {
-      should.not.exist(this.validate({
+    test('should accept $elemMatch with valid keys', () => {
+      expect(testContext.validate({
         b: {
           $elemMatch: {
             z: 1,
             w: 1,
           },
         },
-      }));
+      })).toBeFalsy();
     });
-    it('should accept selector with $and operator', function () {
-      should.not.exist(this.validate({
+    test('should accept selector with $and operator', () => {
+      expect(testContext.validate({
         $and: [
           { 'a.x': 1 },
           { 'b.z': 1 },
         ],
-      }));
+      })).toBeFalsy();
     });
-    it('should reject selector with invalid key nested in $and operator', function () {
-      this.validate({
-        $and: [
-          { 'a.z': 1 },
-        ],
-      }).should.deep.equal({
-        errors: {
-          $and: {
-            errors: [
-              {
-                errors: {
-                  a: {
-                    errors: {
-                      z: { error: ERROR_KEY_NOT_ALLOWED },
+    test(
+      'should reject selector with invalid key nested in $and operator',
+      () => {
+        expect(testContext.validate({
+          $and: [
+            { 'a.z': 1 },
+          ],
+        })).toEqual({
+          errors: {
+            $and: {
+              errors: [
+                {
+                  errors: {
+                    a: {
+                      errors: {
+                        z: { error: ERROR_KEY_NOT_ALLOWED },
+                      },
                     },
                   },
                 },
-              },
-            ],
+              ],
+            },
           },
-        },
-      });
-    });
-    it('should accept selector with nested $or/$and operators', function () {
-      should.not.exist(this.validate({
+        });
+      },
+    );
+    test('should accept selector with nested $or/$and operators', () => {
+      expect(testContext.validate({
         $and: [
           {
             $or: [
@@ -262,7 +266,7 @@ describe('Test selector plugin', function () {
             ],
           },
         ],
-      }));
+      })).toBeFalsy();
     });
   });
 });

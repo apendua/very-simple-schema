@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NOT_NUMBER,
   ERROR_NOT_ARRAY,
@@ -17,7 +14,6 @@ import {
 } from '../validators.js';
 import { applyPlugins } from '../createCompiler.js';
 
-const should = chai.should();
 const pluginNumber = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === Number) {
@@ -37,31 +33,37 @@ const compiler = applyPlugins({}, [
   pluginArray,
 ]);
 
-describe('Test array plugin', function () {
-  beforeEach(function () {
-    this.Schema = function () {};
-    this.createValidate =
+describe('Test array plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
+    testContext.Schema = function () {};
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, schemaDef, schemaOptions).validate;
   });
 
-  describe('Given an array schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate([Number]);
-      this.validate2 = this.createValidate([Number], { minCount: 1 });
-      this.validate3 = this.createValidate([Number], { maxCount: 2 });
+  describe('Given an array schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate([Number]);
+      testContext.validate2 = testContext.createValidate([Number], { minCount: 1 });
+      testContext.validate3 = testContext.createValidate([Number], { maxCount: 2 });
     });
-    it('should return error if not an array', function () {
-      this.validate1('this is not an array').should.deep.equal({
+    test('should return error if not an array', () => {
+      expect(testContext.validate1('this is not an array')).toEqual({
         error: ERROR_NOT_ARRAY,
         actual: 'this is not an array',
       });
     });
-    it('should accept array of numbers', function () {
-      should.not.exist(this.validate1([1, 2, 3]));
+    test('should accept array of numbers', () => {
+      expect(testContext.validate1([1, 2, 3])).toBeFalsy();
     });
-    it('should reject array of strings', function () {
-      this.validate1(['a', 'b']).should.deep.equal({
+    test('should reject array of strings', () => {
+      expect(testContext.validate1(['a', 'b'])).toEqual({
         errors: [{
           error: ERROR_NOT_NUMBER,
           actual: 'a',
@@ -71,21 +73,21 @@ describe('Test array plugin', function () {
         }],
       });
     });
-    it('should accept array with minimal number of elements', function () {
-      should.not.exist(this.validate2([1]));
+    test('should accept array with minimal number of elements', () => {
+      expect(testContext.validate2([1])).toBeFalsy();
     });
-    it('should reject array with to little elements', function () {
-      this.validate2([]).should.deep.equal({
+    test('should reject array with to little elements', () => {
+      expect(testContext.validate2([])).toEqual({
         error: ERROR_TOO_FEW,
         actual: [],
         expected: 1,
       });
     });
-    it('should accept array with maximal number of elements', function () {
-      should.not.exist(this.validate2([1, 2]));
+    test('should accept array with maximal number of elements', () => {
+      expect(testContext.validate2([1, 2])).toBeFalsy();
     });
-    it('should reject array with to many elements', function () {
-      this.validate3([1, 2, 3]).should.deep.equal({
+    test('should reject array with to many elements', () => {
+      expect(testContext.validate3([1, 2, 3])).toEqual({
         error: ERROR_TOO_MANY,
         actual: [1, 2, 3],
         expected: 2,

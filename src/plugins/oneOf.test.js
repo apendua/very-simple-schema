@@ -1,7 +1,4 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
+/* eslint-env jest */
 import {
   ERROR_NO_ALTERNATIVE,
 } from '../constants.js';
@@ -15,7 +12,6 @@ import {
 } from '../validators.js';
 import { applyPlugins } from '../createCompiler.js';
 
-const should = chai.should();
 const pluginNumber = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef === Number) {
@@ -47,8 +43,14 @@ const pluginString = {
   },
 };
 
-describe('Test oneOf plugin', function () {
-  beforeEach(function () {
+describe('Test oneOf plugin', () => {
+  let testContext;
+
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
     const compiler = applyPlugins({
       Schema: class Schema {},
       options: {},
@@ -58,23 +60,23 @@ describe('Test oneOf plugin', function () {
       pluginOneOf,
     ]);
     pluginOneOf.mixin(compiler.Schema);
-    this.createValidate =
+    testContext.createValidate =
       (schemaDef, schemaOptions = {}) =>
         compiler.compile({}, new compiler.Schema.OneOf(schemaDef), schemaOptions).validate;
   });
 
-  describe('Given a "oneOf" schema', function () {
-    beforeEach(function () {
-      this.validate1 = this.createValidate([Number, String]);
+  describe('Given a "oneOf" schema', () => {
+    beforeEach(() => {
+      testContext.validate1 = testContext.createValidate([Number, String]);
     });
-    it('should accept a number', function () {
-      should.not.exist(this.validate1(1));
+    test('should accept a number', () => {
+      expect(testContext.validate1(1)).toBeFalsy();
     });
-    it('should accept a string', function () {
-      should.not.exist(this.validate1('a'));
+    test('should accept a string', () => {
+      expect(testContext.validate1('a')).toBeFalsy();
     });
-    it('should reject if neither string nor number', function () {
-      this.validate1(true).should.deep.equal({
+    test('should reject if neither string nor number', () => {
+      expect(testContext.validate1(true)).toEqual({
         error: ERROR_NO_ALTERNATIVE,
         expected: ['number', 'string'],
       });

@@ -1,106 +1,105 @@
-/* eslint-env mocha */
-/* eslint no-unused-expressions: "off" */
-/* eslint prefer-arrow-callback: "off" */
-import chai from 'chai';
-import sinon from 'sinon';
-import sinonChai from 'sinon-chai';
+/* eslint-env jest */
 import createSchema from './createSchema.js';
 import presetDefault from './plugins/presetDefault.js';
 
-chai.use(sinonChai);
+describe('Test createSchema', () => {
+  let testContext;
 
-describe('Test createSchema', function () {
-  beforeEach(function () {
-    this.errorCreator = sinon.spy();
-    this.labelCreator = sinon.spy();
-    this.customErrors = sinon.spy();
-    this.getMessageTemplate = sinon.spy();
-    this.Schema = createSchema({
+  beforeEach(() => {
+    testContext = {};
+  });
+
+  beforeEach(() => {
+    testContext.errorCreator = jest.fn();
+    testContext.labelCreator = jest.fn();
+    testContext.customErrors = jest.fn();
+    testContext.getMessageTemplate = jest.fn();
+    testContext.Schema = createSchema({
       plugins: presetDefault,
-      defaultCustomErrors: this.customErrors,
-      defaultLabelCreator: this.labelCreator,
+      defaultCustomErrors: testContext.customErrors,
+      defaultLabelCreator: testContext.labelCreator,
       defaultErrorCreator: () => {
-        this.errorCreator();
+        testContext.errorCreator();
         return new Error('error');
       },
-      defaultGetMessageTemplate: () => this.getMessageTemplate,
+      defaultGetMessageTemplate: () => testContext.getMessageTemplate,
     });
   });
 
-  describe('When validation fails', function () {
-    beforeEach(function () {
-      (() => {
-        new this.Schema(Number).validate('');
-      }).should.throw();
+  describe('When validation fails', () => {
+    beforeEach(() => {
+      expect(() => {
+        new testContext.Schema(Number).validate('');
+      }).toThrowError();
     });
-    it('should use custom error creator', function () {
-      this.errorCreator.should.be.calledOnce;
+    test('should use custom error creator', () => {
+      expect(testContext.errorCreator).toHaveBeenCalledTimes(1);
     });
-    it('should use custom label creator', function () {
-      this.labelCreator.should.be.calledOnce;
+    test('should use custom label creator', () => {
+      expect(testContext.labelCreator).toHaveBeenCalledTimes(1);
     });
-    it('should ask for custom errors', function () {
-      this.customErrors.should.be.calledOnce;
+    test('should ask for custom errors', () => {
+      expect(testContext.customErrors).toHaveBeenCalledTimes(1);
     });
-    it('should ask for custom message tempaltes', function () {
-      this.getMessageTemplate.should.be.calledOnce;
+    test('should ask for custom message tempaltes', () => {
+      expect(testContext.getMessageTemplate).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('Given a customized validator is used', function () {
-    beforeEach(function () {
-      this.errorCreator2 = sinon.spy();
-      this.labelCreator2 = sinon.spy();
-      this.customErrors2 = sinon.spy();
-      this.getMessageTemplateSpy = sinon.spy();
-      this.getMessageTemplate2 = (error) => {
-        this.getMessageTemplateSpy();
+  describe('Given a customized validator is used', () => {
+    beforeEach(() => {
+      testContext.errorCreator2 = jest.fn();
+      testContext.labelCreator2 = jest.fn();
+      testContext.customErrors2 = jest.fn();
+      testContext.getMessageTemplateSpy = jest.fn();
+      testContext.getMessageTemplate2 = (error) => {
+        testContext.getMessageTemplateSpy();
         return () => error;
       };
     });
 
-    beforeEach(function () {
-      this.validate = new this.Schema(Number).validator({
-        customErrors: this.customErrors2,
-        labelCreator: this.labelCreator2,
+    beforeEach(() => {
+      testContext.validate = new testContext.Schema(Number).validator({
+        customErrors: testContext.customErrors2,
+        labelCreator: testContext.labelCreator2,
         errorCreator: () => {
-          this.errorCreator2();
+          testContext.errorCreator2();
           return new Error('error');
         },
-        getMessageTemplate: this.getMessageTemplate2,
+        getMessageTemplate: testContext.getMessageTemplate2,
       });
-      (() => {
-        this.validate('');
-      }).should.throw('error');
+      expect(() => {
+        testContext.validate('');
+      }).toThrowError('error');
     });
-    it('should use custom error creator', function () {
-      this.errorCreator2.should.be.calledOnce;
+    test('should use custom error creator', () => {
+      expect(testContext.errorCreator2).toHaveBeenCalledTimes(1);
     });
-    it('should use custom label creator', function () {
-      this.labelCreator2.should.be.calledOnce;
+    test('should use custom label creator', () => {
+      expect(testContext.labelCreator2).toHaveBeenCalledTimes(1);
     });
-    it('should ask for custom errors', function () {
-      this.customErrors2.should.be.calledOnce;
+    test('should ask for custom errors', () => {
+      expect(testContext.customErrors2).toHaveBeenCalledTimes(1);
     });
-    it('should ask for custom message tempaltes', function () {
-      this.getMessageTemplateSpy.should.be.calledOnce;
+    test('should ask for custom message tempaltes', () => {
+      expect(testContext.getMessageTemplateSpy).toHaveBeenCalledTimes(1);
     });
   });
 
-  describe('Given custom message templates are used', function () {
-    beforeEach(function () {
-      this.schema = new this.Schema({
+  describe('Given custom message templates are used', () => {
+    beforeEach(() => {
+      testContext.schema = new testContext.Schema({
         a: { type: Number },
         b: { type: Number },
       });
     });
-    it('should throw a custom error message', function () {
-      const errors = this.schema.getErrors({ a: 'a', b: 'b' });
-      this.schema.describe(errors, {
+    test('should throw a custom error message', () => {
+      const errors = testContext.schema.getErrors({ a: 'a', b: 'b' });
+      expect(testContext.schema.describe(errors, {
         getMessageTemplate: type => () => type,
-      }).should.deep.equal({
-        a: this.Schema.ERROR_NOT_NUMBER,
-        b: this.Schema.ERROR_NOT_NUMBER,
+      })).toEqual({
+        a: testContext.Schema.ERROR_NOT_NUMBER,
+        b: testContext.Schema.ERROR_NOT_NUMBER,
       });
     });
   });
