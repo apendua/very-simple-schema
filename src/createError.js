@@ -1,6 +1,17 @@
 import {
+  has,
   isArray,
 } from './utils.js';
+
+const getAny = (object) => {
+  // eslint-disable-next-line no-restricted-syntax
+  for (const k in object) {
+    if (has(object, k)) {
+      return object[k];
+    }
+  }
+  return undefined;
+};
 
 const getError = (message, details) => {
   const error = new Error(message || 'Unknown error');
@@ -16,8 +27,7 @@ const createError = (message, details) => {
     return createError(message.find(x => !!x), details);
   }
   if (typeof message === 'object') {
-    const key = Object.keys(message)[0];
-    return createError(message[key], details);
+    return createError(getAny(message), details);
   }
   return getError(null, details);
 };
