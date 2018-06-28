@@ -16,7 +16,7 @@ const each = (object, action) => {
   }
 };
 
-const isArray = actual => Array.isArray(actual);
+const isArray = actual => toString.call(actual) === '[object Array]';
 const isDate = actual => toString.call(actual) === '[object Date]';
 
 export const isEmpty = (object) => {
