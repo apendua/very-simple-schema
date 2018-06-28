@@ -13,7 +13,7 @@ const createError = (message, details) => {
     return getError(message, details);
   }
   if (isArray(message)) {
-    return createError(message[0], details);
+    return createError(message.find(x => !!x), details);
   }
   if (typeof message === 'object') {
     const key = Object.keys(message)[0];
