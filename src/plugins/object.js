@@ -21,8 +21,7 @@ const pluginObject = {
         emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
       } = schemaOptions;
       const properties = {};
-      Object.keys(schemaDef).forEach((key) => {
-        const definition = schemaDef[key];
+      each(schemaDef, (definition, key) => {
         if (isPlainObject(definition)) {
           const {
             type,

@@ -1,5 +1,7 @@
 import {
   isArray,
+  each,
+  isEmpty,
 } from './utils.js';
 import * as constants from './constants.js';
 import createCompiler from './createCompiler.js';
@@ -60,7 +62,7 @@ function createSchema(options = {}) {
           ...customErrors(value, errors),
         };
       }
-      if (errors && Object.keys(errors).length > 0) {
+      if (!isEmpty(errors)) {
         return errors;
       }
       return undefined;
@@ -118,8 +120,8 @@ function createSchema(options = {}) {
             }));
           } else if (typeof descriptor.errors === 'object') {
             const described = {};
-            Object.keys(descriptor.errors).forEach((key) => {
-              described[key] = this.describe(descriptor.errors[key], {
+            each(descriptor.errors, (error, key) => {
+              described[key] = this.describe(error, {
                 labelCreator,
                 getMessageTemplate,
                 keys: [...keys, key],

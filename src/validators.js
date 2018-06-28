@@ -25,6 +25,8 @@ import {
   isArray,
   isPlainObject,
   isDate,
+  each,
+  isEmpty,
 } from './utils.js';
 
 export const validateAlways = () => {};
@@ -59,8 +61,7 @@ export const createValidateProperties = ({
   emptyStringsAreMissingValues,
 }) => (value) => {
   const errors = {};
-  Object.keys(properties).forEach((key) => {
-    const property = properties[key];
+  each(properties, (property, key) => {
     const valueAtKey = value[key];
     const valueMissing = valueAtKey === undefined ||
                          valueAtKey === null ||
@@ -80,11 +81,11 @@ export const createValidateProperties = ({
     }
   });
   if (!additionalProperties) {
-    Object.keys(value).forEach((key) => {
+    each(value, (_, key) => {
       if (!has(properties, key)) {
         errors[key] = { error: ERROR_KEY_NOT_ALLOWED };
       }
     });
   }
-  return Object.keys(errors).length > 0 ? { errors } : undefined;
+  return !isEmpty(errors) ? { errors } : undefined;
 };
