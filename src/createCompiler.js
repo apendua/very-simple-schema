@@ -1,6 +1,3 @@
-import {
-  annotateError,
-} from './utils.js';
 import Validator from './Validator';
 
 const identity = x => x;
@@ -66,9 +63,8 @@ const createCompiler = (Schema, options) => {
     Schema,
     options: { ...options },
     compile: (validator, schemaDef, { label } = {}) => new Validator({
+      label,
       ...validator,
-      ...label && { label },
-      validate: annotateError(validator.validate, label),
     }),
   };
   return applyPlugins(compiler, [

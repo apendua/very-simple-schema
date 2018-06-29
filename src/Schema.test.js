@@ -700,7 +700,7 @@ describe('Test Schema', () => {
         a: testContext.schema1.property('a'),
         b: testContext.schema1.property('b'),
         x: testContext.schema1.property('c.x'),
-        y: { type: testContext.schema1.property('c.y'), optional: true },
+        y: { type: testContext.schema1.property('c.y'), label: 'Y', optional: true },
       });
       testContext.schema3 = new Schema({
         x: testContext.schema1.property('d.x'),
@@ -744,6 +744,7 @@ describe('Test Schema', () => {
           y: {
             actual: 'y',
             error: ERROR_NOT_NUMBER,
+            label: 'Y',
           },
         },
       });

@@ -54,7 +54,6 @@ export const validateIsArray = actual => (isArray(actual) ? undefined : { error:
 export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
 export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });
 
-// export const combine = validators => validators.reduce((previous, current) => (current ? (actual => previous(actual) || current(actual)) : previous), () => {});
 export const createValidateProperties = ({
   properties,
   additionalProperties,

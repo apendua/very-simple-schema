@@ -25,6 +25,7 @@ const pluginObject = {
         if (isPlainObject(definition)) {
           const {
             type,
+            label,
             optional = fieldsOptionalByDefault,
             ...otherOptions
           } = definition;
@@ -35,6 +36,9 @@ const pluginObject = {
             ...otherOptions,
           });
           properties[key].optional = !!optional;
+          if (label) {
+            properties[key].label = label;
+          }
         } else {
           properties[key] = compiler.compile({}, definition);
         }

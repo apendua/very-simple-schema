@@ -24,9 +24,7 @@ const pluginAllowedValues = {
         validate: combine([
           compiled.validate,
           createValidateIsAllowed(allowedValues),
-        ], {
-          label: schemaOptions.label,
-        }),
+        ]),
       });
     }
     return next(validator, schemaDef, schemaOptions);

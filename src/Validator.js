@@ -5,10 +5,17 @@ import {
 class Validator {
   constructor(props) {
     Object.assign(this, props);
-  }
-
-  validate() { // eslint-disable-line class-methods-use-this
-    return undefined;
+    const validate = this.validate;
+    this.validate = (value) => {
+      const error = validate && validate(value);
+      if (error && this.label) {
+        return {
+          label: this.label,
+          ...error,
+        };
+      }
+      return error;
+    };
   }
 
   property(key) {
