@@ -56,25 +56,41 @@ import { Schema } from 'very-simple-schema';
 // a number between 0 and 10
 new Schema(Number, { min: 0, max: 10 });
 
-// an array of anything with at least one element
-new Schema([new Schema.Any()], { minCount: 1 });
+// array with at least element
+Schema.arrayOf(Schema.any(), { minCount: 1 });
 
-const Id = Schema.oneOf([String, Number]); // can be one of the specified types
+// object that contains anything
+Schema.blackbox();
+Schema.objectOf(Schema.any());
+
+// either Yes or No
+Schema.enum(['Yes', 'No']);
+
+// can be one of the specified types
+const Id = Schema.oneOf([String, Number]);
 
 const User = new Schema({
-  name:  { type: String },
+  name: { type: String },
   email: { type: String, regEx: Schema.RegEx.Email, optional: true },
-}, { typeName: 'User' }); // custom typeName can improve some error messages
+}, {
+  // custom typeName can improve some error messages
+  typeName: 'User',
+});
 
 const Book = new Schema({
-  id:       { type: Id },
-  author:   { type: User }, // type can be another schema
-  title:    { type: String, nonEmpty: true },
+  id: { type: Id },
+  // type can reference another schema
+  author: { type: User },
+  // strings can be requested to be non empty
+  title: { type: String, nonEmpty: true },
   abstract: { type: String },
-  chapters: { type: [String], max: 128, maxCount: 10 }, // maxCount refers to array lenght, max refers to string length
+  // array can be constructed with [] shortcut, maxCount refers to array lenght, max refers to string length
+  chapters: { type: [String], '$.max': 128, maxCount: 10 },
 }, { typeName: 'Book' });
 
 const Library = new Schema({
   books: { type: [Book], maxCount: 1000 },
-}, { typeName: 'Library' });
+}, {
+  typeName: 'Library',
+});
 ```
