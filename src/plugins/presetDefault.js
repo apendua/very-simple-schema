@@ -4,6 +4,7 @@ import pluginArray from './array.js';
 import pluginImplicit from './implicit.js';
 import pluginHash from './hash.js';
 import pluginLazy from './lazy.js';
+import pluginMaybe from './maybe.js';
 import pluginObject from './object.js';
 import pluginOneOf from './oneOf.js';
 import pluginRegExp from './regExp.js';
@@ -14,6 +15,7 @@ export default [
   pluginArray,
   pluginHash,
   pluginLazy,
+  pluginMaybe,
   pluginObject,
   pluginOneOf,
   pluginAtomic,

@@ -160,6 +160,30 @@ describe('Test Schema', () => {
     });
   });
 
+  describe('Given "maybe" schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.maybe(Number);
+    });
+    test('should set "maybe" flag', () => {
+      expect(testContext.schema.compiled.isMaybe).toBe(true);
+    });
+    test('should accept if value is present', () => {
+      expect(testContext.schema.getErrors(1)).toBeFalsy();
+    });
+    test('should not accept if value is of different type', () => {
+      expect(testContext.schema.getErrors('a')).toEqual({
+        actual: 'a',
+        error: ERROR_NOT_NUMBER,
+      });
+    });
+    test('should accept if value is missing', () => {
+      expect(testContext.schema.getErrors(null)).toBeFalsy();
+    });
+    test('should accept if value is void', () => {
+      expect(testContext.schema.getErrors(undefined)).toBeFalsy();
+    });
+  });
+
   describe('Given "enum" schema', () => {
     beforeEach(() => {
       testContext.schema = Schema.enum(['A', 'B', 'C']);
