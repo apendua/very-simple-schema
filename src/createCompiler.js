@@ -56,10 +56,9 @@ export const applyPlugins = (compiler, plugins = []) => {
 const createCompiler = (Schema, options) => {
   const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof Validator) {
-      // NOTE: We return validator in the original form, in particular
-      //       all schema options will be ingored, e.g.
-      //       an optional property cannot become a required one.
-      return new Validator(schemaDef);
+      // NOTE: It's not necessary to make a copy here, because at the end of compile chain
+      //       we are making a copy anyway (see a couple lines below).
+      return schemaDef;
     }
     return next(validator, schemaDef, schemaOptions);
   };

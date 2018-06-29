@@ -693,6 +693,7 @@ describe('Test Schema', () => {
             x: Number,
             y: Number,
           })],
+          optional: true,
         },
       });
       testContext.schema2 = new Schema({
@@ -704,6 +705,21 @@ describe('Test Schema', () => {
       testContext.schema3 = new Schema({
         x: testContext.schema1.property('d.x'),
         y: testContext.schema1.property('d.y'),
+      });
+    });
+    test('should not affect the original validator', () => {
+      expect(testContext.schema1.getErrors({
+        b: 1,
+        c: {},
+      })).toEqual({
+        errors: {
+          c: {
+            errors: {
+              x: { error: ERROR_MISSING_FIELD },
+              y: { error: ERROR_MISSING_FIELD },
+            },
+          },
+        },
       });
     });
     test('should reject object with missing properties', () => {
