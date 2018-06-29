@@ -51,6 +51,12 @@ const pluginArray = {
     }
     return next(validator, schemaDef, schemaOptions);
   },
+  mixin(Schema) {
+    Object.assign(Schema, {
+      arrayOf: (schemaDef, schemaOptions) =>
+        new Schema([schemaDef], schemaOptions),
+    });
+  },
 };
 
 export default pluginArray;

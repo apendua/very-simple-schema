@@ -52,6 +52,8 @@ const pluginHash = {
       Hash,
       hash: (schemaDef, schemaOptions) =>
         new Schema(new Hash(schemaDef), schemaOptions),
+      objectOf: (schemaDef, schemaOptions) =>
+        new Schema(new Hash({ key: String, value: schemaDef }), schemaOptions),
     });
   },
 };

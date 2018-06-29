@@ -499,7 +499,7 @@ describe('Test Schema', () => {
       testContext.schema = Schema.oneOf([
         new Schema({}, { typeName: 'empty' }),
         new Schema(String, { typeName: 'text' }),
-        new Schema([Number]),
+        Schema.arrayOf(Number),
       ]);
     });
 
@@ -671,15 +671,15 @@ describe('Test Schema', () => {
 
   describe('Given a hash schema with implicit value', () => {
     beforeEach(() => {
-      testContext.schema1 = Schema.hash({
-        key: String,
-        value: new Schema({
+      testContext.schema1 = Schema.objectOf(
+        new Schema({
           x: { type: Number, implicit: 0, optional: true, min: 1 },
           y: { type: Number },
         }, { implicit: {} }),
-      }, {
-        implicit: {},
-      });
+        {
+          implicit: {},
+        },
+      );
     });
     test('should not return any errors on null', () => {
       expect(testContext.schema1.getErrors(null)).toBeFalsy();
@@ -715,10 +715,10 @@ describe('Test Schema', () => {
           }),
         },
         d: {
-          type: [new Schema({
+          type: Schema.arrayOf({
             x: Number,
             y: Number,
-          })],
+          }),
           optional: true,
         },
       });
