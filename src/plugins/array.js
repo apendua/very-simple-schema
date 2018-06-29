@@ -28,23 +28,23 @@ const pluginArray = {
         maxCount,
         ...options
       } = schemaOptions;
-      const element = compiler.compile({}, schemaDef[0], getOptions(options));
+      const $ = compiler.compile({}, schemaDef[0], getOptions(options));
       return next({
         ...validator,
-        element,
+        $,
         isArray: true,
-        typeName: `array of ${element.typeName}`,
+        typeName: `array of ${$.typeName}`,
         validate: combine([
           validateIsArray,
           minCount !== undefined && createValidateMinCount(minCount),
           maxCount !== undefined && createValidateMaxCount(maxCount),
           (value) => {
-            const errors = value.map(x => element.validate(x));
+            const errors = value.map(x => $.validate(x));
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
         clean: value => (isArray(value)
-          ? value.map(x => element.clean(x))
+          ? value.map(x => $.clean(x))
           : value
         ),
       }, schemaDef, { label });

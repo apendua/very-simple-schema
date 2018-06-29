@@ -66,9 +66,9 @@ class Validator {
           validatorAtKey = currentValidator.properties[key];
         } else if (currentValidator.isArray) {
           if (isInteger(key) || key === '$') {
-            validatorAtKey = currentValidator.element;
-          } else if (currentValidator.element.isObject) {
-            validatorAtKey = currentValidator.element.properties[key];
+            validatorAtKey = currentValidator.$;
+          } else if (currentValidator.$.isObject) {
+            validatorAtKey = currentValidator.$.properties[key];
           }
         }
         if (!validatorAtKey) {
@@ -92,7 +92,7 @@ class Validator {
         if (currentValidator.isObject) {
           return currentValidator.validate(expression);
         } else if (currentValidator.isArray) {
-          return currentValidator.element.validate(expression);
+          return currentValidator.$.validate(expression);
         }
         return currentValidator.validate(expression);
       }
@@ -145,9 +145,9 @@ class Validator {
           validatorAtKey = currentValidator.properties[key];
         } else if (currentValidator.isArray) {
           if (isInteger(key) || key === '$') {
-            validatorAtKey = currentValidator.element;
-          } else if (currentValidator.element.isObject) {
-            validatorAtKey = currentValidator.element.properties[key];
+            validatorAtKey = currentValidator.$;
+          } else if (currentValidator.$.isObject) {
+            validatorAtKey = currentValidator.$.properties[key];
           }
         }
         const errorsAtKey = this.validateSelector(validatorAtKey)(valueAtKey);
