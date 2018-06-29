@@ -50,6 +50,10 @@ function createSchema(options = {}) {
       return this.properties;
     }
 
+    property(key) {
+      return this.compiled.property(key);
+    }
+
     clean(value) {
       return this.compiled.clean(value);
     }

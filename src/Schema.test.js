@@ -682,16 +682,53 @@ describe('Test Schema', () => {
       testContext.schema1 = new Schema({
         a: { type: String, optional: true },
         b: { type: Number },
+        c: {
+          type: new Schema({
+            x: Number,
+            y: Number,
+          }),
+        },
+        d: {
+          type: [new Schema({
+            x: Number,
+            y: Number,
+          })],
+        },
       });
       testContext.schema2 = new Schema({
-        a: testContext.schema1.properties.a,
-        b: testContext.schema1.properties.b,
+        a: testContext.schema1.property('a'),
+        b: testContext.schema1.property('b'),
+        x: testContext.schema1.property('c.x'),
+        y: { type: testContext.schema1.property('c.y'), optional: true },
+      });
+      testContext.schema3 = new Schema({
+        x: testContext.schema1.property('d.x'),
+        y: testContext.schema1.property('d.y'),
       });
     });
-    test('should reject object with missing property', () => {
+    test('should reject object with missing properties', () => {
       expect(testContext.schema2.getErrors({})).toEqual({
         errors: {
           b: { error: ERROR_MISSING_FIELD },
+          x: { error: ERROR_MISSING_FIELD },
+        },
+      });
+    });
+    test('should properly report relevant errors', () => {
+      expect(testContext.schema2.getErrors({
+        b: 1,
+        x: 'x',
+        y: 'y',
+      })).toEqual({
+        errors: {
+          x: {
+            actual: 'x',
+            error: ERROR_NOT_NUMBER,
+          },
+          y: {
+            actual: 'y',
+            error: ERROR_NOT_NUMBER,
+          },
         },
       });
     });
@@ -699,6 +736,14 @@ describe('Test Schema', () => {
       expect(testContext.schema2.getErrors({
         a: 'a',
         b: 1,
+        x: 1,
+        y: 1,
+      })).toBeFalsy();
+    });
+    test('should pick properties from object nested in array', () => {
+      expect(testContext.schema3.getErrors({
+        x: 1,
+        y: 1,
       })).toBeFalsy();
     });
   });
