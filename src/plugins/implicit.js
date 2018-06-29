@@ -1,3 +1,4 @@
+import Validator from '../Validator';
 
 const pluginImplicit = {
   compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
@@ -15,7 +16,7 @@ const pluginImplicit = {
       const valueIsMissing = value => value === undefined ||
                                       value === null ||
                                       !!(emptyStringsAreMissingValues && value === '' && isString);
-      return new compiler.Validator({
+      return new Validator({
         ...compiled,
         isImplicit: true,
         validate: value => (valueIsMissing(value) ? validate(implicit) : validate(value)),

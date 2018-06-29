@@ -1,6 +1,7 @@
 import {
   annotateError,
 } from './utils.js';
+import Validator from './Validator';
 
 const identity = x => x;
 const constant = x => () => x;
@@ -53,14 +54,6 @@ export const applyPlugins = (compiler, plugins = []) => {
 };
 
 const createCompiler = (Schema, options) => {
-  class Validator {
-    constructor(props) {
-      Object.assign(this, props);
-    }
-    arrayOf(schemaOptions) {
-      return new Schema([this], schemaOptions);
-    }
-  }
   const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof Validator) {
       // NOTE: We return validator in the original form, in particular
@@ -72,7 +65,6 @@ const createCompiler = (Schema, options) => {
   };
   const compiler = {
     Schema,
-    Validator,
     options: { ...options },
     compile: (validator, schemaDef, { label } = {}) => new Validator({
       ...validator,
