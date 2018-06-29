@@ -121,6 +121,24 @@ function createSchema(options = {}) {
       return new this(newSchemaDef, schemaOptions);
     }
 
+    static merge(schemaDefs, schemaOptions) {
+      const newSchemaDef = {};
+      const newSchemaOptions = {
+        ...schemaOptions,
+      };
+      each(schemaDefs, (schemaDef) => {
+        const compiled = this.compiler.compile({}, schemaDef);
+        if (!compiled.isObject) {
+          throw new Error('Merge requires all elements to be objects');
+        }
+        if (compiled.isBlackbox) {
+          newSchemaOptions.additionalProperties = true;
+        }
+        Object.assign(newSchemaDef, compiled.properties);
+      });
+      return new this(newSchemaDef, newSchemaOptions);
+    }
+
     static describe(descriptor, {
       keys = [],
       labelCreator = defaultLabelCreator,

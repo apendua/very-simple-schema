@@ -61,6 +61,7 @@ const pluginObject = {
         ...validator,
         properties,
         typeName,
+        isBlackbox: !!additionalProperties,
         isObject: true,
         validate: combine([
           validateIsObject,

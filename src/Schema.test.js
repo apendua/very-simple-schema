@@ -414,6 +414,13 @@ describe('Test Schema', () => {
           d: { type: String },
         },
       ]);
+      testContext.schema2 = Schema.merge([
+        new Schema({}, { additionalProperties: true }),
+        {
+          a: { type: String, optional: true },
+          b: { type: String, optional: true },
+        },
+      ]);
     });
 
     test('should accept a valid object', () => {
@@ -437,6 +444,17 @@ describe('Test Schema', () => {
 
     test('should flag itself with isObject', () => {
       expect(testContext.schema1.compiled.isObject).toBe(true);
+    });
+
+    test('should flag isBlackbox if one of elements allows additional properties', () => {
+      expect(testContext.schema2.compiled.isBlackbox).toBe(true);
+    });
+
+    test('should allow additional properties', () => {
+      expect(testContext.schema2.getErrors({
+        x: 1,
+        y: 1,
+      })).toBeFalsy();
     });
   });
 
