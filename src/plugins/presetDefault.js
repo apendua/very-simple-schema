@@ -7,10 +7,8 @@ import pluginLazy from './lazy.js';
 import pluginObject from './object.js';
 import pluginOneOf from './oneOf.js';
 import pluginRegExp from './regExp.js';
-import pluginSchema from './schema.js';
 
 export default [
-  pluginSchema,
   pluginImplicit,
   pluginAny,
   pluginArray,
