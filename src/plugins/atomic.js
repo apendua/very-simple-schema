@@ -82,10 +82,14 @@ const pluginAtomic = {
       validators.push(createValidateInstanceOf(schemaDef));
       properties.isFunction = true;
       properties.typeName = schemaDef.name || '[unknown]';
-    } else if (typeof schemaDef !== 'object' || schemaDef === null) {
+    } else if (typeof schemaDef === 'number' || typeof schemaDef === 'string' || typeof schemaDef === 'boolean' || schemaDef === null) {
       validators.push(createValidateEquals(schemaDef));
+      properties.value = schemaDef;
       properties.isLiteral = true;
-      properties.typeName = schemaDef === undefined ? 'undefined' : JSON.stringify(schemaDef);
+      properties.typeName = JSON.stringify(schemaDef);
+    } else if (schemaDef === undefined) {
+      properties.isVoid = true;
+      properties.typeName = 'undefined';
     } else {
       properties.isAtomic = false;
     }
