@@ -351,7 +351,20 @@ describe('Test Schema', () => {
         a: { type: Number },
         b: { type: String },
         c: { type: Number },
-      }, ['a', 'b']);
+      }, {
+        properties: ['a', 'b'],
+      });
+      testContext.schema2 = Schema.pick({
+        a: { type: Number },
+        b: { type: String },
+        c: { type: Number },
+      }, {
+        properties: {
+          a: { optional: true },
+          b: { optional: true },
+          c: {},
+        },
+      });
     });
 
     test('should accept a valid object', () => {
@@ -370,6 +383,19 @@ describe('Test Schema', () => {
         errors: {
           b: { error: ERROR_NOT_STRING, actual: 1 },
           c: { error: ERROR_KEY_NOT_ALLOWED },
+        },
+      });
+    });
+
+    test('should allow changing property options', () => {
+      expect(testContext.schema2.getErrors({
+        c: 'x',
+      })).toEqual({
+        errors: {
+          c: {
+            actual: 'x',
+            error: ERROR_NOT_NUMBER,
+          },
         },
       });
     });

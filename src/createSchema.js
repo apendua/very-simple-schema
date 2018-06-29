@@ -2,6 +2,7 @@ import {
   isArray,
   each,
   isEmpty,
+  isPlainObject,
 } from './utils.js';
 import * as constants from './constants.js';
 import createCompiler from './createCompiler.js';
@@ -30,10 +31,6 @@ function createSchema(options = {}) {
         schemaDef,
         schemaOptions,
       });
-    }
-
-    static pick(schemaDef, fields) {
-      return new this(schemaDef, { pick: fields });
     }
 
     get compiled() {
@@ -99,6 +96,29 @@ function createSchema(options = {}) {
 
     describe(...args) {
       return this.constructor.describe(...args);
+    }
+
+    static pick(schemaDef, { properties, ...schemaOptions }) {
+      const compiled = this.compiler.compile({}, schemaDef);
+      if (!compiled.isObject) {
+        throw new Error('Pick requires an object schema');
+      }
+      const newSchemaDef = {};
+      if (isArray(properties)) {
+        each(properties, (name) => {
+          newSchemaDef[name] = compiled.properties[name];
+        });
+      } else if (isPlainObject(properties)) {
+        each(properties, (propertyOptions, name) => {
+          if (compiled.properties[name]) {
+            newSchemaDef[name] = {
+              type: compiled.properties[name],
+              ...propertyOptions,
+            };
+          }
+        });
+      }
+      return new this(newSchemaDef, schemaOptions);
     }
 
     static describe(descriptor, {

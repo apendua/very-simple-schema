@@ -8,7 +8,6 @@ import pluginLazy from './lazy.js';
 import pluginMerge from './merge.js';
 import pluginObject from './object.js';
 import pluginOneOf from './oneOf.js';
-import pluginPick from './pick.js';
 import pluginRegExp from './regExp.js';
 import pluginSchema from './schema.js';
 
@@ -17,7 +16,6 @@ export default [
   pluginImplicit,
   pluginAny,
   pluginMerge,
-  pluginPick,
   pluginArray,
   pluginHash,
   pluginLazy,
