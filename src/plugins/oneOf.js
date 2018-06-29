@@ -9,13 +9,14 @@ import {
 const pluginOneOf = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.OneOf) {
-      const alternativeSchemas = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x));
+      const alternatives = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x));
       return next({
+        alternatives,
         isOneOf: true,
-        typeName: `one of ${alternativeSchemas.map(x => x.typeName).join(', ')}`,
+        typeName: `one of ${alternatives.map(x => x.typeName).join(', ')}`,
         validate: (value) => {
           const expected = [];
-          for (const { validate, typeName } of alternativeSchemas) {
+          for (const { validate, typeName } of alternatives) {
             const error = validate(value);
             if (!error) {
               return undefined;

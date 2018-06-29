@@ -9,23 +9,26 @@ import {
 const pluginHash = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Hash) {
-      const valueSchema = compiler.compile({}, schemaDef.valueSchemaDef);
-      const keySchema = compiler.compile({}, schemaDef.keySchemaDef);
+      const hashKey = compiler.compile({}, schemaDef.keySchemaDef);
+      const hashValue = compiler.compile({}, schemaDef.valueSchemaDef);
       return next({
         ...validator,
-        typeName: `hash of ${valueSchema.typeName}`,
+        isHash: true,
+        hashKey,
+        hashValue,
+        typeName: `object of ${hashValue.typeName}`,
         validate: combine([
           validateIsObject,
           (value) => {
             let hasErrors = false;
             const errors = {};
             each(value, (x, key) => {
-              const keyErrors = keySchema.validate(key);
+              const keyErrors = hashKey.validate(key);
               if (keyErrors) {
                 hasErrors = true;
                 errors[key] = keyErrors;
               } else {
-                const valueErrors = valueSchema.validate(x);
+                const valueErrors = hashValue.validate(x);
                 if (valueErrors) {
                   hasErrors = true;
                 }
