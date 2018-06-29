@@ -66,7 +66,7 @@ const createCompiler = (Schema, options) => {
       // NOTE: We return validator in the original form, in particular
       //       all schema options will be ingored, e.g.
       //       an optional property cannot become a required one.
-      return schemaDef;
+      return new Validator(schemaDef);
     }
     return next(validator, schemaDef, schemaOptions);
   };
