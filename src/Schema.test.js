@@ -171,7 +171,7 @@ describe('Test Schema', () => {
   describe('Given a schema with allowedValues', () => {
     describe('and the schema is an array', () => {
       beforeEach(() => {
-        testContext.schema1 = new Schema([String], { allowedValues: ['a', 'b', 'c'] });
+        testContext.schema1 = new Schema([String], { '$.allowedValues': ['a', 'b', 'c'] });
       });
       test('should reject value that is not allowed', () => {
         expect(testContext.schema1.getErrors(['a', 'b', 'x'])).toEqual({
@@ -195,7 +195,7 @@ describe('Test Schema', () => {
   describe('Given a schema with regular expression', () => {
     describe('and the schema is an array', () => {
       beforeEach(() => {
-        testContext.schema1 = new Schema([String], { regEx: /\d+/ });
+        testContext.schema1 = new Schema([String], { '$.regEx': /\d+/ });
       });
       test('should reject value that is not allowed', () => {
         expect(testContext.schema1.getErrors(['1', '12', 'xxx'])).toEqual({
@@ -286,7 +286,7 @@ describe('Test Schema', () => {
       testContext.schema1 = new Schema({
         children: {
           type: [() => testContext.schema1],
-          lazy: true,
+          '$.lazy': true,
         },
       });
     });

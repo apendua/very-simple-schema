@@ -6,7 +6,18 @@ import {
 import {
   combine,
   isArray,
+  each,
 } from '../utils.js';
+
+const getOptions = (options) => {
+  const newOptions = {};
+  each(options, (value, key) => {
+    if (key.charAt(0) === '$' && key.charAt(1) === '.') {
+      newOptions[key.substr(2)] = value;
+    }
+  });
+  return newOptions;
+};
 
 const pluginArray = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
@@ -15,9 +26,9 @@ const pluginArray = {
         label,
         minCount,
         maxCount,
-        ...otherOptions
+        ...options
       } = schemaOptions;
-      const element = compiler.compile({}, schemaDef[0], otherOptions);
+      const element = compiler.compile({}, schemaDef[0], getOptions(options));
       return next({
         ...validator,
         element,
