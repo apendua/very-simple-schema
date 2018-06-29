@@ -160,6 +160,33 @@ describe('Test Schema', () => {
     });
   });
 
+  describe('Given "enum" schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.enum(['A', 'B', 'C']);
+    });
+    test('should set "atomic" flag', () => {
+      expect(testContext.schema.compiled.isAtomic).toBe(true);
+    });
+    test('should accept each of the enumrated values', () => {
+      expect(testContext.schema.getErrors('A')).toBeFalsy();
+      expect(testContext.schema.getErrors('B')).toBeFalsy();
+      expect(testContext.schema.getErrors('C')).toBeFalsy();
+    });
+    test('should not accept a string that is not explicitly listed', () => {
+      expect(testContext.schema.getErrors('D')).toEqual({
+        error: ERROR_VALUE_NOT_ALLOWED,
+        actual: 'D',
+        expected: ['A', 'B', 'C'],
+      });
+    });
+    test('should not accept a number', () => {
+      expect(testContext.schema.getErrors(1)).toEqual({
+        error: ERROR_NOT_STRING,
+        actual: 1,
+      });
+    });
+  });
+
   describe('Given object schema that overwrites property options', () => {
     beforeEach(() => {
       const MyNumber = new Schema(Number, { decimal: false });

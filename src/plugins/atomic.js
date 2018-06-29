@@ -100,6 +100,11 @@ const pluginAtomic = {
       validate: combine(validators),
     }, schemaDef, schemaOptions);
   },
+  mixin(Schema) {
+    Object.assign(Schema, {
+      enum: allowedValues => new Schema(String, { allowedValues }),
+    });
+  },
 };
 
 export default pluginAtomic;
