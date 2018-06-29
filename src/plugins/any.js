@@ -20,10 +20,9 @@ const pluginAny = {
   mixin(Schema) {
     class Any {
     }
-    const schemaDef = new Any();
     Object.assign(Schema, {
       Any,
-      any: () => new Schema(schemaDef),
+      any: () => new Schema(new Any()),
     });
   },
 };

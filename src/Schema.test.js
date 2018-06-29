@@ -105,12 +105,58 @@ describe('Test Schema', () => {
     });
   });
 
-  describe('Given empty schema', () => {
+  describe('Given "blackbox" schema', () => {
     beforeEach(() => {
-      testContext.schema = new Schema({});
+      testContext.schema = Schema.blackbox();
+    });
+    test('should set "blackbox" flag', () => {
+      expect(testContext.schema.compiled.isBlackbox).toBe(true);
+    });
+    test('should accept an empty object', () => {
+      expect(testContext.schema.getErrors({})).toBeFalsy();
+    });
+    test('should accept object with additional fields', () => {
+      expect(testContext.schema.getErrors({
+        x: 1,
+        y: 1,
+      })).toBeFalsy();
+    });
+    test('should not accept a number', () => {
+      expect(testContext.schema.getErrors(1)).toEqual({
+        actual: 1,
+        error: ERROR_NOT_OBJECT,
+      });
+    });
+  });
+
+  describe('Given "empty" schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.empty();
     });
     test('should validate empty object', () => {
       expect(testContext.schema.getErrors({})).toBeFalsy();
+    });
+    test('should not accept object with properties', () => {
+      expect(testContext.schema.getErrors({
+        x: 1,
+        y: 1,
+      })).toEqual({
+        errors: {
+          x: { error: ERROR_KEY_NOT_ALLOWED },
+          y: { error: ERROR_KEY_NOT_ALLOWED },
+        },
+      });
+    });
+    test('should not accept object with undefined properties', () => {
+      expect(testContext.schema.getErrors({
+        x: undefined,
+        y: undefined,
+      })).toEqual({
+        errors: {
+          x: { error: ERROR_KEY_NOT_ALLOWED },
+          y: { error: ERROR_KEY_NOT_ALLOWED },
+        },
+      });
     });
   });
 
@@ -415,7 +461,7 @@ describe('Test Schema', () => {
         },
       ]);
       testContext.schema2 = Schema.merge([
-        new Schema({}, { additionalProperties: true }),
+        Schema.blackbox(),
         {
           a: { type: String, optional: true },
           b: { type: String, optional: true },

@@ -93,6 +93,12 @@ const pluginObject = {
     }
     return next(validator, schemaDef, schemaOptions);
   },
+  mixin(Schema) {
+    Object.assign(Schema, {
+      empty: () => new Schema({}, { additionalProperties: false }),
+      blackbox: () => new Schema({}, { additionalProperties: true }),
+    });
+  },
 };
 
 export default pluginObject;
