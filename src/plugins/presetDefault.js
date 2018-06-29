@@ -1,4 +1,3 @@
-import pluginAllowedValues from './allowedValues.js';
 import pluginAny from './any.js';
 import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
@@ -20,6 +19,5 @@ export default [
   pluginObject,
   pluginOneOf,
   pluginAtomic,
-  pluginAllowedValues,
   pluginRegExp,
 ];
