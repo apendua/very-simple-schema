@@ -21,7 +21,9 @@ describe('Test selector plugin', () => {
   beforeEach(() => {
     const compiler = applyPlugins({
       Schema: class Schema {},
-      options: {},
+      options: {
+        sealedByDefault: true,
+      },
     }, [
       // pluginSchema,
       pluginSelector,

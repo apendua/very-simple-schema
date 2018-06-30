@@ -16,7 +16,7 @@ import {
 
 const createValidateProperties = ({
   properties,
-  additionalProperties,
+  sealed,
   emptyStringsAreMissingValues,
 }) => (value) => {
   const errors = {};
@@ -39,7 +39,7 @@ const createValidateProperties = ({
       }
     }
   });
-  if (!additionalProperties) {
+  if (sealed) {
     each(value, (_, key) => {
       if (!has(properties, key)) {
         errors[key] = { error: ERROR_KEY_NOT_ALLOWED };
@@ -56,7 +56,7 @@ const pluginObject = {
         typeName = 'object',
         required,
         defaultValue,
-        additionalProperties = compiler.options.additionalProperties,
+        sealed = compiler.options.sealedByDefault,
         fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
         emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
       } = schemaOptions;
@@ -105,13 +105,14 @@ const pluginObject = {
         ...validator,
         properties,
         typeName,
-        isBlackbox: !!additionalProperties,
+        isBlackbox: isEmpty(properties) && !sealed,
+        isSealed: !!sealed,
         isObject: true,
         validate: combine([
           validateIsObject,
           createValidateProperties({
             properties,
-            additionalProperties,
+            sealed,
             emptyStringsAreMissingValues,
           }),
         ]),
@@ -128,7 +129,7 @@ const pluginObject = {
               delete cleaned[key];
             } else if (has(properties, key)) {
               cleaned[key] = properties[key].clean(valueAtKey);
-            } else if (additionalProperties) {
+            } else if (!sealed) {
               cleaned[key] = valueAtKey;
             }
           });
@@ -148,8 +149,8 @@ const pluginObject = {
   },
   mixin(Schema) {
     Object.assign(Schema, {
-      empty: () => new Schema({}, { additionalProperties: false }),
-      blackbox: () => new Schema({}, { additionalProperties: true }),
+      empty: () => new Schema({}, { sealed: true }),
+      blackbox: () => new Schema({}, { sealed: false }),
     });
   },
 };

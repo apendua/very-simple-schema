@@ -126,8 +126,8 @@ function createSchema(options = {}) {
         if (!compiled.isObject) {
           throw new Error('Merge requires all elements to be objects');
         }
-        if (compiled.isBlackbox) {
-          newSchemaOptions.additionalProperties = true;
+        if (newSchemaOptions.sealed !== true && !compiled.isSealed) {
+          newSchemaOptions.sealed = false;
         }
         Object.assign(newSchemaDef, compiled.properties);
       });

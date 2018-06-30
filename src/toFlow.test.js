@@ -113,7 +113,7 @@ Array<{|
       x: Number,
       y: Number,
     }, {
-      additionalProperties: true,
+      sealed: false,
     });
     expect(toFlow(schema.compiled)).toEqual(`\
 {
@@ -130,7 +130,7 @@ Array<{|
         y: Number,
       }),
     }, {
-      additionalProperties: true,
+      sealed: false,
     });
     expect(toFlow(schema.compiled)).toEqual(`\
 {

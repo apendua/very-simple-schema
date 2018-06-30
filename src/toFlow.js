@@ -10,7 +10,7 @@ const toFlow = (validator) => {
     each(validator.properties, (property, key) => {
       properties.push(`  ${key}${property.optional ? '?' : ''}: ${indent(toFlow(property), '  ')}`);
     });
-    if (validator.isBlackbox) {
+    if (!validator.isSealed) {
       return `{\n${properties.join(',\n')},\n}`;
     }
     return `{|\n${properties.join(',\n')},\n|}`;

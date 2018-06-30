@@ -76,7 +76,10 @@ export const pluginEnsureOptions = () => next =>
 const createCompiler = (Schema, options) => {
   const compiler = {
     Schema,
-    options: { ...options },
+    options: {
+      sealedByDefault: true,
+      ...options,
+    },
     compile: (validator, schemaDef, {
       label,
       defaultValue,

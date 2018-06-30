@@ -112,6 +112,9 @@ describe('Test Schema', () => {
     test('should set "blackbox" flag', () => {
       expect(testContext.schema.compiled.isBlackbox).toBe(true);
     });
+    test('should set "sealed" to false', () => {
+      expect(testContext.schema.compiled.isSealed).toBe(false);
+    });
     test('should accept an empty object', () => {
       expect(testContext.schema.getErrors({})).toBeFalsy();
     });
@@ -514,8 +517,8 @@ describe('Test Schema', () => {
       expect(testContext.schema1.compiled.isObject).toBe(true);
     });
 
-    test('should flag isBlackbox if one of elements allows additional properties', () => {
-      expect(testContext.schema2.compiled.isBlackbox).toBe(true);
+    test('should set isSealed to false if one of elements allows additional properties', () => {
+      expect(testContext.schema2.compiled.isSealed).toBe(false);
     });
 
     test('should allow additional properties', () => {
@@ -610,7 +613,7 @@ describe('Test Schema', () => {
         b: Number,
         c: String,
       }, {
-        additionalProperties: true,
+        sealed: false,
       });
       testContext.schema3 = new Schema({
         a: Number,
