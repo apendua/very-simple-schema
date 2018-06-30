@@ -625,10 +625,12 @@ describe('Test Schema', () => {
 
   describe('Schema.clean()', () => {
     beforeEach(() => {
-      testContext.schema = new Schema({
+      testContext.schema1 = new Schema({
         a: new Schema({
-          x: Number,
-          y: String,
+          x: { type: Number, defaultValue: 0 },
+          y: { type: String, defaultValue: '' },
+        }, {
+          defaultValue: {},
         }),
         b: [new Schema(Number)],
       });
@@ -653,9 +655,15 @@ describe('Test Schema', () => {
       ], {
         defaultValue: [0, 0, 0],
       });
+      testContext.schema5 = Schema.objectOf(
+        new Schema(Number, { defaultValue: 0 }),
+        {
+          defaultValue: {},
+        },
+      );
     });
     test('should not modify a valid object', () => {
-      expect(testContext.schema.clean({
+      expect(testContext.schema1.clean({
         a: { x: 1, y: 'y' },
         b: [1, 2, 3],
       })).toEqual({
@@ -664,26 +672,34 @@ describe('Test Schema', () => {
       });
     });
     test('should convert strings to numbers', () => {
-      expect(testContext.schema.clean({
-        a: { x: '1.5' },
+      expect(testContext.schema1.clean({
+        a: { x: '1.5', y: '' },
         b: ['1', '2', 3],
       })).toEqual({
-        a: { x: 1.5 },
+        a: { x: 1.5, y: '' },
         b: [1, 2, 3],
       });
     });
     test('should convert numbers to strings', () => {
-      expect(testContext.schema.clean({
-        a: { y: 1 },
+      expect(testContext.schema1.clean({
+        a: { x: 0, y: 1 },
       })).toEqual({
-        a: { y: '1' },
+        a: { x: 0, y: '1' },
       });
     });
     test('should remove properties that are not allowed', () => {
-      expect(testContext.schema.clean({
-        a: { z: {} },
+      expect(testContext.schema1.clean({
+        a: { x: 0, y: '', z: {} },
       })).toEqual({
-        a: {},
+        a: { x: 0, y: '' },
+      });
+    });
+    test('should set default values', () => {
+      expect(testContext.schema1.clean({})).toEqual({
+        a: {
+          x: 0,
+          y: '',
+        },
       });
     });
     test(
@@ -716,7 +732,7 @@ describe('Test Schema', () => {
       });
     });
     test('should not change things that cannot be cleaned', () => {
-      expect(testContext.schema.clean({
+      expect(testContext.schema1.clean({
         a: [1, 2, 3],
       })).toEqual({
         a: [1, 2, 3],
@@ -742,6 +758,17 @@ describe('Test Schema', () => {
       )).toEqual(
         [1, 0, 0],
       );
+    });
+    test('should clean hash values', () => {
+      expect(testContext.schema5.clean({
+        a: '1',
+        b: 1,
+        c: undefined,
+      })).toEqual({
+        a: 1,
+        b: 1,
+        c: 0,
+      });
     });
   });
 

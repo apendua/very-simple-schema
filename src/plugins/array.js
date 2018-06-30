@@ -26,6 +26,7 @@ const pluginArray = {
         label,
         minCount,
         maxCount,
+        defaultValue,
         ...options
       } = schemaOptions;
       const $ = compiler.compile({}, schemaDef[0], getOptions(options));
@@ -43,10 +44,12 @@ const pluginArray = {
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
-        clean: value => (isArray(value)
-          ? value.map(x => $.clean(x))
-          : value
-        ),
+        clean: (value = defaultValue) => {
+          if (!isArray(value)) {
+            return value;
+          }
+          return value.map(x => $.clean(x));
+        },
       }, schemaDef, { label });
     }
     return next(validator, schemaDef, schemaOptions);

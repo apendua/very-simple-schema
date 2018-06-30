@@ -16,11 +16,16 @@ const pluginObject = {
       const {
         typeName = 'object',
         required,
+        defaultValue,
         additionalProperties = compiler.options.additionalProperties,
         fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
         emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
       } = schemaOptions;
       const properties = {};
+      const isMissing = value => (
+        value === undefined ||
+        (emptyStringsAreMissingValues && value === '')
+      );
       each(schemaDef, (definition, key) => {
         if (isPlainObject(definition)) {
           const {
@@ -71,12 +76,13 @@ const pluginObject = {
             emptyStringsAreMissingValues,
           }),
         ]),
-        clean: (value) => {
+        clean: (value = defaultValue) => {
           if (!isPlainObject(value)) {
             return value;
           }
           const cleaned = {};
           each(value, (valueAtKey, key) => {
+            // TODO: Refine this logic ...
             if (valueAtKey === undefined ||
                 valueAtKey === null ||
                 (emptyStringsAreMissingValues && valueAtKey === '')) {
@@ -85,6 +91,14 @@ const pluginObject = {
               cleaned[key] = properties[key].clean(valueAtKey);
             } else if (additionalProperties) {
               cleaned[key] = valueAtKey;
+            }
+          });
+          each(properties, (property, key) => {
+            if (!has(cleaned, key)) {
+              const valueAtKey = property.clean();
+              if (!isMissing(valueAtKey)) {
+                cleaned[key] = valueAtKey;
+              }
             }
           });
           return cleaned;

@@ -4,11 +4,13 @@ import {
 import {
   each,
   combine,
+  isPlainObject,
 } from '../utils.js';
 
 const pluginHash = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Hash) {
+      const { defaultValue } = schemaOptions;
       const hashKey = compiler.compile({}, schemaDef.keySchemaDef);
       const hashValue = compiler.compile({}, schemaDef.valueSchemaDef);
       return next({
@@ -38,6 +40,16 @@ const pluginHash = {
             return hasErrors ? { errors } : undefined;
           },
         ]),
+        clean: (value = defaultValue) => {
+          if (!isPlainObject(value)) {
+            return value;
+          }
+          const clean = {};
+          each(value, (valueAtKey, key) => {
+            clean[key] = hashValue.clean(valueAtKey);
+          });
+          return clean;
+        },
       }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);

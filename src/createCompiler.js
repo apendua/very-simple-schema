@@ -74,8 +74,12 @@ const createCompiler = (Schema, options) => {
   const compiler = {
     Schema,
     options: { ...options },
-    compile: (validator, schemaDef, { label } = {}) => new Validator({
+    compile: (validator, schemaDef, {
       label,
+      defaultValue,
+    } = {}) => new Validator({
+      label,
+      defaultValue,
       ...validator,
     }),
   };

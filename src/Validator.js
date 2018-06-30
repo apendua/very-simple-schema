@@ -18,6 +18,10 @@ class Validator {
     };
   }
 
+  clean(value = this.defaultValue) {
+    return value;
+  }
+
   property(key) {
     if (!isArray(key)) {
       return this.property(key.split('.'));

@@ -8,7 +8,7 @@ import {
 import Validator from '../Validator';
 
 const pluginRegExp = {
-  compile: () => next => (validator, schemaDef, schemaOptions = {}) => {
+  compile: () => next => (validator, schemaDef, schemaOptions) => {
     let { regEx } = schemaOptions;
     if (regEx) {
       const compiled = next(validator, schemaDef, schemaOptions);

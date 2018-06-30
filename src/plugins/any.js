@@ -2,8 +2,6 @@ import {
   validateAlways,
 } from '../validators.js';
 
-const identity = x => x;
-
 const pluginAny = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Any) {
@@ -11,8 +9,7 @@ const pluginAny = {
         ...validator,
         typeName: 'any',
         validate: validateAlways,
-        clean:    identity,
-        isAny:    true,
+        isAny: true,
       };
     }
     return next(validator, schemaDef, schemaOptions);
