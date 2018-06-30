@@ -378,35 +378,6 @@ describe('Test Schema', () => {
     });
   });
 
-  describe('Given a schema with lazy fields', () => {
-    beforeEach(() => {
-      testContext.schema1 = new Schema({
-        children: {
-          type: [() => testContext.schema1],
-          '$.lazy': true,
-        },
-      });
-    });
-
-    test('should accept a nested object', () => {
-      expect(testContext.schema1.getErrors({
-        children: [{
-          children: [{
-            children: [],
-          }],
-        }],
-      })).toBeFalsy();
-    });
-
-    test('should reject object with missing fields', () => {
-      expect(testContext.schema1.getErrors({})).toEqual({
-        errors: {
-          children: { error: ERROR_MISSING_FIELD },
-        },
-      });
-    });
-  });
-
   describe('Given a merge schema', () => {
     beforeEach(() => {
       testContext.schema1 = Schema.merge([
