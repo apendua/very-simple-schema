@@ -8,7 +8,7 @@ const toFlow = (validator) => {
   if (validator.isObject) {
     const properties = [];
     each(validator.properties, (property, key) => {
-      properties.push(`  ${key}${property.optional ? '?' : ''}: ${indent(toFlow(property), '  ')}`);
+      properties.push(`  ${key}${property.isOptional ? '?' : ''}: ${indent(toFlow(property), '  ')}`);
     });
     if (!validator.isSealed) {
       return `{\n${properties.join(',\n')},\n}`;

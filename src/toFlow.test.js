@@ -108,6 +108,18 @@ Array<{|
 |}`);
   });
 
+  test('generates flow type from object with optional properties', () => {
+    const schema = new Schema({
+      x: { type: Number, optional: true },
+      y: Number,
+    });
+    expect(toFlow(schema.compiled)).toEqual(`\
+{|
+  x?: number,
+  y: number,
+|}`);
+  });
+
   test('generates flow type for object that allows additional properties', () => {
     const schema = new Schema({
       x: Number,

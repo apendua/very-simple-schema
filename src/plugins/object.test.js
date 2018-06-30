@@ -155,8 +155,16 @@ describe('Test object plugin', () => {
         c: { type: String },
       }, {
         required: ['a', 'b'],
-        fieldsOptionalByDefault: true,
       });
+    });
+    test('throws when required is mixed with optional flags', () => {
+      expect(() => {
+        testContext.createValidate({
+          a: { type: String, optional: false },
+        }, {
+          required: ['a'],
+        });
+      }).toThrow(/optional flags are not allowed/);
     });
     test('should accept a valid object', () => {
       expect(testContext.validate1({

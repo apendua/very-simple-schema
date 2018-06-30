@@ -25,7 +25,7 @@ const createValidateProperties = ({
     const valueMissing = valueAtKey === undefined ||
                          valueAtKey === null ||
                          (emptyStringsAreMissingValues && valueAtKey === '' && property.isString);
-    if (valueMissing && !property.optional) {
+    if (valueMissing && !property.isOptional) {
       errors[key] = {
         error: ERROR_MISSING_FIELD,
       };
@@ -57,7 +57,6 @@ const pluginObject = {
         required,
         defaultValue,
         sealed = compiler.options.sealedByDefault,
-        fieldsOptionalByDefault = compiler.options.fieldsOptionalByDefault,
         emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
       } = schemaOptions;
       const properties = {};
@@ -70,16 +69,19 @@ const pluginObject = {
           const {
             type,
             label,
-            optional = fieldsOptionalByDefault,
+            optional,
             ...otherOptions
           } = definition;
+          if (optional !== undefined && required) {
+            throw new Error('When "required" is used, optional flags are not allowed');
+          }
           if (!type) {
             throw new Error(`Missing type for property ${key}`);
           }
           properties[key] = compiler.compile({}, type, {
             ...otherOptions,
           });
-          properties[key].optional = !!optional;
+          properties[key].isOptional = !!optional || !!required;
           if (label) {
             properties[key].label = label;
           }
@@ -88,9 +90,6 @@ const pluginObject = {
         }
       });
       if (required) {
-        if (!fieldsOptionalByDefault) {
-          throw new Error('Required is only allowed when fields are optional by default');
-        }
         if (!isArray(required)) {
           throw new Error('Required should be an array');
         }
@@ -98,7 +97,7 @@ const pluginObject = {
           if (!properties[key]) {
             throw new Error(`Unknown required property "${key}"`);
           }
-          properties[key].optional = false;
+          properties[key].isOptional = false;
         });
       }
       return next({
