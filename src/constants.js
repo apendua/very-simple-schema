@@ -13,6 +13,7 @@ export const ERROR_NOT_DATE = 'core.notDate';
 export const ERROR_NOT_INSTANCE_OF = 'core.notInstanceOf';
 export const ERROR_NO_ALTERNATIVE = 'core.noAlternative';
 export const ERROR_VALUE_NOT_ALLOWED = 'core.valueNotAllowed';
+export const ERROR_LENGTH_NOT_EQUAL = 'core.lengthNotEqual';
 export const ERROR_TOO_MANY = 'core.tooMany';
 export const ERROR_TOO_FEW = 'core.tooFew';
 export const ERROR_TOO_LONG = 'core.tooLong';

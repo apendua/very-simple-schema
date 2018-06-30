@@ -2,7 +2,7 @@ import {
   each,
 } from './utils';
 
-const indent = (text, spaces) => text.split('\n').map((line, i) => (i > 0 ? `${spaces}${line}` : line)).join('\n');
+const indent = (text, spaces, firstRow) => text.split('\n').map((line, i) => (firstRow || i > 0 ? `${spaces}${line}` : line)).join('\n');
 
 const toFlow = (validator) => {
   if (validator.isObject) {
@@ -30,6 +30,13 @@ const toFlow = (validator) => {
       alternatives.push(toFlow(alternative));
     });
     return alternatives.join(' | ');
+  }
+  if (validator.isTuple) {
+    const elements = [];
+    each(validator.elements, (element) => {
+      elements.push(`${indent(toFlow(element), '  ', true)},\n`);
+    });
+    return `[\n${elements.join('')}]`;
   }
   if (validator.isString) {
     return 'string';

@@ -63,6 +63,16 @@ describe('Test toFlow', () => {
     expect(toFlow(schema.compiled)).toEqual('number | string | null');
   });
 
+  test('generates flow type from tuple', () => {
+    const schema = Schema.tuple([Number, String, Date]);
+    expect(toFlow(schema.compiled)).toEqual(`\
+[
+  number,
+  string,
+  Date,
+]`);
+  });
+
   test('generates flow type from hash with nested object', () => {
     const schema = Schema.objectOf({ x: Number, y: Number });
     expect(toFlow(schema.compiled)).toEqual(`\

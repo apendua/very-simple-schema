@@ -1,6 +1,7 @@
 import pluginAny from './any.js';
 import pluginAtomic from './atomic.js';
 import pluginArray from './array.js';
+import pluginTuple from './tuple.js';
 import pluginImplicit from './implicit.js';
 import pluginHash from './hash.js';
 import pluginLazy from './lazy.js';
@@ -13,6 +14,7 @@ export default [
   pluginImplicit,
   pluginAny,
   pluginArray,
+  pluginTuple,
   pluginHash,
   pluginLazy,
   pluginMaybe,
