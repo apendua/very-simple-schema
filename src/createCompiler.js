@@ -70,6 +70,9 @@ export const pluginSchema = compiler => next => (validator, schemaDef, schemaOpt
   return next(validator, schemaDef, schemaOptions);
 };
 
+export const pluginEnsureOptions = () => next =>
+  (validator, schemaDef, schemaOptions = {}) => next(validator, schemaDef, schemaOptions);
+
 const createCompiler = (Schema, options) => {
   const compiler = {
     Schema,
@@ -77,13 +80,14 @@ const createCompiler = (Schema, options) => {
     compile: (validator, schemaDef, {
       label,
       defaultValue,
-    } = {}) => new Validator({
+    }) => new Validator({
       label,
       defaultValue,
       ...validator,
     }),
   };
   return applyPlugins(compiler, [
+    pluginEnsureOptions,
     pluginValidator,
     pluginSchema,
     ...options.plugins || [],
