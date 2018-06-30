@@ -1,47 +1,12 @@
 /* eslint-env jest */
 import {
   ERROR_NO_ALTERNATIVE,
-} from '../constants.js';
-import pluginOneOf from './oneOf.js';
-import {
-  combine,
-} from '../utils.js';
-import {
-  validateIsNumber,
-  validateIsString,
-} from '../validators.js';
-import { applyPlugins } from '../createCompiler.js';
+} from '../constants';
+import pluginOneOf from './oneOf';
+import pluginAtomic from './atomic';
+import { applyPlugins } from '../createCompiler';
 
-const pluginNumber = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === Number) {
-      return next({
-        ...validator,
-        typeName: 'number',
-        validate: combine([
-          validator.validate,
-          validateIsNumber,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
-const pluginString = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === String) {
-      return next({
-        ...validator,
-        typeName: 'string',
-        validate: combine([
-          validator.validate,
-          validateIsString,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
 
 describe('Test oneOf plugin', () => {
   let testContext;
@@ -55,8 +20,7 @@ describe('Test oneOf plugin', () => {
       Schema: class Schema {},
       options: {},
     }, [
-      pluginNumber,
-      pluginString,
+      pluginAtomic,
       pluginOneOf,
     ]);
     pluginOneOf.mixin(compiler.Schema);

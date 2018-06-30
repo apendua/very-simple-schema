@@ -6,30 +6,13 @@ import {
   ERROR_TOO_MANY,
 } from '../constants.js';
 import pluginArray from './array.js';
-import {
-  combine,
-} from '../utils.js';
-import {
-  validateIsNumber,
-} from '../validators.js';
 import { applyPlugins } from '../createCompiler.js';
+import pluginAtomic from './atomic';
 
-const pluginNumber = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === Number) {
-      return next({
-        ...validator,
-        validate: combine([
-          validator.validate,
-          validateIsNumber,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
+
 const compiler = applyPlugins({}, [
-  pluginNumber,
+  pluginAtomic,
   pluginArray,
 ]);
 

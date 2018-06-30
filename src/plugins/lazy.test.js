@@ -3,30 +3,13 @@ import {
   ERROR_NOT_NUMBER,
 } from '../constants.js';
 import pluginLazy from './lazy.js';
-import {
-  combine,
-} from '../utils.js';
-import {
-  validateIsNumber,
-} from '../validators.js';
 import { applyPlugins } from '../createCompiler.js';
+import pluginAtomic from './atomic';
 
-const pluginNumber = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === Number) {
-      return {
-        ...validator,
-        validate: combine([
-          validator.validate,
-          validateIsNumber,
-        ]),
-      };
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
+
 const compiler = applyPlugins({}, [
-  pluginNumber,
+  pluginAtomic,
   pluginLazy,
 ]);
 

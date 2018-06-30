@@ -50,7 +50,7 @@ export const applyPlugins = (compiler, plugins = []) => {
   return options;
 };
 
-const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
+export const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
   if (schemaDef instanceof Validator) {
     // NOTE: It's not necessary to make a copy here, because at the end of compile chain
     //       we are making a copy anyway (see a couple lines below).
@@ -59,7 +59,7 @@ const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
   return next(validator, schemaDef, schemaOptions);
 };
 
-const pluginSchema = compiler => next => (validator, schemaDef, schemaOptions) => {
+export const pluginSchema = compiler => next => (validator, schemaDef, schemaOptions) => {
   if (schemaDef instanceof compiler.Schema) {
     // Recompile the original schemaDef with (potentionally) new options.
     return compiler.compile({}, schemaDef.schemaDef, {

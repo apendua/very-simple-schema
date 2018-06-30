@@ -4,28 +4,10 @@ import {
   ERROR_NOT_OBJECT,
 } from '../constants.js';
 import pluginHash from './hash.js';
-import {
-  validateIsString,
-} from '../validators.js';
-import {
-  combine,
-} from '../utils.js';
 import { applyPlugins } from '../createCompiler.js';
+import pluginAtomic from './atomic';
 
-const pluginString = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === String) {
-      return next({
-        ...validator,
-        validate: combine([
-          validator.validate,
-          validateIsString,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
 
 describe('Test hash plugin', () => {
   let testContext;
@@ -39,7 +21,7 @@ describe('Test hash plugin', () => {
       Schema: class Schema {},
       options: {},
     }, [
-      pluginString,
+      pluginAtomic,
       pluginHash,
     ]);
     pluginHash.mixin(compiler.Schema);

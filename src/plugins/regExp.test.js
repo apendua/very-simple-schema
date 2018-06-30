@@ -3,29 +3,10 @@ import pluginRegExp from './regExp.js';
 import {
   ERROR_DOES_NOT_MATCH,
 } from '../constants.js';
-import { applyPlugins } from '../createCompiler.js';
-import {
-  validateIsString,
-} from '../validators.js';
-import {
-  combine,
-} from '../utils.js';
+import { applyPlugins } from '../createCompiler';
+import pluginAtomic from './atomic';
 
-const pluginString = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === String) {
-      return next({
-        ...validator,
-        isString: true,
-        validate: combine([
-          validator.validate,
-          validateIsString,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
 
 describe('Test regExp plugin', () => {
   let testContext;
@@ -41,7 +22,7 @@ describe('Test regExp plugin', () => {
         Object.assign(this, props);
       },
     }, [
-      pluginString,
+      pluginAtomic,
       pluginRegExp,
     ]);
     testContext.Schema = compiler.Schema;

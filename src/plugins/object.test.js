@@ -6,43 +6,12 @@ import {
 } from '../constants.js';
 import pluginObject from './object.js';
 import {
-  validateIsString,
-} from '../validators.js';
-import {
-  combine,
-} from '../utils.js';
-import {
   applyPlugins,
+  pluginSchema,
 } from '../createCompiler.js';
+import pluginAtomic from './atomic';
 
-const pluginString = {
-  compile: () => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef === String) {
-      return next({
-        ...validator,
-        isString: true,
-        validate: combine([
-          validator.validate,
-          validateIsString,
-        ]),
-      }, schemaDef, schemaOptions);
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
-
-const pluginSchema = {
-  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
-    if (schemaDef instanceof compiler.Schema) {
-      // Recompile the original schemaDef with (potentionally) new options.
-      return compiler.compile({}, schemaDef.schemaDef, {
-        ...schemaDef.schemaOptions,
-        ...schemaOptions,
-      });
-    }
-    return next(validator, schemaDef, schemaOptions);
-  },
-};
+jest.mock('./atomic'); // use a simplified version of the plugin
 
 describe('Test object plugin', () => {
   let testContext;
@@ -60,7 +29,7 @@ describe('Test object plugin', () => {
       },
       options: {},
     }, [
-      pluginString,
+      pluginAtomic,
       pluginObject,
       pluginSchema,
     ]);
