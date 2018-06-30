@@ -772,30 +772,30 @@ describe('Test Schema', () => {
     });
   });
 
-  describe('Given a an object schema with implicit value', () => {
+  describe('Given a an object schema with default value', () => {
     beforeEach(() => {
       testContext.schema1 = new Schema({
         a: new Schema({
-          x: { type: Number, implicit: 0, optional: true, min: 1 },
-          y: { type: new Schema(Number, { implicit: 0 }) }, // NOTE: it does not imply optional automatically
+          x: { type: Number, defaultValue: 0, optional: true, min: 1 },
+          y: { type: new Schema(Number, { defaultValue: 0 }) },
         }),
         b: {
           type: new Schema({
             x: Number,
             y: Number,
           }, {
-            implicit: {
+            defaultValue: {
               x: 0,
             },
           }),
           optional: true,
         },
       }, {
-        implicit: {},
+        defaultValue: {},
       });
     });
     test('should return relevant errors web validating null', () => {
-      expect(testContext.schema1.getErrors(null)).toEqual({
+      expect(testContext.schema1.getErrors(undefined, { clean: true })).toEqual({
         errors: {
           a: { error: ERROR_MISSING_FIELD },
           b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
@@ -805,7 +805,7 @@ describe('Test Schema', () => {
     test(
       'should return relevant errors when validating empty object ',
       () => {
-        expect(testContext.schema1.getErrors({})).toEqual({
+        expect(testContext.schema1.getErrors({}, { clean: true })).toEqual({
           errors: {
             a: { error: ERROR_MISSING_FIELD },
             b: { errors: { y: { error: ERROR_MISSING_FIELD } } },
@@ -819,12 +819,11 @@ describe('Test Schema', () => {
         expect(testContext.schema1.getErrors({
           a: {},
           b: {},
-        })).toEqual({
+        }, { clean: true })).toEqual({
           errors: {
             a: {
               errors: {
                 x: { error: ERROR_TOO_SMALL, expected: 1, actual: 0 },
-                y: { error: ERROR_MISSING_FIELD },
               },
             },
             b: {
@@ -839,27 +838,27 @@ describe('Test Schema', () => {
     );
   });
 
-  describe('Given a hash schema with implicit value', () => {
+  describe('Given a hash schema with default value', () => {
     beforeEach(() => {
       testContext.schema1 = Schema.objectOf(
         new Schema({
-          x: { type: Number, implicit: 0, optional: true, min: 1 },
+          x: { type: Number, defaultValue: 0, optional: true, min: 1 },
           y: { type: Number },
-        }, { implicit: {} }),
+        }, { defaultValue: {} }),
         {
-          implicit: {},
+          defaultValue: {},
         },
       );
     });
     test('should not return any errors on null', () => {
-      expect(testContext.schema1.getErrors(null)).toBeFalsy();
+      expect(testContext.schema1.getErrors(undefined, { clean: true })).toBeFalsy();
     });
     test(
       'should return relevant errors there is key with null value',
       () => {
         expect(testContext.schema1.getErrors({
-          a: null,
-        })).toEqual({
+          a: undefined,
+        }, { clean: true })).toEqual({
           errors: {
             a: {
               errors: {

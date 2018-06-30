@@ -32,7 +32,7 @@ const createValidateProperties = ({
       if (property.label) {
         errors[key].label = property.label;
       }
-    } else if (!valueMissing || property.isImplicit) {
+    } else if (!valueMissing) {
       const error = property.validate(valueAtKey);
       if (error) {
         errors[key] = error;

@@ -54,8 +54,10 @@ function createSchema(options = {}) {
       return this.compiled.clean(value);
     }
 
-    getErrors(value) {
-      const errors = this.compiled.validate(value);
+    getErrors(value, {
+      clean = false,
+    } = {}) {
+      const errors = this.compiled.validate(clean ? this.compiled.clean(value) : value);
       if (!isEmpty(errors)) {
         return errors;
       }
@@ -67,12 +69,13 @@ function createSchema(options = {}) {
     }
 
     validate(value, {
+      clean = false,
       noException = false,
       errorCreator = defaultErrorCreator,
       labelCreator = defaultLabelCreator,
       getMessageTemplate = defaultGetMessageTemplate,
     } = {}) {
-      const errors = this.getErrors(value);
+      const errors = this.getErrors(value, { clean });
       if (errors) {
         const details = this.describe(errors, {
           labelCreator,
