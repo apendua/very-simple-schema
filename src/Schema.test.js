@@ -646,6 +646,13 @@ describe('Test Schema', () => {
       }, {
         emptyStringsAreMissingValues: true,
       });
+      testContext.schema4 = Schema.tuple([
+        Number,
+        Number,
+        Number,
+      ], {
+        defaultValue: [0, 0, 0],
+      });
     });
     test('should not modify a valid object', () => {
       expect(testContext.schema.clean({
@@ -714,6 +721,27 @@ describe('Test Schema', () => {
       })).toEqual({
         a: [1, 2, 3],
       });
+    });
+    test('should tuple elements', () => {
+      expect(testContext.schema4.clean(
+        [1, 2, '3'],
+      )).toEqual(
+        [1, 2, 3],
+      );
+    });
+    test('should remove outstanding elements from tuple', () => {
+      expect(testContext.schema4.clean(
+        [1, 2, 3, 4, 5],
+      )).toEqual(
+        [1, 2, 3],
+      );
+    });
+    test('should append missing elements to tuple', () => {
+      expect(testContext.schema4.clean(
+        [1],
+      )).toEqual(
+        [1, 0, 0],
+      );
     });
   });
 
