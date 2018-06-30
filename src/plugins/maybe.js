@@ -5,24 +5,23 @@ const pluginMaybe = {
     maybe,
     ...schemaOptions
   }) => {
-    let compiled;
+    let related;
     if (schemaDef instanceof compiler.Schema.Maybe) {
-      compiled = compiler.compile({}, schemaDef.schemaDef, {
-        ...schemaDef.schemaOptions,
-        ...schemaOptions,
-      });
+      related = compiler.compile({}, schemaDef.schemaDef, schemaOptions);
     } else if (maybe) {
-      compiled = compiler.compile({}, schemaDef, schemaOptions);
+      related = compiler.compile({}, schemaDef, schemaOptions);
     }
-    if (compiled) {
+    if (related) {
       return {
-        ...compiled,
+        ...related,
+        related,
+        typeName: `nil or ${related.typeName}`,
         isMaybe: true,
         validate: (value) => {
           if (isNil(value)) {
             return undefined;
           }
-          return compiled.validate(value);
+          return related.validate(value);
         },
       };
     }
@@ -30,16 +29,15 @@ const pluginMaybe = {
   },
   mixin(Schema) {
     class Maybe {
-      constructor(schemaDef, schemaOptions) {
+      constructor(schemaDef) {
         Object.assign(this, {
           schemaDef,
-          schemaOptions,
         });
       }
     }
     Object.assign(Schema, {
       Maybe,
-      maybe: (schemaDef, schemaOptions) => new Schema(new Maybe(schemaDef, schemaOptions)),
+      maybe: (schemaDef, schemaOptions) => new Schema(new Maybe(schemaDef), schemaOptions),
     });
   },
 };

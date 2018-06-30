@@ -38,6 +38,9 @@ const toFlow = (validator) => {
     });
     return `[\n${elements.join('')}]`;
   }
+  if (validator.isMaybe) {
+    return `?${toFlow(validator.related)}`;
+  }
   if (validator.isString) {
     return 'string';
   }

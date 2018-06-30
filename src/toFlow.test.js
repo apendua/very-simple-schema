@@ -48,6 +48,11 @@ describe('Test toFlow', () => {
     expect(toFlow(schema.compiled)).toEqual('Date');
   });
 
+  test('generates flow type from maybe', () => {
+    const schema = new Schema(Boolean, { maybe: true });
+    expect(toFlow(schema.compiled)).toEqual('?boolean');
+  });
+
   test('generates flow type from array of atomic types', () => {
     const schema = new Schema([String]);
     expect(toFlow(schema.compiled)).toEqual('Array<string>');
