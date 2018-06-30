@@ -1,17 +1,56 @@
 import {
+  ERROR_MISSING_FIELD,
+  ERROR_KEY_NOT_ALLOWED,
+} from '../constants';
+import {
   validateIsObject,
-  createValidateProperties,
 } from '../validators.js';
 import {
   has,
   each,
   combine,
+  isEmpty,
   isArray,
   isPlainObject,
 } from '../utils.js';
 
+const createValidateProperties = ({
+  properties,
+  additionalProperties,
+  emptyStringsAreMissingValues,
+}) => (value) => {
+  const errors = {};
+  each(properties, (property, key) => {
+    const valueAtKey = value[key];
+    const valueMissing = valueAtKey === undefined ||
+                         valueAtKey === null ||
+                         (emptyStringsAreMissingValues && valueAtKey === '' && property.isString);
+    if (valueMissing && !property.optional) {
+      errors[key] = {
+        error: ERROR_MISSING_FIELD,
+      };
+      if (property.label) {
+        errors[key].label = property.label;
+      }
+    } else if (!valueMissing || property.isImplicit) {
+      const error = property.validate(valueAtKey);
+      if (error) {
+        errors[key] = error;
+      }
+    }
+  });
+  if (!additionalProperties) {
+    each(value, (_, key) => {
+      if (!has(properties, key)) {
+        errors[key] = { error: ERROR_KEY_NOT_ALLOWED };
+      }
+    });
+  }
+  return !isEmpty(errors) ? { errors } : undefined;
+};
+
 const pluginObject = {
-  compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
+  compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (isPlainObject(schemaDef)) {
       const {
         typeName = 'object',

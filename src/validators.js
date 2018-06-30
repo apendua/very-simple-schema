@@ -1,7 +1,5 @@
 /* eslint max-len: "off" */
 import {
-  ERROR_MISSING_FIELD,
-  ERROR_KEY_NOT_ALLOWED,
   ERROR_INVALID_DATE,
   ERROR_NOT_EQUAL,
   ERROR_NOT_INTEGER,
@@ -21,12 +19,9 @@ import {
   ERROR_IS_EMPTY,
 } from './constants.js';
 import {
-  has,
   isArray,
   isPlainObject,
   isDate,
-  each,
-  isEmpty,
 } from './utils.js';
 
 export const validateAlways = () => {};
@@ -53,38 +48,3 @@ export const validateIsObject = actual => (isPlainObject(actual) ? undefined : {
 export const validateIsArray = actual => (isArray(actual) ? undefined : { error: ERROR_NOT_ARRAY, actual });
 export const validateIsDate = actual => (isDate(actual) ? undefined : { error: ERROR_NOT_DATE, actual });
 export const validateNonEmpty = actual => (actual.length > 0 ? undefined : { error: ERROR_IS_EMPTY, actual });
-
-export const createValidateProperties = ({
-  properties,
-  additionalProperties,
-  emptyStringsAreMissingValues,
-}) => (value) => {
-  const errors = {};
-  each(properties, (property, key) => {
-    const valueAtKey = value[key];
-    const valueMissing = valueAtKey === undefined ||
-                         valueAtKey === null ||
-                         (emptyStringsAreMissingValues && valueAtKey === '' && property.isString);
-    if (valueMissing && !property.optional) {
-      errors[key] = {
-        error: ERROR_MISSING_FIELD,
-      };
-      if (property.label) {
-        errors[key].label = property.label;
-      }
-    } else if (!valueMissing || property.isImplicit) {
-      const error = property.validate(valueAtKey);
-      if (error) {
-        errors[key] = error;
-      }
-    }
-  });
-  if (!additionalProperties) {
-    each(value, (_, key) => {
-      if (!has(properties, key)) {
-        errors[key] = { error: ERROR_KEY_NOT_ALLOWED };
-      }
-    });
-  }
-  return !isEmpty(errors) ? { errors } : undefined;
-};
