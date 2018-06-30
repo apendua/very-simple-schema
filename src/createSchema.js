@@ -14,7 +14,6 @@ function createSchema(options = {}) {
   const {
     defaultLabelCreator = (keys, label) => label || keys.join('.'),
     defaultLabel = 'Value',
-    defaultCustomErrors,
     defaultErrorCreator = createError,
     // eslint-disable-next-line no-use-before-define
     defaultGetMessageTemplate = type => Schema.messages[type],
@@ -55,14 +54,8 @@ function createSchema(options = {}) {
       return this.compiled.clean(value);
     }
 
-    getErrors(value, customErrors) {
-      let errors = this.compiled.validate(value);
-      if (customErrors) {
-        errors = {
-          ...errors,
-          ...customErrors(value, errors),
-        };
-      }
+    getErrors(value) {
+      const errors = this.compiled.validate(value);
       if (!isEmpty(errors)) {
         return errors;
       }
@@ -75,12 +68,11 @@ function createSchema(options = {}) {
 
     validate(value, {
       noException = false,
-      customErrors = defaultCustomErrors,
       errorCreator = defaultErrorCreator,
       labelCreator = defaultLabelCreator,
       getMessageTemplate = defaultGetMessageTemplate,
     } = {}) {
-      const errors = this.getErrors(value, customErrors);
+      const errors = this.getErrors(value);
       if (errors) {
         const details = this.describe(errors, {
           labelCreator,

@@ -12,11 +12,9 @@ describe('Test createSchema', () => {
   beforeEach(() => {
     testContext.errorCreator = jest.fn();
     testContext.labelCreator = jest.fn();
-    testContext.customErrors = jest.fn();
     testContext.getMessageTemplate = jest.fn();
     testContext.Schema = createSchema({
       plugins: presetDefault,
-      defaultCustomErrors: testContext.customErrors,
       defaultLabelCreator: testContext.labelCreator,
       defaultErrorCreator: () => {
         testContext.errorCreator();
@@ -38,9 +36,6 @@ describe('Test createSchema', () => {
     test('should use custom label creator', () => {
       expect(testContext.labelCreator).toHaveBeenCalledTimes(1);
     });
-    test('should ask for custom errors', () => {
-      expect(testContext.customErrors).toHaveBeenCalledTimes(1);
-    });
     test('should ask for custom message tempaltes', () => {
       expect(testContext.getMessageTemplate).toHaveBeenCalledTimes(1);
     });
@@ -50,7 +45,6 @@ describe('Test createSchema', () => {
     beforeEach(() => {
       testContext.errorCreator2 = jest.fn();
       testContext.labelCreator2 = jest.fn();
-      testContext.customErrors2 = jest.fn();
       testContext.getMessageTemplateSpy = jest.fn();
       testContext.getMessageTemplate2 = (error) => {
         testContext.getMessageTemplateSpy();
@@ -60,7 +54,6 @@ describe('Test createSchema', () => {
 
     beforeEach(() => {
       testContext.validate = new testContext.Schema(Number).validator({
-        customErrors: testContext.customErrors2,
         labelCreator: testContext.labelCreator2,
         errorCreator: () => {
           testContext.errorCreator2();
@@ -77,9 +70,6 @@ describe('Test createSchema', () => {
     });
     test('should use custom label creator', () => {
       expect(testContext.labelCreator2).toHaveBeenCalledTimes(1);
-    });
-    test('should ask for custom errors', () => {
-      expect(testContext.customErrors2).toHaveBeenCalledTimes(1);
     });
     test('should ask for custom message tempaltes', () => {
       expect(testContext.getMessageTemplateSpy).toHaveBeenCalledTimes(1);
