@@ -25,7 +25,6 @@ const pluginArray = {
       const {
         minCount,
         maxCount,
-        defaultValue,
         ...options
       } = schemaOptions;
       const $ = compiler.compile({}, schemaDef[0], getOptions(options));
@@ -43,7 +42,7 @@ const pluginArray = {
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
-        clean: (value = defaultValue) => {
+        clean: (value) => {
           if (!isArray(value)) {
             return value;
           }

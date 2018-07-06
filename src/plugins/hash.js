@@ -10,7 +10,6 @@ import {
 const pluginHash = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Hash) {
-      const { defaultValue } = schemaOptions;
       const hashKey = compiler.compile({}, schemaDef.keySchemaDef);
       const hashValue = compiler.compile({}, schemaDef.valueSchemaDef);
       return next({
@@ -40,7 +39,7 @@ const pluginHash = {
             return hasErrors ? { errors } : undefined;
           },
         ]),
-        clean: (value = defaultValue) => {
+        clean: (value) => {
           if (!isPlainObject(value)) {
             return value;
           }

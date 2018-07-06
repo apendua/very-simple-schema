@@ -55,7 +55,6 @@ const pluginObject = {
       const {
         typeName = 'object',
         required,
-        defaultValue,
         sealed = compiler.options.sealedByDefault,
         emptyStringsAreMissingValues = compiler.options.emptyStringsAreMissingValues,
       } = schemaOptions;
@@ -115,7 +114,7 @@ const pluginObject = {
             emptyStringsAreMissingValues,
           }),
         ]),
-        clean: (value = defaultValue) => {
+        clean: (value) => {
           if (!isPlainObject(value)) {
             return value;
           }

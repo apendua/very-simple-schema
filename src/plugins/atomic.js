@@ -42,7 +42,6 @@ const pluginAtomic = {
       nonEmpty,
       decimal = compiler.options.decimal,
       allowedValues,
-      defaultValue,
     } = schemaOptions;
     const validators = [
       validator.validate,
@@ -58,7 +57,7 @@ const pluginAtomic = {
       validators.push(max !== undefined && createValidateMax(max));
       properties.isNumber = true;
       properties.typeName = 'number';
-      properties.clean = (x = defaultValue) => (typeof x === 'string' ? +x : x);
+      properties.clean = x => (typeof x === 'string' ? +x : x);
     } else if (schemaDef === String) {
       validators.push(validateIsString);
       validators.push(nonEmpty && validateNonEmpty);
@@ -67,7 +66,7 @@ const pluginAtomic = {
       validators.push(isArray(allowedValues) && createValidateIsAllowed(allowedValues));
       properties.isString = true;
       properties.typeName = 'string';
-      properties.clean = (x = defaultValue) => (typeof x !== 'string' ? JSON.stringify(x) : x);
+      properties.clean = x => (typeof x !== 'string' ? JSON.stringify(x) : x);
     } else if (schemaDef === Boolean) {
       validators.push(validateIsBoolean);
       properties.isBoolean = true;

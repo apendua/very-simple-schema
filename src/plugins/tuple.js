@@ -18,7 +18,6 @@ const createValidateLength = expected => actual => (actual.length === expected
 const pluginTuple = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (schemaDef instanceof compiler.Schema.Tuple) {
-      const { defaultValue } = schemaOptions;
       const elements = schemaDef.elementsDef.map(x => compiler.compile({}, x));
       return next({
         elements,
@@ -32,7 +31,7 @@ const pluginTuple = {
             return errors.some(err => !!err) ? { errors } : undefined;
           },
         ]),
-        clean: (value = defaultValue) => {
+        clean: (value, defaultValue) => {
           if (!isArray(value)) {
             return value;
           }
