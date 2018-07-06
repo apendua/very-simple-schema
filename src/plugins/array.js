@@ -23,7 +23,6 @@ const pluginArray = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
     if (isArray(schemaDef) && schemaDef.length === 1) {
       const {
-        label,
         minCount,
         maxCount,
         defaultValue,
@@ -50,7 +49,7 @@ const pluginArray = {
           }
           return value.map(x => $.clean(x));
         },
-      }, schemaDef, { label });
+      }, schemaDef, schemaOptions);
     }
     return next(validator, schemaDef, schemaOptions);
   },
