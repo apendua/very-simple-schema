@@ -6,7 +6,7 @@ const indent = (text, spaces, firstRow) => text.split('\n').map((line, i) => (fi
 
 const toFlow = (validator) => {
   if (validator.isMaybe) {
-    return `?${toFlow(validator.related)}`;
+    return `?${toFlow(validator.original)}`;
   }
   if (validator.isObject) {
     const properties = [];
