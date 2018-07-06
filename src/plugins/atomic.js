@@ -14,24 +14,8 @@ import {
   validateNonEmpty,
 } from '../validators.js';
 import {
-  each,
   combine,
-  isArray,
 } from '../utils.js';
-import {
-  ERROR_VALUE_NOT_ALLOWED,
-} from '../constants.js';
-
-const createValidateIsAllowed = (expected) => {
-  const values = {};
-  each(expected, (value) => {
-    if (typeof value !== 'string') {
-      throw new Error('Expected allowedValues to be a list of strings');
-    }
-    values[value] = true;
-  });
-  return actual => (values[actual] ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
-};
 
 const pluginAtomic = {
   compile: compiler => next => (validator, schemaDef, schemaOptions = {}) => {
@@ -41,7 +25,6 @@ const pluginAtomic = {
       typeName,
       nonEmpty,
       decimal = compiler.options.decimal,
-      allowedValues,
     } = schemaOptions;
     const validators = [
       validator.validate,
@@ -63,7 +46,6 @@ const pluginAtomic = {
       validators.push(nonEmpty && validateNonEmpty);
       validators.push(min !== undefined && createValidateMinLength(min));
       validators.push(max !== undefined && createValidateMaxLength(max));
-      validators.push(isArray(allowedValues) && createValidateIsAllowed(allowedValues));
       properties.isString = true;
       properties.typeName = 'string';
       properties.clean = x => (typeof x !== 'string' ? JSON.stringify(x) : x);

@@ -1,5 +1,6 @@
 import {
   ERROR_NO_ALTERNATIVE,
+  ERROR_VALUE_NOT_ALLOWED,
 } from '../constants.js';
 
 import {
@@ -11,10 +12,43 @@ import {
   validateIsObject,
 } from '../validators.js';
 
+const createValidateIsAllowed = (expected) => {
+  const values = {};
+  each(expected, (value) => {
+    if (typeof value !== 'string') {
+      throw new Error('Expected allowedValues to an array of strings');
+    }
+    values[value] = true;
+  });
+  return actual => (values[actual] ? undefined : { error: ERROR_VALUE_NOT_ALLOWED, actual, expected });
+};
+
 const pluginOneOf = {
   compile: compiler => next => (validator, schemaDef, schemaOptions) => {
+    const {
+      allowedValues,
+    } = schemaOptions;
+    if (allowedValues) {
+      if (!validator.isString) {
+        throw new Error('Option allowedValues can only be used with string');
+      }
+      if (!isArray(allowedValues)) {
+        throw new Error('Expected allowed values to be an array of strings');
+      }
+      const alternatives = allowedValues.map(x => compiler.compile({}, x, {}));
+      return next({
+        ...validator,
+        alternatives,
+        isOneOf: true,
+        typeName: `one of ${allowedValues.map(x => x.typeName).join(', ')}`,
+        validate: combine([
+          validator.validate,
+          createValidateIsAllowed(allowedValues),
+        ]),
+      }, schemaDef, schemaOptions);
+    }
     if (schemaDef instanceof compiler.Schema.OneOf) {
-      const alternatives = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x));
+      const alternatives = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x, {}));
       const {
         disjointBy,
       } = schemaOptions;

@@ -1135,5 +1135,23 @@ describe('Test Schema', () => {
         new Schema({}, { required: {} }).getErrors();
       }).toThrow(/array/);
     });
+
+    test('throws when "allowedValues" is not an array', () => {
+      expect(() => {
+        new Schema(String, { allowedValues: {} }).getErrors();
+      }).toThrow(/array/);
+    });
+
+    test('throws when "allowedValues" is not an array of strings', () => {
+      expect(() => {
+        new Schema(String, { allowedValues: [1, 2, 3] }).getErrors();
+      }).toThrow(/array/);
+    });
+
+    test('throws when "allowedValues" is not used with string', () => {
+      expect(() => {
+        new Schema(Number, { allowedValues: [] }).getErrors();
+      }).toThrow(/can only be used with string/);
+    });
   });
 });

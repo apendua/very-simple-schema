@@ -38,6 +38,11 @@ describe('Test toFlow', () => {
     expect(toFlow(schema.compiled)).toEqual('string');
   });
 
+  test('generates flow type from string with allowed values constraint', () => {
+    const schema = new Schema(String, { allowedValues: ['a', 'b', 'c'] });
+    expect(toFlow(schema.compiled)).toEqual('"a" | "b" | "c"');
+  });
+
   test('generates flow type from boolean', () => {
     const schema = new Schema(Boolean);
     expect(toFlow(schema.compiled)).toEqual('boolean');

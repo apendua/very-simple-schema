@@ -15,7 +15,7 @@ export default [
   pluginHash,
   pluginMaybe,
   pluginObject,
-  pluginOneOf,
   pluginAtomic,
+  pluginOneOf,
   pluginRegExp,
 ];
