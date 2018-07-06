@@ -4,10 +4,19 @@ import {
 
 class Validator {
   constructor(props) {
+    Object.defineProperty(this, 'private', {
+      value: {},
+    });
     Object.assign(this, props);
-    const validate = this.validate;
-    this.validate = (value) => {
-      const error = validate && validate(value);
+  }
+
+  set validate(value) {
+    this.private.validate = value;
+  }
+
+  get validate() {
+    const validate = (value) => {
+      const error = this.private.validate && this.private.validate(value);
       if (error && this.label) {
         return {
           label: this.label,
@@ -16,10 +25,27 @@ class Validator {
       }
       return error;
     };
+    Object.defineProperty(this, 'validate', {
+      value: validate,
+    });
+    return validate;
   }
 
-  clean(value = this.defaultValue) {
-    return value;
+  set clean(value) {
+    this.private.clean = value;
+  }
+
+  get clean() {
+    const clean = (value = this.defaultValue) => {
+      if (this.private.clean) {
+        return this.private.clean(value, this.defaultValue);
+      }
+      return value;
+    };
+    Object.defineProperty(this, 'clean', {
+      value: clean,
+    });
+    return clean;
   }
 
   property(key) {
