@@ -233,7 +233,7 @@ describe('Test Schema', () => {
       expect(testContext.schema.getErrors('D')).toEqual({
         error: ERROR_VALUE_NOT_ALLOWED,
         actual: 'D',
-        expected: ['A', 'B', 'C'],
+        expected: ['"A"', '"B"', '"C"'],
       });
     });
     test('should not accept a number', () => {
@@ -311,7 +311,7 @@ describe('Test Schema', () => {
             {
               error: ERROR_VALUE_NOT_ALLOWED,
               actual: 'x',
-              expected: ['a', 'b', 'c'],
+              expected: ['"a"', '"b"', '"c"'],
             },
           ],
         });

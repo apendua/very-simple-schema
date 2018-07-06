@@ -16,6 +16,16 @@ const each = (object, action) => {
   }
 };
 
+const every = (array, predicate) => {
+  const n = array.length;
+  for (let i = 0; i < n; i += 1) {
+    if (!predicate(array[i])) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const isArray = actual => toString.call(actual) === '[object Array]';
 const isDate = actual => toString.call(actual) === '[object Date]';
 
@@ -46,6 +56,7 @@ export const combine = (validators) => {
 export {
   isDate,
   each,
+  every,
   has,
   isArray,
   isObject,
