@@ -1,5 +1,4 @@
 import {
-  ERROR_NO_ALTERNATIVE,
   ERROR_VALUE_NOT_ALLOWED,
 } from '../constants.js';
 
@@ -35,10 +34,10 @@ const pluginOneOf = {
       if (!isArray(allowedValues)) {
         throw new Error('Expected allowed values to be an array of strings');
       }
-      const alternatives = allowedValues.map(x => compiler.compile({}, x, {}));
+      const allowed = allowedValues.map(x => compiler.compile({}, x, {}));
       return next({
         ...validator,
-        alternatives,
+        allowed,
         isOneOf: true,
         typeName: `one of ${allowedValues.map(x => x.typeName).join(', ')}`,
         validate: combine([
@@ -48,12 +47,12 @@ const pluginOneOf = {
       }, schemaDef, schemaOptions);
     }
     if (schemaDef instanceof compiler.Schema.OneOf) {
-      const alternatives = schemaDef.alternativeSchemaDefs.map(x => compiler.compile({}, x, {}));
+      const allowed = schemaDef.allowedSchemaDefs.map(x => compiler.compile({}, x, {}));
       const {
         disjointBy,
       } = schemaOptions;
       if (disjointBy) {
-        each(alternatives, (alternative) => {
+        each(allowed, (alternative) => {
           if (!alternative.isObject) {
             throw new Error('If disjointBy is used each alternative must be an object');
           }
@@ -63,23 +62,23 @@ const pluginOneOf = {
         });
       }
       return next({
-        alternatives,
+        allowed,
         isOneOf: true,
-        typeName: `one of ${alternatives.map(x => x.typeName).join(', ')}`,
+        typeName: `one of ${allowed.map(x => x.typeName).join(', ')}`,
         validate: combine([
           disjointBy && validateIsObject,
           (value) => {
             const expected = [];
             if (disjointBy) {
-              for (let i = 0; i < alternatives.length; i += 1) {
-                const property = alternatives[i].properties[disjointBy];
+              for (let i = 0; i < allowed.length; i += 1) {
+                const property = allowed[i].properties[disjointBy];
                 if (!property.validate(value && value[disjointBy])) {
-                  return alternatives[i].validate(value);
+                  return allowed[i].validate(value);
                 }
                 expected.push(property.typeName || '[unknown]');
               }
             } else {
-              for (const { validate, typeName } of alternatives) {
+              for (const { validate, typeName } of allowed) {
                 const error = validate(value);
                 if (!error) {
                   return undefined;
@@ -87,7 +86,7 @@ const pluginOneOf = {
                 expected.push(typeName || '[unknown]');
               }
             }
-            return { error: ERROR_NO_ALTERNATIVE, expected };
+            return { error: ERROR_VALUE_NOT_ALLOWED, expected };
           },
         ]),
       }, schemaDef, schemaOptions);
@@ -96,12 +95,12 @@ const pluginOneOf = {
   },
   mixin(Schema) {
     class OneOf {
-      constructor(alternativeSchemaDefs) {
-        if (!isArray(alternativeSchemaDefs)) {
+      constructor(allowedSchemaDefs) {
+        if (!isArray(allowedSchemaDefs)) {
           throw new Error('OneOf requires and array with alternative schemas');
         }
         Object.assign(this, {
-          alternativeSchemaDefs,
+          allowedSchemaDefs,
         });
       }
     }

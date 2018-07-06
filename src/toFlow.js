@@ -28,11 +28,11 @@ const toFlow = (validator) => {
     return `{ [${toFlow(validator.hashKey)}]: ${toFlow(validator.hashValue)} }`;
   }
   if (validator.isOneOf) {
-    const alternatives = [];
-    each(validator.alternatives, (alternative) => {
-      alternatives.push(toFlow(alternative));
+    const allowedTypes = [];
+    each(validator.allowed, (alternative) => {
+      allowedTypes.push(toFlow(alternative));
     });
-    return alternatives.join(' | ');
+    return allowedTypes.join(' | ');
   }
   if (validator.isTuple) {
     const elements = [];

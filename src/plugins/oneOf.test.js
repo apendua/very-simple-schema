@@ -1,6 +1,6 @@
 /* eslint-env jest */
 import {
-  ERROR_NO_ALTERNATIVE,
+  ERROR_VALUE_NOT_ALLOWED,
 } from '../constants';
 import pluginOneOf from './oneOf';
 import pluginAtomic from './atomic';
@@ -41,7 +41,7 @@ describe('Test oneOf plugin', () => {
     });
     test('should reject if neither string nor number', () => {
       expect(testContext.validate1(true)).toEqual({
-        error: ERROR_NO_ALTERNATIVE,
+        error: ERROR_VALUE_NOT_ALLOWED,
         expected: ['number', 'string'],
       });
     });

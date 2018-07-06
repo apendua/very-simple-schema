@@ -11,7 +11,6 @@ import {
   ERROR_NOT_OBJECT,
   ERROR_TOO_SMALL,
   ERROR_TOO_MANY,
-  ERROR_NO_ALTERNATIVE,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -62,8 +61,8 @@ describe('Test Schema', () => {
     test('should expose ERROR_NOT_INSTANCE_OF', () => {
       expect(Schema.ERROR_NOT_INSTANCE_OF).toBeTruthy();
     });
-    test('should expose ERROR_NO_ALTERNATIVE', () => {
-      expect(Schema.ERROR_NO_ALTERNATIVE).toBeTruthy();
+    test('should expose ERROR_VALUE_NOT_ALLOWED', () => {
+      expect(Schema.ERROR_VALUE_NOT_ALLOWED).toBeTruthy();
     });
     test('should expose ERROR_VALUE_NOT_ALLOWED', () => {
       expect(Schema.ERROR_VALUE_NOT_ALLOWED).toBeTruthy();
@@ -716,7 +715,7 @@ describe('Test Schema', () => {
           c: [],
         },
       })).toEqual({
-        error: ERROR_NO_ALTERNATIVE,
+        error: ERROR_VALUE_NOT_ALLOWED,
         expected: [
           '"typeA"',
           '"typeB"',
