@@ -11,6 +11,7 @@ import {
   ERROR_NOT_OBJECT,
   ERROR_TOO_SMALL,
   ERROR_TOO_MANY,
+  ERROR_NO_ALTERNATIVE,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -594,6 +595,85 @@ describe('Test Schema', () => {
 
     test('should generate a descriptive error of there is no match', () => {
       expect(testContext.schema.validate(true, { noException: true })).toBe('Value should be one of: empty, text, array of number');
+    });
+  });
+
+  describe('Given a disjoint "oneOf" schema', () => {
+    beforeEach(() => {
+      testContext.schema = Schema.oneOf([
+        {
+          type: 'typeA',
+          settings: new Schema({
+            a: String,
+          }),
+        },
+        {
+          type: 'typeB',
+          settings: new Schema({
+            b: Number,
+          }),
+        },
+      ], {
+        disjointBy: 'type',
+      });
+    });
+
+    test('should reject if value is not an object', () => {
+      expect(testContext.schema.getErrors(null)).toEqual({
+        actual: null,
+        error: ERROR_NOT_OBJECT,
+      });
+    });
+
+    test('should accept an object of first type', () => {
+      expect(testContext.schema.getErrors({
+        type: 'typeA',
+        settings: {
+          a: '',
+        },
+      })).toBeFalsy();
+    });
+
+    test('should accept an object of the second type', () => {
+      expect(testContext.schema.getErrors({
+        type: 'typeB',
+        settings: {
+          b: 1,
+        },
+      })).toBeFalsy();
+    });
+
+    test('should reject object which is declared as typeB but it is not', () => {
+      expect(testContext.schema.getErrors({
+        type: 'typeB',
+        settings: {
+          a: '',
+        },
+      })).toEqual({
+        errors: {
+          settings: {
+            errors: {
+              a: { error: 'core.keyNotAllowed' },
+              b: { error: 'core.missingField' },
+            },
+          },
+        },
+      });
+    });
+
+    test('should reject object that does not match any type', () => {
+      expect(testContext.schema.getErrors({
+        type: 'typeC',
+        settings: {
+          c: [],
+        },
+      })).toEqual({
+        error: ERROR_NO_ALTERNATIVE,
+        expected: [
+          '"typeA"',
+          '"typeB"',
+        ],
+      });
     });
   });
 
