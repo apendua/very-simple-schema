@@ -67,7 +67,6 @@ const pluginObject = {
         if (isPlainObject(definition)) {
           const {
             type,
-            label,
             optional,
             ...otherOptions
           } = definition;
@@ -77,13 +76,8 @@ const pluginObject = {
           if (!type) {
             throw new Error(`Missing type for property ${key}`);
           }
-          properties[key] = compiler.compile({}, type, {
-            ...otherOptions,
-          });
+          properties[key] = compiler.compile({}, type, otherOptions);
           properties[key].isOptional = !!optional || !!required;
-          if (label) {
-            properties[key].label = label;
-          }
         } else {
           properties[key] = compiler.compile({}, definition);
         }

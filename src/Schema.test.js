@@ -467,6 +467,14 @@ describe('Test Schema', () => {
           c: {},
         },
       });
+      testContext.schema3 = Schema.pick({
+        a: { type: Number, optional: true },
+        b: { type: String, optional: true },
+        c: { type: Number, optional: true },
+      }, {
+        properties: ['a', 'b', 'c'],
+        required: ['a'],
+      });
     });
 
     test('should accept a valid object', () => {
@@ -497,6 +505,16 @@ describe('Test Schema', () => {
           c: {
             actual: 'x',
             error: ERROR_NOT_NUMBER,
+          },
+        },
+      });
+    });
+
+    test('should allow changing property mode via required array', () => {
+      expect(testContext.schema3.getErrors({})).toEqual({
+        errors: {
+          a: {
+            error: ERROR_MISSING_FIELD,
           },
         },
       });
@@ -1108,6 +1126,14 @@ describe('Test Schema', () => {
           },
         ],
       });
+    });
+  });
+
+  describe('Compilation errors', () => {
+    test('throws when "required" is not an array', () => {
+      expect(() => {
+        new Schema({}, { required: {} }).getErrors();
+      }).toThrow(/array/);
     });
   });
 });

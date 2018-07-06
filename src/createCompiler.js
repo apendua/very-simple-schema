@@ -52,8 +52,6 @@ export const applyPlugins = (compiler, plugins = []) => {
 
 export const pluginValidator = () => next => (validator, schemaDef, schemaOptions) => {
   if (schemaDef instanceof Validator) {
-    // NOTE: It's not necessary to make a copy here, because at the end of compile chain
-    //       we are making a copy anyway (see a couple lines below).
     return next({
       ...validator,
       ...schemaDef,
