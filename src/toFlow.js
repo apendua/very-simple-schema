@@ -5,6 +5,9 @@ import {
 const indent = (text, spaces, firstRow) => text.split('\n').map((line, i) => (firstRow || i > 0 ? `${spaces}${line}` : line)).join('\n');
 
 const toFlow = (validator) => {
+  if (validator.isMaybe) {
+    return `?${toFlow(validator.related)}`;
+  }
   if (validator.isObject) {
     const properties = [];
     each(validator.properties, (property, key) => {
@@ -37,9 +40,6 @@ const toFlow = (validator) => {
       elements.push(`${indent(toFlow(element), '  ', true)},\n`);
     });
     return `[\n${elements.join('')}]`;
-  }
-  if (validator.isMaybe) {
-    return `?${toFlow(validator.related)}`;
   }
   if (validator.isString) {
     return 'string';
