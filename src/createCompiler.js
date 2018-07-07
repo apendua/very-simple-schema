@@ -55,7 +55,6 @@ export const pluginValidator = () => next => (validator, schemaDef, schemaOption
     return next({
       ...validator,
       ...schemaDef,
-      ...schemaDef.private,
     }, schemaDef, schemaOptions);
   }
   return next(validator, schemaDef, schemaOptions);

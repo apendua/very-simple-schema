@@ -2,50 +2,35 @@ import {
   isArray,
 } from './utils';
 
+const wrapValidate = ({
+  label,
+  validate,
+}) => (value) => {
+  const error = validate && validate(value);
+  if (error && label) {
+    return {
+      ...error,
+      label, // note that error can already have another label
+    };
+  }
+  return error;
+};
+
+const wrapClean = ({
+  clean,
+  defaultValue,
+}) => (value = defaultValue) => {
+  if (clean) {
+    return clean(value, defaultValue);
+  }
+  return value;
+};
+
 class Validator {
   constructor(props) {
-    Object.defineProperty(this, 'private', {
-      value: {},
-    });
     Object.assign(this, props);
-  }
-
-  set validate(value) {
-    this.private.validate = value;
-  }
-
-  get validate() {
-    const validate = (value) => {
-      const error = this.private.validate && this.private.validate(value);
-      if (error && this.label) {
-        return {
-          label: this.label,
-          ...error,
-        };
-      }
-      return error;
-    };
-    Object.defineProperty(this, 'validate', {
-      value: validate,
-    });
-    return validate;
-  }
-
-  set clean(value) {
-    this.private.clean = value;
-  }
-
-  get clean() {
-    const clean = (value = this.defaultValue) => {
-      if (this.private.clean) {
-        return this.private.clean(value, this.defaultValue);
-      }
-      return value;
-    };
-    Object.defineProperty(this, 'clean', {
-      value: clean,
-    });
-    return clean;
+    this.clean = wrapClean(props);
+    this.validate = wrapValidate(props);
   }
 
   property(key) {
