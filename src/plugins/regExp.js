@@ -5,7 +5,6 @@ import {
 import {
   combine,
 } from '../utils.js';
-import Validator from '../Validator';
 
 const pluginRegExp = {
   compile: () => next => (validator, schemaDef, schemaOptions) => {
@@ -24,13 +23,13 @@ const pluginRegExp = {
       } else {
         throw Error('Invalid regEx settings');
       }
-      return new Validator({
+      return {
         ...compiled,
         validate: combine([
           compiled.validate,
           value => (regEx.test(value) ? undefined : { error: ERROR_DOES_NOT_MATCH, expected }),
         ]),
-      });
+      };
     }
     return next(validator, schemaDef, schemaOptions);
   },
