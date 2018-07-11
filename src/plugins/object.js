@@ -86,7 +86,7 @@ const pluginObject = {
         if (!isArray(required)) {
           throw new Error('Required should be an array');
         }
-        required.forEach((key) => {
+        each(required, (key) => {
           if (!properties[key]) {
             throw new Error(`Unknown required property "${key}"`);
           }

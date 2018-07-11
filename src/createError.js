@@ -1,17 +1,7 @@
 import {
-  has,
+  getAny,
   isArray,
 } from './utils.js';
-
-const getAny = (object) => {
-  // eslint-disable-next-line no-restricted-syntax
-  for (const k in object) {
-    if (has(object, k)) {
-      return object[k];
-    }
-  }
-  return undefined;
-};
 
 const getError = (message, details) => {
   const error = new Error(message || 'Unknown error');

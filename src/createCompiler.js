@@ -1,7 +1,8 @@
 import Validator from './Validator';
-
-const identity = x => x;
-const constant = x => () => x;
+import {
+  identity,
+  constant,
+} from './utils';
 
 export const compose = (...functions) => {
   if (functions.length === 0) {

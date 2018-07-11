@@ -183,7 +183,7 @@ function createSchema(options = {}) {
   Schema.messages = { ...MESSAGES };
   Object.assign(Schema, ERRORS);
 
-  compilerOptions.plugins.forEach(plugin => plugin.mixin && plugin.mixin(Schema));
+  each(compilerOptions.plugins, plugin => plugin.mixin && plugin.mixin(Schema));
 
   return Schema;
 }

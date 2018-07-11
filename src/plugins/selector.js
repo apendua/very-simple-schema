@@ -35,7 +35,7 @@ class Validator {
   constructor({ operators }) {
     this.operators = {};
     each(operators, (createOperator, keys) => {
-      keys.split(',').forEach((key) => {
+      each(keys.split(','), (key) => {
         this.operators[key] = createOperator;
       });
     });
