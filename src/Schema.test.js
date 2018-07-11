@@ -237,6 +237,68 @@ describe('Test Schema', () => {
     });
   });
 
+  describe('Given scheam with "custom" validator', () => {
+    beforeEach(() => {
+      testContext.schema = new Schema(String, {
+        custom: (actual) => {
+          if (actual !== 'a') {
+            return { error: ERROR_VALUE_NOT_ALLOWED, actual, expected: 'a' };
+          }
+          return undefined;
+        },
+      });
+      testContext.schema2 = new Schema({
+        a: Number,
+        b: Number,
+      }, {
+        custom: (actual) => {
+          if (actual.a !== actual.b) {
+            return { error: ERROR_VALUE_NOT_ALLOWED, actual: [actual.a, actual.b], expected: 'equal' };
+          }
+          return undefined;
+        },
+      });
+    });
+    test('should accept an allowed string value', () => {
+      expect(testContext.schema.getErrors('a')).toBeFalsy();
+    });
+    test('should reject value that is not a string', () => {
+      expect(testContext.schema.getErrors(1)).toEqual({
+        actual: 1,
+        error: ERROR_NOT_STRING,
+      });
+    });
+    test('should reject other values', () => {
+      expect(testContext.schema.getErrors('b')).toEqual({
+        error: ERROR_VALUE_NOT_ALLOWED,
+        actual: 'b',
+        expected: 'a',
+      });
+    });
+    test('should accept an allowed object', () => {
+      expect(testContext.schema2.getErrors({
+        a: 1,
+        b: 1,
+      })).toBeFalsy();
+    });
+    test('should reject not a non-object value', () => {
+      expect(testContext.schema2.getErrors(null)).toEqual({
+        actual: null,
+        error: ERROR_NOT_OBJECT,
+      });
+    });
+    test('should reject if custom validator fails', () => {
+      expect(testContext.schema2.getErrors({
+        a: 1,
+        b: 2,
+      })).toEqual({
+        actual: [1, 2],
+        error: ERROR_VALUE_NOT_ALLOWED,
+        expected: 'equal',
+      });
+    });
+  });
+
   describe('Given object schema that overwrites property options', () => {
     beforeEach(() => {
       const MyNumber = new Schema(Number, { decimal: false });

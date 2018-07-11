@@ -1,19 +1,27 @@
 import {
   isArray,
+  combine,
 } from './utils';
 
 const wrapValidate = ({
   label,
+  custom,
   validate,
-}) => (value) => {
-  const error = validate && validate(value);
-  if (error && label) {
-    return {
-      ...error,
-      label, // note that error can already have another label
-    };
-  }
-  return error;
+}) => {
+  const combinedValidator = combine([
+    validate,
+    custom,
+  ]);
+  return (value) => {
+    const error = combinedValidator(value);
+    if (error && label) {
+      return {
+        ...error,
+        label, // note that error can already have another label
+      };
+    }
+    return error;
+  };
 };
 
 const wrapClean = ({
