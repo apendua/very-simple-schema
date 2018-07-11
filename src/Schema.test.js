@@ -240,9 +240,12 @@ describe('Test Schema', () => {
   describe('Given scheam with "custom" validator', () => {
     beforeEach(() => {
       testContext.schema = new Schema(String, {
-        custom: (actual) => {
-          if (actual !== 'a') {
-            return { error: ERROR_VALUE_NOT_ALLOWED, actual, expected: 'a' };
+        meta: {
+          expected: 'a',
+        },
+        custom: (actual, { expected }) => {
+          if (actual !== expected) {
+            return { error: ERROR_VALUE_NOT_ALLOWED, actual, expected };
           }
           return undefined;
         },
@@ -295,6 +298,48 @@ describe('Test Schema', () => {
         actual: [1, 2],
         error: ERROR_VALUE_NOT_ALLOWED,
         expected: 'equal',
+      });
+    });
+  });
+
+  describe('Given schema with "meta" properties', () => {
+    beforeEach(() => {
+      testContext.schema1 = new Schema({
+        a: { type: Number, meta: { description: 'Number a' } },
+        b: { type: Number, meta: { description: 'Number b' } },
+      }, {
+        meta: {
+          description: 'Object (a, b)',
+        },
+      });
+      testContext.schema2 = Schema.pick(testContext.schema1, {
+        properties: {
+          a: { meta: { title: 'a' } },
+          b: { meta: { title: 'b' } },
+        },
+      });
+    });
+    test('should expose "meta" as a property of the schema', () => {
+      expect(testContext.schema1.meta).toEqual({
+        description: 'Object (a, b)',
+      });
+    });
+    test('should add "meta" property to validator', () => {
+      expect(testContext.schema1.property('a').meta).toEqual({
+        description: 'Number a',
+      });
+      expect(testContext.schema1.property('b').meta).toEqual({
+        description: 'Number b',
+      });
+    });
+    test('should merge "meta" property if it is overwritten', () => {
+      expect(testContext.schema2.property('a').meta).toEqual({
+        description: 'Number a',
+        title: 'a',
+      });
+      expect(testContext.schema2.property('b').meta).toEqual({
+        description: 'Number b',
+        title: 'b',
       });
     });
   });

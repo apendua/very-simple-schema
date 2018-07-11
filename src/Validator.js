@@ -4,16 +4,17 @@ import {
 } from './utils';
 
 const wrapValidate = ({
+  meta,
   label,
   custom,
   validate,
 }) => {
   const combinedValidator = combine([
     validate,
-    custom,
+    custom && (actual => custom(actual, meta)),
   ]);
   return (value) => {
-    const error = combinedValidator(value);
+    const error = combinedValidator(value, meta);
     if (error && label) {
       return {
         ...error,

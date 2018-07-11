@@ -85,11 +85,16 @@ const createCompiler = (Schema, options) => {
       label,
       defaultValue,
       custom,
+      meta,
     }) => new Validator({
       ...validator,
       label,
       defaultValue,
       custom,
+      meta: {
+        ...validator.meta,
+        ...meta,
+      },
     }),
   };
   return applyPlugins(compiler, [

@@ -46,6 +46,13 @@ function createSchema(options = {}) {
       return this.properties;
     }
 
+    get meta() {
+      Object.defineProperty(this, 'meta', {
+        value: this.compiled.meta,
+      });
+      return this.meta;
+    }
+
     property(key) {
       return this.compiled.property(key);
     }
