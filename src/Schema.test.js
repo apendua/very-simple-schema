@@ -10,7 +10,6 @@ import {
   ERROR_TOO_LONG,
   ERROR_NOT_OBJECT,
   ERROR_TOO_SMALL,
-  ERROR_TOO_MANY,
 } from './constants.js';
 import Schema from './Schema.js';
 
@@ -66,12 +65,6 @@ describe('Test Schema', () => {
     });
     test('should expose ERROR_VALUE_NOT_ALLOWED', () => {
       expect(Schema.ERROR_VALUE_NOT_ALLOWED).toBeTruthy();
-    });
-    test('should expose ERROR_TOO_MANY', () => {
-      expect(Schema.ERROR_TOO_MANY).toBeTruthy();
-    });
-    test('should expose ERROR_TOO_FEW', () => {
-      expect(Schema.ERROR_TOO_FEW).toBeTruthy();
     });
     test('should expose ERROR_TOO_LONG', () => {
       expect(Schema.ERROR_TOO_LONG).toBeTruthy();
@@ -1104,7 +1097,7 @@ describe('Test Schema', () => {
     test('should properly attach label to an array', () => {
       expect(testContext.schema2.getErrors([1, 2, 3])).toEqual({
         actual: [1, 2, 3],
-        error: ERROR_TOO_MANY,
+        error: ERROR_TOO_LONG,
         expected: 2,
         label: 'Array',
       });

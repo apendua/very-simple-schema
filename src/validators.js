@@ -10,10 +10,8 @@ import {
   ERROR_NOT_ARRAY,
   ERROR_NOT_OBJECT,
   ERROR_NOT_INSTANCE_OF,
-  ERROR_TOO_FEW,
-  ERROR_TOO_MANY,
-  ERROR_TOO_LONG,
   ERROR_TOO_SHORT,
+  ERROR_TOO_LONG,
   ERROR_TOO_SMALL,
   ERROR_TOO_LARGE,
   ERROR_IS_EMPTY,
@@ -31,9 +29,6 @@ export const createValidateInstanceOf = expected => actual => (actual instanceof
 
 export const createValidateMinLength = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_SHORT, actual, expected });
 export const createValidateMaxLength = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_LONG, actual, expected });
-
-export const createValidateMinCount = expected => actual => (actual.length >= expected ? undefined : { error: ERROR_TOO_FEW, actual, expected });
-export const createValidateMaxCount = expected => actual => (actual.length <= expected ? undefined : { error: ERROR_TOO_MANY, actual, expected });
 
 export const createValidateMin = expected => actual => (actual >= expected ? undefined : { error: ERROR_TOO_SMALL, actual, expected });
 export const createValidateMax = expected => actual => (actual <= expected ? undefined : { error: ERROR_TOO_LARGE, actual, expected });

@@ -1,7 +1,7 @@
 import {
   validateIsArray,
-  createValidateMinCount,
-  createValidateMaxCount,
+  createValidateMinLength,
+  createValidateMaxLength,
 } from '../validators.js';
 import {
   combine,
@@ -35,8 +35,8 @@ const pluginArray = {
         typeName: `array of ${$.typeName}`,
         validate: combine([
           validateIsArray,
-          minCount !== undefined && createValidateMinCount(minCount),
-          maxCount !== undefined && createValidateMaxCount(maxCount),
+          minCount !== undefined && createValidateMinLength(minCount),
+          maxCount !== undefined && createValidateMaxLength(maxCount),
           (value) => {
             const errors = value.map(x => $.validate(x));
             return errors.some(err => !!err) ? { errors } : undefined;

@@ -2,8 +2,8 @@
 import {
   ERROR_NOT_NUMBER,
   ERROR_NOT_ARRAY,
-  ERROR_TOO_FEW,
-  ERROR_TOO_MANY,
+  ERROR_TOO_SHORT,
+  ERROR_TOO_LONG,
 } from '../constants.js';
 import pluginArray from './array.js';
 import { applyPlugins } from '../createCompiler.js';
@@ -61,7 +61,7 @@ describe('Test array plugin', () => {
     });
     test('should reject array with to little elements', () => {
       expect(testContext.validate2([])).toEqual({
-        error: ERROR_TOO_FEW,
+        error: ERROR_TOO_SHORT,
         actual: [],
         expected: 1,
       });
@@ -71,7 +71,7 @@ describe('Test array plugin', () => {
     });
     test('should reject array with to many elements', () => {
       expect(testContext.validate3([1, 2, 3])).toEqual({
-        error: ERROR_TOO_MANY,
+        error: ERROR_TOO_LONG,
         actual: [1, 2, 3],
         expected: 2,
       });
