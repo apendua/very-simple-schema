@@ -1,6 +1,6 @@
 {
   "name": "very-simple-schema",
-  "version": "1.0.0-rc0",
+  "version": "1.0.0-rc1",
   "description": "An alternative SimpleSchema implementation",
   "main": "./lib/index.js",
   "scripts": {
@@ -9,7 +9,7 @@
     "clean": "rimraf lib coverage",
     "coverage": "jest --coverage",
     "lint": "eslint src",
-    "prepublish": "npm run clean && npm run build",
+    "prepare": "npm run clean && npm run build",
     "test": "jest",
     "test-watch": "jest --watch"
   },
